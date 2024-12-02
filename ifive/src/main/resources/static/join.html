@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 600px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .logo {
+        width: 120px;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .section {
+        margin-bottom: 30px;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .form-row label {
+        width: 100px;
+        font-size: 14px;
+        margin-right: 10px;
+        text-align: right;
+    }
+
+    .form-row input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .verify-btn {
+        background-color: #007BFF;
+        color: white;
+        padding: 8px 12px;
+        font-size: 14px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    .verify-btn:hover {
+        background-color: #0056b3;
+    }
+
+    small {
+        display: block;
+        font-size: 12px;
+        color: gray;
+        margin-top: 5px;
+    }
+
+    .error {
+        color: red;
+        font-size: 12px;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .submit-container {
+        text-align: center;
+    }
+
+    .submit-btn {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .submit-btn:hover {
+        background-color: #218838;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="logo.png" alt="백 만 볼트 로고" class="logo">
+    </div>
+    <div class="form-container">
+        <form action="" method="post">
+            <div class="section">
+                <h2>기본정보 입력</h2>
+                <div class="form-row">
+                    <label for="name">이름*</label>
+                    <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" required>
+                </div>
+                <div class="form-row">
+                    <label for="id">아이디*</label>
+                    <input type="text" id="id" name="id" placeholder="아이디를 입력해주세요" required>
+                    <button type="button" class="verify-btn">중복확인</button>
+                </div>
+                <div class="form-row">
+                    <label for="password">비밀번호*</label>
+                    <input type="password" id="password" name="password" placeholder="비밀번호를 입력해주세요" required>
+                    <small>비밀번호는 8자리 이상, 영문 순자와 포함되어야 합니다.</small>
+                </div>
+                <div class="form-row">
+                    <label for="confirm-password">비밀번호 재확인*</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="비밀번호를 다시 입력해주세요" required>
+                    <span class="error">비밀번호 불일치 여부</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>상세 정보 입력</h2>
+                <div class="form-row">
+                    <label for="email">이메일*</label>
+                    <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요" required>
+                    <button type="button" class="verify-btn">중복확인</button>
+                </div>
+                <div class="form-row">
+                    <label for="phone">전화번호*</label>
+                    <input type="tel" id="phone" name="phone" placeholder="전화번호를 입력해주세요" required>
+                </div>
+                <div class="form-row">
+                    <label for="car">차종</label>
+                    <input type="text" id="car" name="car" placeholder="차종을 입력해주세요">
+                </div>
+                <div class="form-row">
+                    <label for="car-model">차량모델*</label>
+                    <input type="text" id="car-model" name="car-model" placeholder="차량모델을 입력해주세요" required>
+                </div>
+                <div class="form-row">
+                    <label for="car-number">차량번호*</label>
+                    <input type="text" id="car-number" name="car-number" placeholder="차량번호를 입력해주세요" required>
+                </div>
+            </div>
+
+            <div class="submit-container">
+                <button type="submit" class="submit-btn">가입 하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
