@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전기차 충전소 지도</title>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9cc35d8f9e7435ff9fe2a4eb25f11087"></script>
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #header {
+            height: 60px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        #header img {
+            height: 40px;
+        }
+        #header nav {
+            display: flex;
+            gap: 20px;
+        }
+        #header nav a {
+            color: white;
+            text-decoration: none;
+        }
+        #main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+        #map {
+            flex: 3;
+            height: 100%;
+        }
+        #infoPanel {
+            flex: 1;
+            max-width: 300px;
+            background: #f7f7f7;
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #ddd;
+        }
+        #infoPanel h2 {
+            margin-top: 0;
+        }
+        #infoPanel ul {
+            list-style: none;
+            padding: 0;
+        }
+        #infoPanel ul li {
+            margin: 5px 0;
+            padding: 5px;
+            background: #eaeaea;
+            border-radius: 5px;
+        }
+        /* 오버레이 배경 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none; /* 기본적으로 숨김 */
+        }
+
+        /* 모달 창 */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            max-height: 70%; /* 모달 최대 높이 */
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow: hidden; /* 모달 전체 크기 고정 */
+        }
+
+        /* 닫기 버튼 */
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* 모달 내용 영역 */
+        .modal-content {
+            padding: 20px;
+            overflow-y: auto; /* 수직 스크롤 활성화 */
+            max-height: calc(70% - 40px); /* 모달 최대 높이에서 여백 제외 */
+        }
+
+        #mycharge {
+            text-align: center;
+        }
+
+        #myplace {
+            margin-top: 40px;
+        }
+
+        /* 기본 스타일 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none; /* 기본적으로 숨김 */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu .options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .option {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .toggle {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 활성화 상태 */
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .option.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        #chargerStation {
+            background-color: #ffffff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<!-- 상단(Header) -->
+<header id="header">
+    <img src="/static/images/millionvolte.png" alt="로고" style="width: 120px; height: 120px">
+    <nav>
+        <a href="#">이용방법</a>
+        <a href="#">결제 및 예약</a>
+        <a href="#">마이페이지</a>
+        <a href="#">로그인</a>
+        <a href="#">로그아웃</a>
+    </nav>
+</header>
+<!-- 충전속도 카테고리 -->
+<div class="dropdown">
+    <button class="dropdown-toggle">충전속도</button>
+    <div class="dropdown-menu">
+        <div class="options">
+            <button class="option">7kW</button>
+            <button class="option">50kW</button>
+            <button class="option">100kW</button>
+            <button class="option">200kW</button>
+            <button class="option">300kW 이상</button>
+        </div>
+        <div class="actions">
+            <button id="reset">초기화</button>
+            <button id="apply">적용하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 메인(Main) -->
+<div id="main">
+    <!-- 지도 -->
+    <div id="map"></div>
+
+    <!-- 고정 정보 창 -->
+    <div id="infoPanel">
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="충전소, 지역 검색" style="margin-top: 70px; width: 70%;">
+            <button onclick="searchStations()">검색</button>
+        </div>
+        <div id="myplace">
+            <h2 id="mycharge">내 주변 충전소</h2>
+            <ul id="stationList">
+                <li id="chargerStation">
+                    충전소 이름<br>
+                    사용가능한 충전기 개수<br>
+                    충전 속도 | 충전 요금
+                </li>
+                <!-- 주변 충전소 목록 -->
+            </ul>
+        </div>
+        <!--<h3>선택된 충전소</h3>-->
+        <div id="selectedStation">
+            <!-- 선택된 충전소 정보 -->
+        </div>
+    </div>
+</div>
+<div id="modalOverlay" class="overlay"></div>
+<div id="modal" class="modal">
+    <span class="close" onclick="closeModal()">×</span>
+    <h2>충전소 정보</h2>
+    <div id="modalContent" class="modal-content">
+        <!-- 긴 내용이 여기에 표시됩니다 -->
+        <ul>
+            <li>충전기 1: 충전 중</li>
+            <li>충전기 2: 사용 가능</li>
+            <li>충전기 3: 고장</li>
+            <li>충전기 4: 충전 중</li>
+            <li>충전기 5: 사용 가능</li>
+            <li>충전기 6: 충전 중</li>
+            <li>충전기 7: 사용 가능</li>
+            <!-- 더 많은 항목들 -->
+        </ul>
+    </div>
+</div>
+
+
+<script>
+    // 카카오 맵 초기화
+    var mapContainer = document.getElementById('map');
+    var mapOption = {
+        center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+        level: 5
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 충전소 데이터 예제
+    var chargingStations = [
+        {
+            id: 1, name: "충전소 A", lat: 37.5665, lng: 126.9780,
+            chargers: [
+                { id: 1, status: "충전중" },
+                { id: 2, status: "충전가능" }
+            ]
+        },
+        {
+            id: 2, name: "충전소 B", lat: 37.5700, lng: 126.9820,
+            chargers: [
+                { id: 1, status: "고장" }
+            ]
+        }
+    ];
+
+    // 마커 생성 및 클릭 이벤트
+    chargingStations.forEach(function(station) {
+        var marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(station.lat, station.lng),
+            map: map
+        });
+
+        kakao.maps.event.addListener(marker, 'click', function() {
+            showStationInfo(station);
+        });
+    });
+
+    // 충전소 정보 표시
+    function showStationInfo(station) {
+        var infoDiv = document.getElementById('selectedStation');
+        infoDiv.innerHTML = `<h4>${station.name}</h4>`;
+        var ul = document.createElement('ul');
+        station.chargers.forEach(function(charger) {
+            var li = document.createElement('li');
+            li.textContent = `충전기 ${charger.id}: ${charger.status}`;
+            ul.appendChild(li);
+        });
+        infoDiv.appendChild(ul);
+    }
+
+    // 검색 기능 (예제)
+    function searchStations() {
+        var query = document.getElementById('searchInput').value;
+        alert(`검색어 "${query}"로 충전소 검색을 수행합니다.`);
+    }
+
+    function openModal() {
+        document.getElementById('modalOverlay').style.display = 'block';
+        document.getElementById('modal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').style.display = 'none';
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    // 드롭다운 토글
+    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        dropdownMenu.classList.toggle('show');
+    });
+
+    // 옵션 클릭 이벤트
+    document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', () => {
+            option.classList.toggle('active');
+        });
+    });
+
+    // 초기화 버튼
+    document.getElementById('reset').addEventListener('click', () => {
+        document.querySelectorAll('.option').forEach(option => {
+            option.classList.remove('active');
+        });
+        document.getElementById('fast-charge').checked = false;
+    });
+
+    // 적용하기 버튼
+    document.getElementById('apply').addEventListener('click', () => {
+        const selectedOptions = Array.from(document.querySelectorAll('.option.active'))
+            .map(option => option.textContent.trim());
+        const isFastCharge = document.getElementById('fast-charge').checked;
+
+        console.log('Selected Options:', selectedOptions);
+        console.log('Fast Charge Only:', isFastCharge);
+    });
+
+    document.addEventListener('click', function (event) {
+        const dropdown = document.querySelector('.dropdown');
+        if (!dropdown.contains(event.target)) {
+            document.querySelector('.dropdown-menu').classList.remove('show');
+        }
+    });
+
+
+</script>
+</body>
+</html>
