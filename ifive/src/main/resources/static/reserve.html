@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 예약</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      color: #333; /* 텍스트 색상 변경 */
+    }
+
+    .reserve-info {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .date-selection, .time-selection {
+      margin-bottom: 20px;
+    }
+
+    .date-selection label, .time-selection label {
+      margin-right: 10px;
+      display: inline-block;
+      width: 100px;
+    }
+
+    .time-selection select {
+      margin-right: 10px;
+    }
+
+    .booking-status {
+      margin-top: 20px;
+    }
+
+    .booking-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .booking-info {
+      flex: 1;
+    }
+
+    .booking-status {
+      flex: 0 0 120px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<div class="reserve-info">
+  <div class="date-selection">
+    <label for="reservation-date">이용날짜</label>
+    <input type="date" id="reservation-date">
+  </div>
+  <div class="time-selection">
+    <label>시작시간:</label>
+    <select id="start-hour">
+      <option value="01">01</option>
+      <option value="02">02</option>
+      <option value="03">03</option>
+      <option value="04">04</option>
+      <option value="05">05</option>
+      <option value="06">06</option>
+      <option value="07">07</option>
+      <option value="08">08</option>
+      <option value="09">09</option>
+      <option value="10">10</option>
+      <option value="11">11</option>
+      <option value="12">12</option>
+      <option value="13">13</option>
+      <option value="14">14</option>
+      <option value="15">15</option>
+      <option value="16">16</option>
+      <option value="17">17</option>
+      <option value="18">18</option>
+      <option value="19">19</option>
+      <option value="20">20</option>
+      <option value="21">21</option>
+      <option value="22">22</option>
+      <option value="23">23</option>
+      <option value="24">24</option>
+    </select>
+    <select id="start-minute">
+      <option value="00">00</option>
+      <option value="05">05</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
+      <option value="35">35</option>
+      <option value="40">40</option>
+      <option value="45">45</option>
+      <option value="50">50</option>
+      <option value="55">55</option>
+    </select>
+    <label>종료시간:</label>
+    <select id="end-hour">
+      <option value="01">01</option>
+      <option value="02">02</option>
+      <option value="03">03</option>
+      <option value="04">04</option>
+      <option value="05">05</option>
+      <option value="06">06</option>
+      <option value="07">07</option>
+      <option value="08">08</option>
+      <option value="09">09</option>
+      <option value="10">10</option>
+      <option value="11">11</option>
+      <option value="12">12</option>
+      <option value="13">13</option>
+      <option value="14">14</option>
+      <option value="15">15</option>
+      <option value="16">16</option>
+      <option value="17">17</option>
+      <option value="18">18</option>
+      <option value="19">19</option>
+      <option value="20">20</option>
+      <option value="21">21</option>
+      <option value="22">22</option>
+      <option value="23">23</option>
+      <option value="24">24</option>
+    </select>
+    <select id="end-minute">
+      <option value="00">00</option>
+      <option value="05">05</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
+      <option value="35">35</option>
+      <option value="40">40</option>
+      <option value="45">45</option>
+      <option value="50">50</option>
+      <option value="55">55</option>
+    </select>
+  </div>
+  <button type="button" onclick="checkTime()">결제</button>
+</div>
+
+<script>
+  const reservations = [
+    { startTime: "08:00", endTime: "10:00" },
+    { startTime: "11:00", endTime: "13:00" },
+    { startTime: "14:00", endTime: "16:00" },
+  ];
+
+  function checkTime() {
+    const startHour = parseInt(document.getElementById('start-hour').value, 10);
+    const startMinute = parseInt(document.getElementById('start-minute').value, 10);
+    const endHour = parseInt(document.getElementById('end-hour').value, 10);
+    const endMinute = parseInt(document.getElementById('end-minute').value, 10);
+
+    if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+      alert('시작 시간이 종료 시간보다 작아야 합니다.');
+      return;
+    }
+
+    let isAvailable = true;
+    reservations.forEach(reservation => {
+      const [resStartHour, resStartMinute] = reservation.startTime.split(':').map(num => parseInt(num, 10));
+      const [resEndHour, resEndMinute] = reservation.endTime.split(':').map(num => parseInt(num, 10));
+
+      if (
+              (startHour < resEndHour || (startHour === resEndHour && startMinute < resEndMinute)) &&
+              (endHour > resStartHour || (endHour === resStartHour && endMinute > resStartMinute))
+      ) {
+        isAvailable = false;
+      }
+    });
+
+    if (isAvailable) {
+      alert('예약 가능합니다!');
+    } else {
+      alert('해당 시간대는 예약이 이미 차있습니다.');
+    }
+  }
+</script>
+</body>
+</html>
