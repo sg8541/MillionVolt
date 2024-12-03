@@ -22,11 +22,6 @@
             padding: 20px;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
         header {
             position: absolute;
             top: 20px;
@@ -41,9 +36,9 @@
         }
 
         .content-wrapper {
-            margin-top: 100px; /* 로고 아래 여백 */
+            margin-top: 150px; /* 로고 아래 여백을 더 늘림 */
             width: 100%;
-            max-width: 900px;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -55,6 +50,7 @@
             font-weight: 600;
             letter-spacing: 1.5px;
             margin-bottom: 10px;
+            text-align: center;
         }
 
         .header h1::after {
@@ -68,7 +64,6 @@
 
         .booking-info {
             width: 100%;
-            max-width: 600px;
             margin-bottom: 30px;
         }
 
@@ -96,46 +91,36 @@
         }
 
         .booking-details-container {
-            display: flex; /* 플렉스 컨테이너 */
-            justify-content: center; /* 가로 방향 가운데 정렬 */
-            align-items: center; /* 세로 방향 가운데 정렬 */
             width: 100%;
-            max-width: 900px;
-            padding: 25px;
+            padding: 20px;
             color: #333;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             background-color: #fff;
         }
 
-        .booking-details-container table {
-            width: auto; /* 테이블 크기를 내용에 맞게 조정 */
-            table-layout: auto;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
         }
 
-
-        .booking-details-container th,
-        .booking-details-container td {
-            padding: 12px;
-            text-align: center; /* 중앙 정렬 */
-            font-size: 14px;
-            color: #333;
-            border: 1px solid #ddd;
-            white-space: nowrap; /* 글자 줄바꿈 방지 */
+        .info-row:last-child {
+            border-bottom: none;
         }
 
-
-        .booking-details-container th {
-            background-color: #f5f5f5;
+        .info-label {
             font-weight: 700;
+            color: #333;
+            flex: 1;
         }
 
-        .booking-details-container tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-
-        .booking-details-container tbody tr:hover {
-            background-color: #f1f1f1;
+        .info-value {
+            text-align: right;
+            color: #666;
+            flex: 1;
         }
 
         .confirm {
@@ -159,6 +144,26 @@
         .confirm button:hover {
             background-color: #333;
         }
+
+        .location-container {
+            width: 100%;
+            padding: 20px;
+            color: #333;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .location p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #666;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
 <body>
@@ -175,6 +180,13 @@
 
     <div class="booking-info">
         <div class="details">
+            <p class="details-title"><strong>이용 장소</strong></p>
+            <div class="location-container">
+                <div class="location">
+                    <p>서울특별시 송파구 가락본동</p>
+                </div>
+            </div>
+
             <p class="details-title"><strong>이용일시</strong></p>
             <div class="date">
                 <p>11월 28일, 오후 17시 10분 --- 오후 19시 40분</p>
@@ -183,28 +195,30 @@
 
         <div class="details-title">상세 정보</div>
         <div class="booking-details-container">
-            <table>
-                <thead>
-                <tr>
-                    <th>결제 금액</th>
-                    <th>이용초과금액</th>
-                    <th>보증금 반환 금액</th>
-                    <th>예약자</th>
-                    <th>예약번호</th>
-                    <th>충전기 번호</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>27,000원</td>
-                    <td>0원</td>
-                    <td>20,000원</td>
-                    <td>ooo</td>
-                    <td>mx-17</td>
-                    <td>완속 1번</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="info-row">
+                <span class="info-label">예약자</span>
+                <span class="info-value">ooo</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">결제 금액</span>
+                <span class="info-value">27,000원</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">이용초과금액</span>
+                <span class="info-value">0원</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">보증금 반환 금액</span>
+                <span class="info-value">20,000원</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">충전기 번호</span>
+                <span class="info-value">완속 1번</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">예약번호</span>
+                <span class="info-value">mx-17</span>
+            </div>
         </div>
     </div>
 </div>
