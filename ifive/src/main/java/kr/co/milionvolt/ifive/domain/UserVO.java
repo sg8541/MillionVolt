@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.dto;
+package kr.co.milionvolt.ifive.domain;
 
 import lombok.*;
 

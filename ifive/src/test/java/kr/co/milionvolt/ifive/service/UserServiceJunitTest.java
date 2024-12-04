@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.service;
 
-import kr.co.milionvolt.ifive.dto.UserVO;
+import kr.co.milionvolt.ifive.domain.UserVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

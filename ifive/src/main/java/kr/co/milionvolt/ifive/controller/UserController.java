@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.controller;
 
-import kr.co.milionvolt.ifive.dto.UserVO;
+import kr.co.milionvolt.ifive.domain.UserVO;
 import kr.co.milionvolt.ifive.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
