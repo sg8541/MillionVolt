@@ -1,6 +1,6 @@
 //package kr.co.milionvolt.ifive.mapper;
 //
-//import kr.co.milionvolt.ifive.domain.ChargingStationVO;
+//import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationVO;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,6 @@
 //package kr.co.milionvolt.ifive.mapper;
-//import kr.co.milionvolt.ifive.domain.ChargerDTO;
-//import kr.co.milionvolt.ifive.domain.ChargerVO;
+//import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
+//import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;

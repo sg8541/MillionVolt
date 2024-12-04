@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.mapper;
 
-import kr.co.milionvolt.ifive.domain.UserVO;
+import kr.co.milionvolt.ifive.domain.user.UserVO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

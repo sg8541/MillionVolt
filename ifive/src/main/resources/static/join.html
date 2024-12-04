@@ -136,6 +136,10 @@
     select option {
         padding: 10px; /* 옵션 내부 여백 */
     }
+
+    input{
+       outline: none;
+    }
 </style>
 <body>
 <div class="header">
@@ -150,11 +154,11 @@
                 </div>
                     <div class="form-row">
                         <label for="name">이름<span class="star">*</span></label>
-                        <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" required>
+                        <input type="text" id="name" name="username" placeholder="이름을 입력해주세요" required>
                     </div>
                     <div class="form-row">
                         <label for="id">아이디<span class="star">*</span></label>
-                        <input type="text" id="id" name="id" placeholder="아이디를 입력해주세요" required>
+                        <input type="text" id="id" name="user_id" placeholder="아이디를 입력해주세요" required>
                         <button type="button" class="verify-btn">중복확인</button>
                     </div>
                     <div class="form-row">
@@ -180,7 +184,7 @@
                     </div>
                     <div class="form-row">
                         <label for="phone">전화번호<span class="star">*</span></label>
-                        <input type="tel" id="phone" name="phone" placeholder="전화번호를 입력해주세요" required>
+                        <input type="tel" id="phone" name="phone_number" placeholder="전화번호를 입력해주세요" required>
                     </div>
                     <div class="form-row">
                         <label for="car">차종<span class="star">*</span></label>
@@ -208,7 +212,7 @@
                     </div>
                     <div class="form-row">
                         <label for="car-number">차량번호<span class="star">*</span></label>
-                        <input type="text" id="car-number" name="car-number" placeholder="차량번호를 입력해주세요" required>
+                        <input type="text" id="car-number" name="car_number" placeholder="차량번호를 입력해주세요" required>
                     </div>
                 </div>
 

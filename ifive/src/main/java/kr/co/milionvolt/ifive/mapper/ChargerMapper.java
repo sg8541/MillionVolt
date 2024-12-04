@@ -1,7 +1,7 @@
 package kr.co.milionvolt.ifive.mapper;
 
-import kr.co.milionvolt.ifive.domain.ChargerDTO;
-import kr.co.milionvolt.ifive.domain.ChargerVO;
+import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
+import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
