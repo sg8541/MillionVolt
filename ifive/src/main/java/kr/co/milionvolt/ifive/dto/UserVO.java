@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.model;
+package kr.co.milionvolt.ifive.dto;
 
 import lombok.*;
 

@@ -1,7 +1,7 @@
 package kr.co.milionvolt.ifive.service;
 
 import kr.co.milionvolt.ifive.mapper.UserMapper;
-import kr.co.milionvolt.ifive.model.UserVO;
+import kr.co.milionvolt.ifive.dto.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

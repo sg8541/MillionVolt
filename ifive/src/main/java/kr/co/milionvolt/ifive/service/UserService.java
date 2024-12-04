@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.service;
 
-import kr.co.milionvolt.ifive.model.UserVO;
+import kr.co.milionvolt.ifive.dto.UserVO;
 
 public interface UserService {
     public UserVO findByID(String username, String email);

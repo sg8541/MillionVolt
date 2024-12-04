@@ -1,10 +1,9 @@
 package kr.co.milionvolt.ifive.service;
 
-import kr.co.milionvolt.ifive.model.UserVO;
+import kr.co.milionvolt.ifive.dto.UserVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class UserServiceJunitTest {
