@@ -1,6 +1,8 @@
 package kr.co.milionvolt.ifive.mapper;
 
-import kr.co.milionvolt.ifive.domain.UserVO;
+import kr.co.milionvolt.ifive.domain.user.FindFwdDTO;
+import kr.co.milionvolt.ifive.domain.user.FindIdDTO;
+import kr.co.milionvolt.ifive.domain.user.ResetDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +14,10 @@ public class UserMapperJunitTest {
 
     @Test
     public void findById(){ // 아이디 찾기 기능 Test
-       UserVO vo =  userMapper.findById("강재헌","wogjsdl1244@naver.com");
-        System.out.println(vo);
-       System.out.println(vo.getUserId());
-        System.out.println(vo.getCreatedAt());
+        FindIdDTO dto =  userMapper.findById("강재헌","wogjsdl1244@naver.com");
+        System.out.println(dto);
+       System.out.println(dto.getUserId());
+        System.out.println(dto.getCreatedAt());
     }
 
     @Test
@@ -28,24 +30,24 @@ public class UserMapperJunitTest {
     public void findPwd(){
         String username = "강재헌";
         String email = "wogjsdl1244@naver.com";
-        UserVO vo = userMapper.findPassword(username,email);
+        FindFwdDTO vo = userMapper.findPassword(username,email);
 
         System.out.println(vo);
 
     }
 
-//    @Test
-//    public void newPassword(){
-//        UserVO vo = new UserVO();
-//        vo.setPassword("1111");
-//        vo.setUser_id("wogjsdl1244");
-//        vo.setUsername("강재헌");
-//        vo.setEmail("wogjsdl1244@naver.com");
-//
-//        userMapper.newPassword(vo);
-//
-//
-//
-//    }
+    @Test
+    public void newPassword(){
+        ResetDTO vo = new ResetDTO();
+        vo.setPassword("9999");
+        vo.setUserId("wogjsdl1244");
+        vo.setUsername("강재헌");
+        vo.setEmail("wogjsdl1244@naver.com");
+
+        userMapper.newPassword(vo);
+
+
+
+    }
 }
 
