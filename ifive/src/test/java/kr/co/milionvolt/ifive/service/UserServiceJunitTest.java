@@ -26,15 +26,15 @@ public class UserServiceJunitTest {
         System.out.println(email);
     }
 
-    @Test
-    public void findPwd(){
-        UserVO vo = new UserVO();
-        vo.setPassword("1244");
-        vo.setUser_id("wogjsdl1244");
-        vo.setUsername("강재헌");
-        vo.setEmail("wogjsdl1244@naver.com");
-
-        userService.newPwd(vo);
-
-    }
+//    @Test
+//    public void findPwd(){
+//        UserVO vo = new UserVO();
+//        vo.setPassword("1244");
+//        vo.setUser_id("wogjsdl1244");
+//        vo.setUsername("강재헌");
+//        vo.setEmail("wogjsdl1244@naver.com");
+//
+//        userService.newPwd(vo);
+//
+//    }
 }

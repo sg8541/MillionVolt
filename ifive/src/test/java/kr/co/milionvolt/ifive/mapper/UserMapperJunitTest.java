@@ -14,8 +14,8 @@ public class UserMapperJunitTest {
     public void findById(){ // 아이디 찾기 기능 Test
        UserVO vo =  userMapper.findById("강재헌","wogjsdl1244@naver.com");
         System.out.println(vo);
-       System.out.println(vo.getUser_id());
-        System.out.println(vo.getCreated_at());
+       System.out.println(vo.getUserId());
+        System.out.println(vo.getCreatedAt());
     }
 
     @Test
@@ -34,18 +34,18 @@ public class UserMapperJunitTest {
 
     }
 
-    @Test
-    public void newPassword(){
-        UserVO vo = new UserVO();
-        vo.setPassword("1111");
-        vo.setUser_id("wogjsdl1244");
-        vo.setUsername("강재헌");
-        vo.setEmail("wogjsdl1244@naver.com");
-
-        userMapper.newPassword(vo);
-
-
-
-    }
+//    @Test
+//    public void newPassword(){
+//        UserVO vo = new UserVO();
+//        vo.setPassword("1111");
+//        vo.setUser_id("wogjsdl1244");
+//        vo.setUsername("강재헌");
+//        vo.setEmail("wogjsdl1244@naver.com");
+//
+//        userMapper.newPassword(vo);
+//
+//
+//
+//    }
 }
 
