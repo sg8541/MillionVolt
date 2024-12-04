@@ -5,14 +5,24 @@ import kr.co.milionvolt.ifive.domain.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserMapper userMapper;
     // private final BCryptPasswordEncoder bCryptPasswordEncoder;
     // 시큐리티 적용 시 사용.
 
+
+    // 유저 전체 조회
+    @Override
+    public List<UserVO> findAll() {
+        List<UserVO> vo = new ArrayList<>();
+        return vo;
+    }
 
     @Override
     public UserVO findByID(String username, String email) {
@@ -26,9 +36,12 @@ public class UserServiceImpl implements UserService {
         return email;
     }
 
+
+
+
     @Override
     public UserVO findPass(String username, String email) {
-       UserVO vo =  userMapper.findPassword(username,email);
+        UserVO vo =  userMapper.findPassword(username,email);
         return vo;
     }
 

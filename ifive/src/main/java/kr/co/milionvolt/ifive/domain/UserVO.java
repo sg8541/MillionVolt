@@ -1,7 +1,7 @@
 package kr.co.milionvolt.ifive.domain;
 
-import lombok.*;
 
+import lombok.Getter;
 import java.sql.Timestamp;
 
 @Getter
@@ -22,5 +22,3 @@ public class UserVO {
         this.createdAt = createdAt;
     }
 }
-
-
