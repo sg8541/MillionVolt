@@ -1,0 +1,18 @@
+package kr.co.milionvolt.ifive.domain;
+
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserDTO {
+  private Integer id;
+  private String username;
+  private String userId;
+  private String email;
+  private String phoneNumber;
+  private String password;
+
+}
