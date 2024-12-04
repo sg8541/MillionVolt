@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.domain.user;
+package kr.co.milionvolt.ifive.domain;
 
 import lombok.*;
 
@@ -7,10 +7,12 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupDTO {
+public class UserDTO {
+  private Integer id;
   private String username;
   private String userId;
   private String email;
   private String phoneNumber;
   private String password;
+
 }

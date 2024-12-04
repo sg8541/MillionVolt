@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(value={"mybatis.dao"})
+//@MapperScan(value={"mybatis.dao"})
 public class IfiveApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IfiveApplication.class, args);
