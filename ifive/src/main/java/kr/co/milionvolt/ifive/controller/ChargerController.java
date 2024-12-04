@@ -1,8 +1,8 @@
 package kr.co.milionvolt.ifive.controller;
 
-import kr.co.milionvolt.ifive.domain.ChargerDTO;
-import kr.co.milionvolt.ifive.domain.ChargerVO;
-import kr.co.milionvolt.ifive.service.ChargerService;
+import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
+import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
+import kr.co.milionvolt.ifive.service.charger.ChargerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
