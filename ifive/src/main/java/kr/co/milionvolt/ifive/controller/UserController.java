@@ -26,7 +26,7 @@ public class UserController {
     public ResponseEntity<String> findPwdByUserId(@PathVariable String userId){
         String email = userService.findPasswordByUserId(userId);
         ResponseEntity<String> entity = new ResponseEntity<>(email,HttpStatus.OK);
-        return entity; // 이메일 반환.  -> vue에서 정규화 표현으로 어느정도 가리고 보여주고
+        return entity; // 이메일 반환.  -> vue에서 정규화 표현으로 어느정도 가리고 보여줄 예정.
         // 입력한 이메일이랑 맞는지 비교.
     }
 
