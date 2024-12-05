@@ -1,7 +1,10 @@
 package kr.co.milionvolt.ifive.websocket;
 
+import kr.co.milionvolt.ifive.domain.notification.ChargingStatusDTO;
 import kr.co.milionvolt.ifive.service.charging.ChargingStatusSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -9,17 +12,31 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class ChargingWebSocketHandler extends TextWebSocketHandler {
+    private final ConcurrentHashMap<String, Double> payMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Double> currentBatteryMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
-    @Autowired
-    private ChargingStatusSerivce chargingStatusSerivce;
+    private final ChargingStatusSerivce chargingStatusSerivce;
+
+    public ChargingWebSocketHandler(ChargingStatusSerivce chargingStatusSerivce) {
+        this.chargingStatusSerivce = chargingStatusSerivce;
+    }
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        sessions.put(session.getId(),session);
-        System.out.println("웹소켓 연결됨."+session.getId());
-        sendChargingStatus(session);
+        String query = session.getUri().getQuery();
+        String userId = getParameterFromQuery(query, "userId"); // userId 추출
+        if (userId != null) {
+            sessions.put(userId, session);
+
+            System.out.println("웹소켓 연결됨. userId: " + userId);
+        } else {
+            System.out.println("userId가 누락되었습니다.");
+            session.close();
+        }
     }
 
     @Override
@@ -34,18 +51,104 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception{
-        System.out.println("웹소켓 연결 종료" + session.getId());
-        sessions.remove(session.getId());
+        String query = session.getUri().getQuery();
+        String userId = getParameterFromQuery(query, "userId");
+        System.out.println("웹소켓 연결 종료" + userId);
+        sessions.remove(userId);
 
     }
 
-    private void sendChargingStatus(WebSocketSession session ) {
 
-
-    }
     private void startCharging(WebSocketSession session) {
 
+        new Thread(() -> {
+            try {
+                String query = session.getUri().getQuery();
+                String userId = getParameterFromQuery(query, "userId");
+                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, 1);
+                double totalBattery = dto.getModelBattery();
+                currentBatteryMap.put(userId, dto.getCarBattery());
 
+                double pay = dto.getPricePerKWh()/3600;
+                payMap.put(userId, pay);
+                double chargingSpeed = getChargingSpeed(dto.getChargerType());
+                double chargeAmount = chargingSpeed / 36000;
+                System.out.println(chargeAmount);
+                // 초기 배터리 상태를 가져오기 위한 서비스 호출
+
+                while(currentBatteryMap.get(userId)<totalBattery) {
+                    Thread.sleep(1000); // 1초 간격으로 실행.
+                    double newBattery = currentBatteryMap.get(userId) + chargeAmount;
+
+                        if(newBattery>= totalBattery){
+                            newBattery = totalBattery;
+                            // afterConnectionClosed(session);
+                        }
+                    currentBatteryMap.put(userId, newBattery);
+                    dto.setCarBattery(newBattery);
+
+
+                    double oneSecondPay = payMap.get(userId)+pay;
+                    payMap.put(userId,oneSecondPay);
+                    dto.setTotalPay(oneSecondPay);
+
+                    // 충전 상태를 클라이언트에 전송
+                    sendChargingStatus(session, userId, dto);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+
+
+    private void sendChargingStatus(WebSocketSession session ,String userId,ChargingStatusDTO dto ) {
+       try{
+           System.out.println("총 배터리 :"+dto.getModelBattery()); // 총 배터리
+           System.out.println("현재 배터리 : "+dto.getCarBattery()); // 현재 배터리
+           System.out.println(dto.getTotalPay());
+
+           int batteryPercent = (int) ((dto.getCarBattery()/dto.getModelBattery())*100); // 충전 퍼센트
+
+           System.out.println(batteryPercent+"%");
+
+           String status = String.format(String.valueOf(batteryPercent));
+           session.sendMessage(new TextMessage(status));
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+
+    }
+
+
+    private String getParameterFromQuery(String query, String key) {
+        if (query == null || query.isEmpty()) {
+            return null;
+        }
+        String[] params = query.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2 && keyValue[0].equals(key)) {
+                return keyValue[1];
+            }
+        }
+        return null;
+    }
+
+    private double getChargingSpeed(String chargerType) {
+        switch (chargerType) {
+            case "THREE_HUNDRED_PLUS_KW":
+                return 300.0;
+            case "TWO_HUNDRED_KW":
+                return 200.0;
+            case "ONE_HUNDRED_KW":
+                return 100.0;
+            case "'FIFTY_KW":
+                return 50.0;
+            default:
+                return 7.0;
+        }
     }
 
 }

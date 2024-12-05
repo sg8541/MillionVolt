@@ -21,4 +21,6 @@ public class ChargingStatusDTO {
     private String address;
     private double pricePerKWh;
     private String chargerType;
+
+    private double totalPay;
 }
