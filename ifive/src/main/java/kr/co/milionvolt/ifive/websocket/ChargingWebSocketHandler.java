@@ -39,7 +39,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
     }
 
-    private void sendChargingStatus(WebSocketSession session) {
+    private void sendChargingStatus(WebSocketSession session ) {
 
 
     }
