@@ -48,4 +48,45 @@ public interface ChargingStationMapper {
                           @Param("chagerType") ChargerDTO.ChagerType chagerType,
                           @Param("chargerStatus") ChargerDTO.ChargerStatus chargerStatus);
 
+    // 충전소 필터링 (속도, 상태)
+    @Select("<script>" +
+            "SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
+            "cs.charger_7kW_count, cs.charger_50kW_count, cs.charger_100kW_count," +
+            "cs.charger_200kW_count, cs.charger_300kW_plus_count, " +
+            "cs.charge_speed, cs.price_per_kwh, cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
+            "FROM charging_station cs " +
+            "JOIN charger c ON cs.station_id = c.station_id " +
+            "<where>" +
+            "<if test='chargeSpeed != null'> AND cs.charge_speed = #{chargeSpeed} </if>" +
+            "<if test='chargerStatus != null'> AND c.charger_status = #{chargerStatus} </if>" +
+            "</where>" +
+            "</script>")
+    List<ChargingStationVO> getChargingStationsByFilter(@Param("chargeSpeed") ChargingStationDTO.ChargeSpeed chargeSpeed,
+                                                        @Param("chargerStatus") ChargerDTO.ChargerStatus chargerStatus);
+
+
+    // 사용자 위치를 기준으로 충전소 목록 조회 (위도, 경도 기준)
+    @Select("<script>" +
+            "SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
+            "cs.charger_7kW_count, cs.charger_50kW_count, cs.charger_100kW_count," +
+            "cs.charger_200kW_count, cs.charger_300kW_plus_count, " +
+            "cs.charge_speed, cs.price_per_kwh, cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
+            "FROM charging_station cs " +
+            "JOIN charger c ON cs.station_id = c.station_id " +
+            "WHERE 1=1 " +
+            "<if test='chargeSpeed != null'> AND cs.charge_speed = #{chargeSpeed} </if>" +
+            "<if test='chargerStatus != null'> AND c.charger_status = #{chargerStatus} </if>" +
+            "<if test='latitude != null and longitude != null'>" +
+            " AND (ST_Distance_Sphere(point(cs.longitude, cs.latitude), point(#{longitude}, #{latitude})) <= 10000)" +  // 10km 내의 충전소 조회
+            "</if>" +
+            "</script>")
+    List<ChargingStationVO> getChargingStationsByLocation(@Param("latitude") double latitude,
+                                                          @Param("longitude") double longitude,
+                                                          @Param("chargeSpeed") String chargeSpeed,
+                                                          @Param("chargerStatus") String chargerStatus);
+
+    // 검색
+    @Select("SELECT * FROM charging_station WHERE name LIKE CONCAT('%', #{query}, '%')")
+    List<ChargingStationVO> searchChargingStations(@Param("query") String query);
+
 }

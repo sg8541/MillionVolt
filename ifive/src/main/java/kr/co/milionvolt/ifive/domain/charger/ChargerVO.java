@@ -1,20 +1,27 @@
 package kr.co.milionvolt.ifive.domain.charger;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChargerVO {
-    private final Integer chargerId;
-    private final ChargerDTO.ChagerType chagerType;
-    private final ChargerDTO.ChargerStatus chargerStatus;
+    private Integer chargerId;
+    private Integer stationId;
+    private ChagerType chagerType;
+    private ChargerStatus chargerStatus;
 
-    public ChargerVO(Integer chargerId, ChargerDTO.ChagerType chagerType, ChargerDTO.ChargerStatus chargerStatus) {
-        this.chargerId = chargerId;
-        this.chagerType = chagerType;
-        this.chargerStatus = chargerStatus;
+    public enum ChagerType {
+        SEVEN_KW,  // 7kW
+        FIFTY_KW,  // 50kW
+        ONE_HUNDRED_KW, // 100kW
+        TWO_HUNDRED_KW,  // 200kW
+        THREE_HUNDRED_PLUS_KW // 300kW+
     }
 
-    public String getChagerTypeDisplay() {
-        return chagerType.getDisplayValue();  // 출력 시 getDisplayValue() 사용
+    public enum ChargerStatus {
+        available, in_use, maintenance
     }
 }

@@ -35,4 +35,22 @@ public class ChargingStationServiceImpl implements ChargingStationService{
         int updatedRows = chargingStationMapper.updateChargerInfo(chargerId, chagerType, chargerStatus);
         return updatedRows > 0;
     }
+
+    // 충전소의 충전 속도와 충전기 상태에 따른 필터링
+    public List<ChargingStationVO> getChargingStationsByFilter(ChargingStationDTO.ChargeSpeed chargeSpeed, ChargerDTO.ChargerStatus chargerStatus) {
+        return chargingStationMapper.getChargingStationsByFilter(chargeSpeed, chargerStatus);
+    }
+
+    // 사용자 위치에 기반한 충전소 목록 반환
+    public List<ChargingStationVO> getChargingStationsByLocation(double latitude, double longitude,
+                                                                 String chargeSpeed, String chargerStatus) {
+        // 지리적 거리 계산 및 필터링 로직
+        return chargingStationMapper.getChargingStationsByLocation(latitude, longitude, chargeSpeed, chargerStatus);
+    }
+
+    // 검색
+    public List<ChargingStationVO> searchChargingStations(String query) {
+        return chargingStationMapper.searchChargingStations(query);  // 검색 쿼리 메서드
+    }
 }
+
