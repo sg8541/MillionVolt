@@ -1,9 +1,11 @@
 package kr.co.milionvolt.ifive.service;
 
-import kr.co.milionvolt.ifive.domain.ChargingStationDTO;
-import kr.co.milionvolt.ifive.domain.ChargingStationVO;
-import kr.co.milionvolt.ifive.domain.ChargerDTO;
+import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationDTO;
+import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationVO;
+import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.mapper.ChargingStationMapper;
+import kr.co.milionvolt.ifive.service.chargingstation.ChargingStationService;
+import kr.co.milionvolt.ifive.service.chargingstation.ChargingStationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
