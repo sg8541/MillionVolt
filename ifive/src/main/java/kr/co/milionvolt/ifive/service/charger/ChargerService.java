@@ -18,4 +18,6 @@ public interface ChargerService {
     // 충전기 상태 변경
     boolean updateChargerStatus(Integer chargerId, String status);
 
+    // 충전기 상태 필터링
+    List<ChargerVO> getChargersByStatus(ChargerDTO.ChargerStatus status);
 }

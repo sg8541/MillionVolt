@@ -1,11 +1,13 @@
 package kr.co.milionvolt.ifive.security;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -43,6 +45,15 @@ public class SecurityConfig {
     }
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                // 정적 자원은 시큐리티를 적용하지 말라 는 의미
+                // 정적자원 범위 : 이미지,css,js, .jar (html 은 없음)
+                .requestMatchers("templates/*.html", "/html/**");
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 // CORS 및 CSRF 설정
@@ -53,6 +64,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/uploads/**").permitAll() // 이미지 파일에 대한 접근 허용
                         .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**", "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/home/**", "/api/v1/search/**", "/api/v1/email/**","/api/v1/findId/**","/api/v1/findPwd/**","/api/v1/resetPwd/**", "/api/v1/payment/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
+                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**", "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/home/**", "/api/v1/search/**", "/main/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // 'ADMIN' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 );

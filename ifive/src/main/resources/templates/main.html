@@ -183,6 +183,17 @@
         }
     </style>
 </head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전기차 충전소 지도</title>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9cc35d8f9e7435ff9fe2a4eb25f11087"></script>
+    <style>
+        /* 기존 스타일 유지 */
+    </style>
+</head>
 <body>
 <!-- 상단(Header) -->
 <header id="header">
@@ -195,6 +206,7 @@
         <a href="#">로그아웃</a>
     </nav>
 </header>
+
 <!-- 충전속도 카테고리 -->
 <div class="dropdown">
     <button class="dropdown-toggle">충전속도</button>
@@ -227,39 +239,34 @@
         <div id="myplace">
             <h2 id="mycharge">내 주변 충전소</h2>
             <ul id="stationList">
-                <li id="chargerStation">
-                    충전소 이름<br>
-                    사용가능한 충전기 개수<br>
-                    충전 속도 | 충전 요금
+                <!-- 타임리프를 사용하여 충전소 목록 출력 -->
+                <li th:each="station : ${chargingStations}" id="chargerStation">
+                    <span th:text="${station.name}">충전소 이름</span><br>
+                    <span th:text="${station.chargers.size()}">충전기 개수</span><br>
+                    <span th:text="${station.chargeSpeed}">충전 속도</span> |
+                    <span th:text="${station.chargeRate}">충전 요금</span>
                 </li>
-                <!-- 주변 충전소 목록 -->
             </ul>
         </div>
-        <!--<h3>선택된 충전소</h3>-->
         <div id="selectedStation">
             <!-- 선택된 충전소 정보 -->
         </div>
     </div>
 </div>
+
 <div id="modalOverlay" class="overlay"></div>
 <div id="modal" class="modal">
     <span class="close" onclick="closeModal()">×</span>
     <h2>충전소 정보</h2>
     <div id="modalContent" class="modal-content">
-        <!-- 긴 내용이 여기에 표시됩니다 -->
+        <!-- 충전소 정보 목록 -->
         <ul>
-            <li>충전기 1: 충전 중</li>
-            <li>충전기 2: 사용 가능</li>
-            <li>충전기 3: 고장</li>
-            <li>충전기 4: 충전 중</li>
-            <li>충전기 5: 사용 가능</li>
-            <li>충전기 6: 충전 중</li>
-            <li>충전기 7: 사용 가능</li>
-            <!-- 더 많은 항목들 -->
+            <li th:each="charger : ${selectedStation.chargers}">
+                <span th:text="'충전기 ' + ${charger.id} + ': ' + ${charger.status}">충전기 상태</span>
+            </li>
         </ul>
     </div>
 </div>
-
 
 <script>
     // 카카오 맵 초기화
@@ -270,22 +277,8 @@
     };
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    // 충전소 데이터 예제
-    var chargingStations = [
-        {
-            id: 1, name: "충전소 A", lat: 37.5665, lng: 126.9780,
-            chargers: [
-                { id: 1, status: "충전중" },
-                { id: 2, status: "충전가능" }
-            ]
-        },
-        {
-            id: 2, name: "충전소 B", lat: 37.5700, lng: 126.9820,
-            chargers: [
-                { id: 1, status: "고장" }
-            ]
-        }
-    ];
+    // 충전소 데이터 예제 (타임리프는 서버에서 이 데이터를 처리)
+    var chargingStations = [[${chargingStations}]];  // 타임리프를 통해 서버에서 전달된 데이터를 받아옴
 
     // 마커 생성 및 클릭 이벤트
     chargingStations.forEach(function(station) {
@@ -346,27 +339,27 @@
         document.querySelectorAll('.option').forEach(option => {
             option.classList.remove('active');
         });
-        document.getElementById('fast-charge').checked = false;
     });
 
     // 적용하기 버튼
     document.getElementById('apply').addEventListener('click', () => {
         const selectedOptions = Array.from(document.querySelectorAll('.option.active'))
             .map(option => option.textContent.trim());
-        const isFastCharge = document.getElementById('fast-charge').checked;
 
         console.log('Selected Options:', selectedOptions);
-        console.log('Fast Charge Only:', isFastCharge);
     });
 
-    document.addEventListener('click', function (event) {
-        const dropdown = document.querySelector('.dropdown');
-        if (!dropdown.contains(event.target)) {
-            document.querySelector('.dropdown-menu').classList.remove('show');
-        }
+    // 필터 적용하기 버튼 이벤트
+    document.getElementById('apply').addEventListener('click', () => {
+        const selectedOptions = Array.from(document.querySelectorAll('.option.active'))
+            .map(option => option.textContent.trim());
+
+        const chargeSpeed = selectedOptions.length ? selectedOptions[0] : null; // 첫 번째 옵션
+        const chargerStatus = selectedOptions.length > 1 ? selectedOptions[1] : null; // 두 번째 옵션
+
+        // 필터 적용을 위한 URL로 이동
+        window.location.href = `/charging/filter?chargeSpeed=${chargeSpeed}&chargerStatus=${chargerStatus}`;
     });
-
-
 </script>
 </body>
 </html>

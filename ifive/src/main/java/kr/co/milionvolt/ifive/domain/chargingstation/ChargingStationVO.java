@@ -1,13 +1,16 @@
 package kr.co.milionvolt.ifive.domain.chargingstation;
 
-import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 
-// ChargerDTO 추가
+
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChargingStationVO {
     private Integer stationId;
     private String name;
@@ -19,32 +22,25 @@ public class ChargingStationVO {
     private Integer charger_100kW_count;
     private Integer charger_200kW_count;
     private Integer charger_300kW_plus_count;
-    private ChargingStationDTO.ChargeSpeed chargeSpeed;
+    private ChargeSpeed chargeSpeed;
     private BigDecimal pricePerKWh;
     private String filePath;
-    private ChargerDTO.ChagerType chagerType;
-    private ChargerDTO.ChargerStatus chargerStatus;
+    private ChagerType chagerType;
+    private ChargerStatus chargerStatus;
 
-    public ChargingStationVO(Integer stationId, String name, String address,
-                             Integer totalCharger, Integer availableCharger,
-                             Integer charger_7kW_count, Integer charger_50kW_count, Integer charger_100kW_count, Integer charger_200kW_count, Integer charger_300kW_plus_count,
-                             ChargingStationDTO.ChargeSpeed chargeSpeed,
-                             BigDecimal pricePerKWh, String filePath,
-                             ChargerDTO.ChagerType chagerType, ChargerDTO.ChargerStatus chargerStatus) {
-        this.stationId = stationId;
-        this.name = name;
-        this.address = address;
-        this.totalCharger = totalCharger;
-        this.availableCharger = availableCharger;
-        this.charger_7kW_count = charger_7kW_count;
-        this.charger_50kW_count = charger_50kW_count;
-        this.charger_100kW_count = charger_100kW_count;
-        this.charger_200kW_count = charger_200kW_count;
-        this.charger_300kW_plus_count = charger_300kW_plus_count;
-        this.chargeSpeed = chargeSpeed;
-        this.pricePerKWh = pricePerKWh;
-        this.filePath = filePath;
-        this.chagerType = chagerType;
-        this.chargerStatus = chargerStatus;
+    public enum ChargeSpeed {
+        slow, medium, fast, super_fast
+    }
+
+    public enum ChagerType {
+        SEVEN_KW,  // 7kW
+        FIFTY_KW,  // 50kW
+        ONE_HUNDRED_KW, // 100kW
+        TWO_HUNDRED_KW,  // 200kW
+        THREE_HUNDRED_PLUS_KW // 300kW+
+    }
+
+    public enum ChargerStatus {
+        available, in_use, maintenance
     }
 }
