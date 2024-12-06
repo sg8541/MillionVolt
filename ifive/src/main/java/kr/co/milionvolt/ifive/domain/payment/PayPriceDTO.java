@@ -1,8 +1,7 @@
-package kr.co.milionvolt.ifive.dto;
+package kr.co.milionvolt.ifive.domain.payment;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
 
@@ -20,4 +19,5 @@ public class PayPriceDTO {
     private LocalDateTime updatedAt;  // Change from updated_at to updatedAt
     private LocalDateTime chargeStart; // Change from charge_start to chargeStart
     private LocalDateTime chargeEnd;   // Change from charge_end to chargeEnd
+    private String impUid;
 }
