@@ -14,7 +14,7 @@ public class ChargingStatusMapperTest {
     public void test(){
         String userId = "wogjsdl1244";
         int reservationId = 1;
-        ChargingStatusDTO dto =  chargingStatusMapper.ChargingStatus(userId,reservationId);
+        ChargingStatusDTO dto =  chargingStatusMapper.chargingStatus(userId,reservationId);
         System.out.println(dto);
 
     }

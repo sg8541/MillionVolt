@@ -47,6 +47,8 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
         if ("start".equals(payload)) {
             startCharging(session);
+        } else if ("stop".equals(payload)) {
+          //  stopCharging(session);
         }
     }
 
@@ -55,7 +57,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
         String query = session.getUri().getQuery();
         String userId = getParameterFromQuery(query, "userId");
         System.out.println("웹소켓 연결 종료" + userId);
-        sessions.remove(userId);
+         sessions.remove(userId);// 세션 유지 무조건 종료를 눌렀을때만 종료.
 
     }
 
@@ -86,14 +88,19 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
                         if(currentBattery>= totalBattery){
                             currentBattery = totalBattery;
+
+
                             // afterConnectionClosed(session);
                         }
                     currentBatteryMap.put(userId, currentBattery);
                     dto.setCarBattery(currentBattery);
-                    System.out.println("2: "+currentBattery);
+
 
 
                     double totalPay = (payMap.get(userId)+pay);
+
+                    System.out.println("확인 : ㅇㅇ "+payMap.get(userId));
+
                     payMap.put(userId,totalPay);
                     dto.setTotalPay(totalPay);
 
@@ -112,21 +119,47 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
        try{
            System.out.println("총 배터리 :"+dto.getModelBattery()); // 총 배터리
            System.out.println("현재 배터리 : "+dto.getCarBattery()); // 현재 배터리
-           
-           double pay =  (dto.getTotalPay()*(dto.getCarBattery()-originCurrentBattery)); // 충전중인 요금
-           System.out.println(pay+"원");
+           System.out.println(dto.getCarBattery());
+
+           double chargingKwh = dto.getCarBattery()-originCurrentBattery;
+           double amount =  (dto.getTotalPay()*(chargingKwh)); // 충전중인 요금
+           System.out.println(amount+"원");
            
            int batteryPercent = (int) ((dto.getCarBattery()/dto.getModelBattery())*100); // 충전 퍼센트
 
            System.out.println(batteryPercent+"%");
 
-           String status = String.format("{\"batteryPercent\": %d, \"pay\": %.2f}", batteryPercent, pay);
+           String status = String.format(
+                   "{\"batteryPercent\": %d, \"amount\": %.2f, \"chargingKwh\": %.2f, " +
+                           "\"chargerType\": \"%s\", \"name\": \"%s\", \"address\": \"%s\", \"userId\": %s, \"username\": \"%s\", " +
+                           "\"modelId\": %d, \"reservationId\": %d, \"stationId\": %d}",
+                   batteryPercent, amount, chargingKwh,
+                   dto.getChargerType(), dto.getName(), dto.getAddress(), dto.getId(),
+                   dto.getUsername(), dto.getModelId(), dto.getReservationId(), dto.getStationId());
            session.sendMessage(new TextMessage(status));
        }catch (Exception e){
            e.printStackTrace();
        }
 
     }
+
+
+
+//
+//    private void stopCharging(WebSocketSession session) {
+//        try {
+//            String query = session.getUri().getQuery();
+//            String userId = getParameterFromQuery(query, "userId");
+//
+//            if (userId != null && sessions.containsKey(userId)) {
+//                sessions.remove(userId);
+//                session.close();
+//                System.out.println("웹소켓 연결 종료됨: " + userId);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     private String getParameterFromQuery(String query, String key) {
@@ -145,17 +178,18 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
     private double getChargingSpeed(String chargerType) {
         switch (chargerType) {
-            case "THREE_HUNDRED_PLUS_KW":
+            case "300kw":
                 return 300.0;
-            case "TWO_HUNDRED_KW":
+            case "200kw":
                 return 200.0;
-            case "ONE_HUNDRED_KW":
+            case "100kw":
                 return 100.0;
-            case "'FIFTY_KW":
+            case "50kw":
                 return 50.0;
             default:
                 return 7.0;
         }
     }
+
 
 }

@@ -14,7 +14,7 @@ public class ChargingStatusServiceImpl implements ChargingStatusSerivce{
 
     @Override
     public ChargingStatusDTO chargingStatus(String userId, int reservationId) {
-        ChargingStatusDTO dto =  chargingStatusMapper.ChargingStatus(userId,reservationId);
+        ChargingStatusDTO dto =  chargingStatusMapper.chargingStatus(userId,reservationId);
         return dto;
     }
 }

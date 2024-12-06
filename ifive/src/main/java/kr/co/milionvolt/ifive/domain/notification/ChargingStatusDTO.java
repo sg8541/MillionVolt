@@ -10,12 +10,15 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @ToString
 public class ChargingStatusDTO {
-    private String email;
+    private String id;
+    private String userId;
     private String username;
+    private Integer modelId;
     private double carBattery;
+    private Integer reservationId;
     private double modelBattery;
     private Timestamp startTime;
-    private Timestamp enTimestamp;
+    private Timestamp endTime;
     private Integer stationId;
     private String name;
     private String address;
