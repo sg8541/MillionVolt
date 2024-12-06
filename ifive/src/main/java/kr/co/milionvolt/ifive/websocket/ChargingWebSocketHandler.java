@@ -17,6 +17,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
     private final ConcurrentHashMap<String, Double> payMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Double> currentBatteryMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    double originCurrentBattery;
 
     private final ChargingStatusSerivce chargingStatusSerivce;
 
@@ -67,30 +68,34 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 String userId = getParameterFromQuery(query, "userId");
                 ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, 1);
                 double totalBattery = dto.getModelBattery();
-                currentBatteryMap.put(userId, dto.getCarBattery());
+                double currentBattery = dto.getCarBattery(); // 현재 배터리 상태
+                originCurrentBattery =dto.getCarBattery(); // 초기 현재 배터리 상태
+                currentBatteryMap.put(userId, currentBattery);
+                System.out.println("1 : "+currentBattery);
 
                 double pay = dto.getPricePerKWh()/3600;
                 payMap.put(userId, pay);
-                double chargingSpeed = getChargingSpeed(dto.getChargerType());
-                double chargeAmount = chargingSpeed / 36000;
-                System.out.println(chargeAmount);
+                double chargingSpeed = getChargingSpeed(dto.getChargerType()); // 몇 kw인지 구분.
+                double chargeAmount = chargingSpeed / 3600; // 초당 충전량
                 // 초기 배터리 상태를 가져오기 위한 서비스 호출
 
-                while(currentBatteryMap.get(userId)<totalBattery) {
+                while(currentBattery<totalBattery) {
                     Thread.sleep(1000); // 1초 간격으로 실행.
-                    double newBattery = currentBatteryMap.get(userId) + chargeAmount;
+                    currentBattery += chargeAmount; // chargeAmount에 시간을 곱해야함.
 
-                        if(newBattery>= totalBattery){
-                            newBattery = totalBattery;
+
+                        if(currentBattery>= totalBattery){
+                            currentBattery = totalBattery;
                             // afterConnectionClosed(session);
                         }
-                    currentBatteryMap.put(userId, newBattery);
-                    dto.setCarBattery(newBattery);
+                    currentBatteryMap.put(userId, currentBattery);
+                    dto.setCarBattery(currentBattery);
+                    System.out.println("2: "+currentBattery);
 
 
-                    double oneSecondPay = payMap.get(userId)+pay;
-                    payMap.put(userId,oneSecondPay);
-                    dto.setTotalPay(oneSecondPay);
+                    double totalPay = (payMap.get(userId)+pay);
+                    payMap.put(userId,totalPay);
+                    dto.setTotalPay(totalPay);
 
                     // 충전 상태를 클라이언트에 전송
                     sendChargingStatus(session, userId, dto);
@@ -107,13 +112,15 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
        try{
            System.out.println("총 배터리 :"+dto.getModelBattery()); // 총 배터리
            System.out.println("현재 배터리 : "+dto.getCarBattery()); // 현재 배터리
-           System.out.println(dto.getTotalPay());
-
+           
+           double pay =  (dto.getTotalPay()*(dto.getCarBattery()-originCurrentBattery)); // 충전중인 요금
+           System.out.println(pay+"원");
+           
            int batteryPercent = (int) ((dto.getCarBattery()/dto.getModelBattery())*100); // 충전 퍼센트
 
            System.out.println(batteryPercent+"%");
 
-           String status = String.format(String.valueOf(batteryPercent));
+           String status = String.format("{\"batteryPercent\": %d, \"pay\": %.2f}", batteryPercent, pay);
            session.sendMessage(new TextMessage(status));
        }catch (Exception e){
            e.printStackTrace();
