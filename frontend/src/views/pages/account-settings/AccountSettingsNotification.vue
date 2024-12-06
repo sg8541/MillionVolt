@@ -126,7 +126,6 @@ const chagerType = ref()
               id="chager_type"
               v-model="chagerType"
               :items="powerTypes"
-              label="선호 전력 타입"
               placeholder="선택하세요"
               outlined
               persistent-placeholder
