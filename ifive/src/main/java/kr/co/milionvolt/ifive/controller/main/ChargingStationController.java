@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.controller.user;
+package kr.co.milionvolt.ifive.controller.main;
 
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
