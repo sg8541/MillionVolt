@@ -52,7 +52,7 @@ public class SecurityConfig {
                 // 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/uploads/**").permitAll() // 이미지 파일에 대한 접근 허용
-                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**", "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/home/**", "/api/v1/search/**", "/api/v1/email/**","/api/v1/findId/**","/api/v1/findPwd/**","/api/v1/resetPwd/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
+                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**", "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/home/**", "/api/v1/search/**", "/api/v1/email/**","/api/v1/findId/**","/api/v1/findPwd/**","/api/v1/resetPwd/**", "/api/v1/payment/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // 'ADMIN' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 );
