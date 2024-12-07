@@ -34,4 +34,8 @@ public class ChargerServiceImpl implements ChargerService{
         return result > 0; // 0보다 크면 상태가 변경된 것
     }
 
+    // 충전기 상태 필터링
+    public List<ChargerVO> getChargersByStatus(ChargerDTO.ChargerStatus status) {
+        return chargerMapper.getChargersByStatus(status);
+    }
 }
