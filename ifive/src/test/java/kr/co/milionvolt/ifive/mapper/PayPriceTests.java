@@ -1,7 +1,6 @@
-package kr.co.milionvolt.ifive;
+package kr.co.milionvolt.ifive.mapper;
 
 import kr.co.milionvolt.ifive.domain.payment.PayPriceDTO;
-import kr.co.milionvolt.ifive.mapper.PayPriceMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
