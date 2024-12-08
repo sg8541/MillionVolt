@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 public interface ChargingStatusSerivce {
     public ChargingStatusDTO chargingStatus(String userId, int reservationId);
     public void chargingUpdate(int carId, double carBattery);
+    public void chargingStatusInuse(int chargerId, int stationId);
 }

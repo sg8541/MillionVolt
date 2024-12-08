@@ -13,6 +13,7 @@
             <div class="img-container">
                 <img class="img-loading" src="/images/Spinner.gif" alt="Charging Progress">
                 <div class="overlay">
+                    <img class="thunder" src="/images/thunder.png">
                     <span class="battery-percent">{{ store.chargingData.batteryPercent }}%</span>
                     <span class="charging-kwh">{{ store.chargingData.chargingKwh }} kWh</span>
                 </div>
@@ -157,11 +158,27 @@ watchEffect(() => {
 </script>
 
 <style scoped>
+
+@font-face {
+    font-family: 'NoonnuBasicGothicRegular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noon-2410@1.0/NoonnuBasicGothicRegular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'NoonnuBasicGothicRegular';
+}
 .logo img  {
     position: absolute;
     top: 5px;
     left: 5px;
     width: 150px; /* 로고 크기 조절 */
+}
+
+.thunder{
+    width: 30px;
+    margin-bottom: 6px;
 }
 
 

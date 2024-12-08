@@ -24,6 +24,7 @@ public class ChargingStatusDTO {
     private Integer stationId;
     private String name;
     private String address;
+    private Integer chargerId;
     private double pricePerKWh;
     private String chargerType;
 

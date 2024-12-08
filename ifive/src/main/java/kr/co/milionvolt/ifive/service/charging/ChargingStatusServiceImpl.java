@@ -23,4 +23,9 @@ public class ChargingStatusServiceImpl implements ChargingStatusSerivce{
     public void chargingUpdate(int carId, double carBattery) {
         chargingStatusMapper.chargingUpdate(carId,carBattery);
     }
+
+    @Override
+    public void chargingStatusInuse(int chargerId, int stationId) {
+        chargingStatusMapper.chargingStatusInuse(chargerId,stationId);
+    }
 }
