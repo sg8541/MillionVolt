@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.mapper;
 
-import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListDTO;
+import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -67,5 +67,5 @@ public interface UserMapper {
             "left join user " +
             "using (user_id) " +
             "where user_id = #{userId}")
-    List<UserInfoReservationListDTO> findByUserReservation(@Param("userId") Integer id);
+    List<UserInfoReservationListVO> findByUserReservation(@Param("userId") Integer id);
 }

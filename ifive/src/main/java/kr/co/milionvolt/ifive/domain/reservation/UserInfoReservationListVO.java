@@ -3,11 +3,10 @@ package kr.co.milionvolt.ifive.domain.reservation;
 import lombok.*;
 
 @Getter
-@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoReservationListDTO {
+public class UserInfoReservationListVO {
   private Integer reservationId;
   private java.sql.Timestamp startTime;
   private java.sql.Timestamp endTime;

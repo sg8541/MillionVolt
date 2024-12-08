@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.controller.user;
 
-import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListDTO;
+import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -84,10 +84,11 @@ public class UserInfoController {
     @GetMapping("/reservation/{id}")
     public ResponseEntity<?> getReservationList(@PathVariable Integer id) {
 
-        List<UserInfoReservationListDTO> reservationListDTO = userService.getUserReservationList(id);
+        List<UserInfoReservationListVO> reservationListDTO = userService.getUserReservationList(id);
         log.info(reservationListDTO.toString());
         return ResponseEntity.status(HttpStatus.OK).body(reservationListDTO);
     }
-    
+
+
 
 }

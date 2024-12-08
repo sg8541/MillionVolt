@@ -1,6 +1,6 @@
 package kr.co.milionvolt.ifive.service.user;
 
-import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListDTO;
+import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserInfoReservationListDTO> getUserReservationList(Integer id) {
-        List<UserInfoReservationListDTO> reservationListDTO = userMapper.findByUserReservation(id);
+    public List<UserInfoReservationListVO> getUserReservationList(Integer id) {
+        List<UserInfoReservationListVO> reservationListDTO = userMapper.findByUserReservation(id);
         return reservationListDTO;
     }
 
