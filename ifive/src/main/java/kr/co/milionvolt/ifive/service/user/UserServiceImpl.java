@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.service.user;
 
+import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
@@ -83,10 +84,18 @@ public class UserServiceImpl implements UserService {
         return success;
     }
 
+    // 유저의 예약 내역 리스트
     @Override
     public List<UserInfoReservationListVO> getUserReservationList(Integer id) {
-        List<UserInfoReservationListVO> reservationListDTO = userMapper.findByUserReservation(id);
+        List<UserInfoReservationListVO> reservationListDTO = userMapper.findByUserReservationList(id);
         return reservationListDTO;
+    }
+
+    // 유저의 결제 내역 리스트
+    @Override
+    public List<UserInfoPaymentListVO> getUserPaymentList(Integer id) {
+        List<UserInfoPaymentListVO> paymentListVO = userMapper.findByUserPaymentList(id);
+        return paymentListVO;
     }
 
 

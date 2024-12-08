@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.service.user;
 
+import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
@@ -25,6 +26,8 @@ public interface UserService {
     boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO);
     // 유저 배터리 + 선호 타입 업데이트
     boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO);
-    // 유저의 예약리스트
+    // 유저의 예약 내역
     List<UserInfoReservationListVO> getUserReservationList(Integer id);
+    // 유저의 결제 내역
+    List<UserInfoPaymentListVO> getUserPaymentList(Integer id);
 }

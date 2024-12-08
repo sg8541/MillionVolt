@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.controller.user;
 
+import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
@@ -87,6 +88,15 @@ public class UserInfoController {
         List<UserInfoReservationListVO> reservationListDTO = userService.getUserReservationList(id);
         log.info(reservationListDTO.toString());
         return ResponseEntity.status(HttpStatus.OK).body(reservationListDTO);
+    }
+
+    // 결제 리스트 조회
+    @GetMapping("/payment/{id}")
+    public ResponseEntity<?> getPaymentList(@PathVariable Integer id) {
+
+        List<UserInfoPaymentListVO> paymentListDTO = userService.getUserPaymentList(id);
+        log.info(paymentListDTO.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(paymentListDTO);
     }
 
 

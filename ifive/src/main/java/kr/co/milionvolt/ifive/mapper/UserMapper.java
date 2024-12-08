@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.mapper;
 
+import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
@@ -67,5 +68,14 @@ public interface UserMapper {
             "left join user " +
             "using (user_id) " +
             "where user_id = #{userId}")
-    List<UserInfoReservationListVO> findByUserReservation(@Param("userId") Integer id);
+    List<UserInfoReservationListVO> findByUserReservationList(@Param("userId") Integer id);
+
+    // 유저의 결제 내역 리스트
+    @Select("select payment_id, amount, payment_method, payment_status, p.created_at, " +
+            "       charge_start, charge_end, c.address " +
+            "from payment p " +
+            "join charging_station c " +
+            "using (station_id) " +
+            "where user_id = #{userId}")
+    List<UserInfoPaymentListVO> findByUserPaymentList(@Param("userId") Integer id);
 }
