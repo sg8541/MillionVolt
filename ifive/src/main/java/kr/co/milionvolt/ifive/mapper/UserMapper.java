@@ -2,8 +2,9 @@ package kr.co.milionvolt.ifive.mapper;
 
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
+import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
 import kr.co.milionvolt.ifive.domain.usercar.UserCarInfoDTO;
-import lombok.Value;
+import kr.co.milionvolt.ifive.domain.usercar.CarNumberAndModelUpdateDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -44,4 +45,16 @@ public interface UserMapper {
             "using (model_id) " +
             "where user_car.car_id = #{carId}")
     UserCarInfoDTO findByUserCar(@Param("carId") Integer id);
+
+    // 유저의 차 번호 + 차 모델 변경
+    @Update("update user_car " +
+            "set car_number = #{carNumber}, model_id = #{modelId} " +
+            "where car_id = #{carId}")
+    boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO);
+
+    // 유저의 차 배터리 + 선호 충전 타입 변경
+    @Update("update user_car " +
+            "set car_battery = #{carBattery}, charger_type_id = #{chargerTypeId} " +
+            "where car_id = #{carId}")
+    boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO);
 }

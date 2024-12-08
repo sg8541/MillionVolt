@@ -2,7 +2,9 @@ package kr.co.milionvolt.ifive.service.user;
 
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
+import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
 import kr.co.milionvolt.ifive.domain.usercar.UserCarInfoDTO;
+import kr.co.milionvolt.ifive.domain.usercar.CarNumberAndModelUpdateDTO;
 import kr.co.milionvolt.ifive.mapper.UserMapper;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
 import lombok.RequiredArgsConstructor;
@@ -61,10 +63,23 @@ public class UserServiceImpl implements UserService {
         return findPasswordResult;
     }
 
+    // 차 정보 조회
     @Override
     public UserCarInfoDTO userCarInfo(Integer id) {
         UserCarInfoDTO carInfoDTO = userMapper.findByUserCar(id);
         return carInfoDTO;
+    }
+    // 차 번호 + 차 모델 변경
+    @Override
+    public boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO) {
+        boolean success = userMapper.updateUserCarNumberAndCarModel(carNumberDTO);
+        return success;
+    }
+    // 차 배터리 + 선호 충전 타입 변경
+    @Override
+    public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO) {
+        boolean success = userMapper.updateUserCarBatteryAndChargerType(updateDTO);
+        return success;
     }
 
 
