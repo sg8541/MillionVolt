@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.controller.user;
 
+import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListDTO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -75,5 +78,16 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("정보 수정 중 문제가 발생하였습니다.");
         }
     }
+
+
+    // 예약 리스트 조회
+    @GetMapping("/reservation/{id}")
+    public ResponseEntity<?> getReservationList(@PathVariable Integer id) {
+
+        List<UserInfoReservationListDTO> reservationListDTO = userService.getUserReservationList(id);
+        log.info(reservationListDTO.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(reservationListDTO);
+    }
+    
 
 }

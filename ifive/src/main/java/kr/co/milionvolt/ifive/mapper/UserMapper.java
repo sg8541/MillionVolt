@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.mapper;
 
+import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -57,4 +58,14 @@ public interface UserMapper {
             "set car_battery = #{carBattery}, charger_type_id = #{chargerTypeId} " +
             "where car_id = #{carId}")
     boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO);
+
+    // 유저의 예약 내역 리스트
+    @Select("select reservation_id, start_time, end_time, status, r.created_at, charger_id, c.address " +
+            "from reservation r " +
+            "join charging_station c " +
+            "using (station_id) " +
+            "left join user " +
+            "using (user_id) " +
+            "where user_id = #{userId}")
+    List<UserInfoReservationListDTO> findByUserReservation(@Param("userId") Integer id);
 }
