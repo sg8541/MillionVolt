@@ -67,7 +67,8 @@ public interface UserMapper {
             "using (station_id) " +
             "left join user " +
             "using (user_id) " +
-            "where user_id = #{userId}")
+            "where user_id = #{userId}" +
+            "order by r.created_at desc")
     List<UserInfoReservationListVO> findByUserReservationList(@Param("userId") Integer id);
 
     // 유저의 결제 내역 리스트
@@ -76,6 +77,7 @@ public interface UserMapper {
             "from payment p " +
             "join charging_station c " +
             "using (station_id) " +
-            "where user_id = #{userId}")
+            "where user_id = #{userId} " +
+            "order by p.created_at desc")
     List<UserInfoPaymentListVO> findByUserPaymentList(@Param("userId") Integer id);
 }
