@@ -3,6 +3,7 @@ package kr.co.milionvolt.ifive.service.user;
 import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
+import kr.co.milionvolt.ifive.domain.user.UserDashboradUserCarDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
 import kr.co.milionvolt.ifive.domain.usercar.UserCarInfoDTO;
@@ -95,6 +96,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserInfoPaymentListVO> getUserPaymentList(Integer id) {
         List<UserInfoPaymentListVO> paymentListVO = userMapper.findByUserPaymentList(id);
+        return paymentListVO;
+    }
+
+    // 유저 대시보드 유저 이름 + 차 정보
+    @Override
+    public UserDashboradUserCarDTO getDashboardUserCarInfo(Integer id) {
+        UserDashboradUserCarDTO dashboradUserCarDTO = userMapper.findByUserCarAndCarModel(id);
+        return dashboradUserCarDTO;
+    }
+
+    // 유저 대시보드 예약 리스트 최대 5개
+    @Override
+    public List<UserInfoReservationListVO> getDashboardReservations(Integer id) {
+        List<UserInfoReservationListVO> reservationListDTO = userMapper.getDashboardReservations(id);
+        return reservationListDTO;
+    }
+
+    // 유저 대시보드 결제 리스트 최대 5개
+    @Override
+    public List<UserInfoPaymentListVO> getDashboardPayments(Integer id) {
+        List<UserInfoPaymentListVO> paymentListVO = userMapper.getDashboardPayments(id);
         return paymentListVO;
     }
 

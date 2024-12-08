@@ -2,6 +2,7 @@ package kr.co.milionvolt.ifive.mapper;
 
 import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
+import kr.co.milionvolt.ifive.domain.user.UserDashboradUserCarDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -80,4 +81,41 @@ public interface UserMapper {
             "where user_id = #{userId} " +
             "order by p.created_at desc")
     List<UserInfoPaymentListVO> findByUserPaymentList(@Param("userId") Integer id);
+
+    // 대시보드 유저 + 유저 차 정보 + 차 모델 + 선호 충전 타입
+    @Select("select username, " +
+            "       car_battery,  " +
+            "       model_name, model_battery, model_filepath, " +
+            "       charger_type " +
+            "from user_car " +
+            "JOIN user u ON car_id = u.id " +
+            "join car_model " +
+            "using (model_id) " +
+            "join charger_type " +
+            "using (charger_type_id) " +
+            "where car_id = #{carId}")
+    UserDashboradUserCarDTO findByUserCarAndCarModel(@Param("carId") Integer id);
+
+    // 대시보드 예약리스트 최대 5개 불러옴
+    @Select("select reservation_id, start_time, end_time, status, r.created_at, charger_id, c.address " +
+            "from reservation r " +
+            "join charging_station c " +
+            "using (station_id) " +
+            "left join user " +
+            "using (user_id) " +
+            "where user_id = #{userId} " +
+            "order by r.created_at desc " +
+            "limit 5")
+    List<UserInfoReservationListVO> getDashboardReservations(Integer id);
+
+    // 유저의 대시보드 결제 내역 리스트
+    @Select("select payment_id, amount, payment_method, payment_status, p.created_at, " +
+            "       charge_start, charge_end, c.address " +
+            "from payment p " +
+            "join charging_station c " +
+            "using (station_id) " +
+            "where user_id = #{userId} " +
+            "order by p.created_at desc " +
+            "limit 5")
+    List<UserInfoPaymentListVO> getDashboardPayments(Integer id);
 }

@@ -1,10 +1,11 @@
 package kr.co.milionvolt.ifive.controller.user;
 
-import ch.qos.logback.core.joran.action.Action;
 import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
+import kr.co.milionvolt.ifive.domain.user.UserDashboradUserCarDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
+import kr.co.milionvolt.ifive.domain.userInfo.DashboardResponseDTO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
 import kr.co.milionvolt.ifive.domain.usercar.UserCarInfoDTO;
 import kr.co.milionvolt.ifive.domain.usercar.CarNumberAndModelUpdateDTO;
@@ -24,6 +25,8 @@ import java.util.List;
 public class UserInfoController {
 
     private final UserService userService;
+    private final int PAYMENT_LIST_NO_DATA = 0;
+    private final int RESERVATION_LIST_NO_DATA = 0;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> userInfo(@PathVariable Integer id) {
@@ -85,7 +88,6 @@ public class UserInfoController {
     // 예약 리스트 조회
     @GetMapping("/reservation/{id}")
     public ResponseEntity<?> getReservationList(@PathVariable Integer id) {
-        final int RESERVATION_LIST_NO_DATA = 0;
         List<UserInfoReservationListVO> reservationListDTO = userService.getUserReservationList(id);
         log.info(reservationListDTO.toString());
         if(RESERVATION_LIST_NO_DATA == reservationListDTO.size()) {
@@ -97,13 +99,26 @@ public class UserInfoController {
     // 결제 리스트 조회
     @GetMapping("/payment/{id}")
     public ResponseEntity<?> getPaymentList(@PathVariable Integer id) {
-        final int PAYMENT_LIST_NO_DATA = 0;
         List<UserInfoPaymentListVO> paymentListDTO = userService.getUserPaymentList(id);
         log.info(paymentListDTO.toString());
         if(PAYMENT_LIST_NO_DATA == paymentListDTO.size()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("결제 내역이 존재하지 않습니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(paymentListDTO);
+    }
+
+    // 대시보드 (유저 이름 + 차 정보 + 예약 및 결제내역) 추신 : 충전량 차트 정보 못 불러옴
+    @GetMapping("/dashboard/{id}")
+    public ResponseEntity<?> getDashborad(@PathVariable Integer id) {
+        UserDashboradUserCarDTO dashboradUserCarDTO = userService.getDashboardUserCarInfo(id);
+        List<UserInfoReservationListVO> reservationListDTO = userService.getDashboardReservations(id);
+        List<UserInfoPaymentListVO> paymentListDTO = userService.getDashboardPayments(id);
+
+        DashboardResponseDTO dashboardResponseDTO = new DashboardResponseDTO();
+        dashboardResponseDTO.setUserCarInfo(dashboradUserCarDTO);
+        dashboardResponseDTO.setReservationList(reservationListDTO);
+        dashboardResponseDTO.setPaymentList(paymentListDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(dashboardResponseDTO);
     }
 
 

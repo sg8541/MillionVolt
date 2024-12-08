@@ -3,6 +3,7 @@ package kr.co.milionvolt.ifive.service.user;
 import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
+import kr.co.milionvolt.ifive.domain.user.UserDashboradUserCarDTO;
 import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
 import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
@@ -30,4 +31,10 @@ public interface UserService {
     List<UserInfoReservationListVO> getUserReservationList(Integer id);
     // 유저의 결제 내역
     List<UserInfoPaymentListVO> getUserPaymentList(Integer id);
+    // 유저 대시보드 차 + 선호충전타입 정보
+    UserDashboradUserCarDTO getDashboardUserCarInfo(Integer id);
+    // 유저 대시보드 예약 리스트
+    List<UserInfoReservationListVO> getDashboardReservations(Integer id);
+    // 유저 대시보드 결제 리스트
+    List<UserInfoPaymentListVO> getDashboardPayments(Integer id);
 }
