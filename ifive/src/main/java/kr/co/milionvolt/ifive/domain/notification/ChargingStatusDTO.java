@@ -15,6 +15,8 @@ public class ChargingStatusDTO {
     private String username;
     private Integer modelId;
     private double carBattery;
+    private String carNumber;
+    private Integer carId;
     private Integer reservationId;
     private double modelBattery;
     private Timestamp startTime;

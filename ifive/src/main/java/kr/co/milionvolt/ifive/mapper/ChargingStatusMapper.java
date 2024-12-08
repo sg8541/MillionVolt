@@ -9,8 +9,8 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface ChargingStatusMapper {
 
-    @Select(" SELECT u.id, u.user_id, u.username, uc.car_battery, cm.model_id, " +
-            " cm.model_battery,r.reservation_id, r.start_time, r.end_time, " +
+    @Select(" SELECT u.id, u.user_id, u.username, uc.car_battery, uc.car_number, uc.car_id , " +
+            " cm.model_id, cm.model_battery,r.reservation_id, r.start_time, r.end_time, " +
             " cs.station_id, cs.name, cs.address, " +
             " cs.price_per_kWh, ct.charger_type " +
             " FROM user u" +
@@ -31,6 +31,6 @@ public interface ChargingStatusMapper {
     public ChargingStatusDTO chargingStatus(String userId, int reservationId);
 
     @Update( "UPDATE user_car SET  car_battery =#{carBattery} WHERE car_id=#{carId}")
-    public UserCarChargingUpdateDTO chargingUpdate(String carId,double carBattery);
+    public void chargingUpdate(int carId, double carBattery);
 
 }
