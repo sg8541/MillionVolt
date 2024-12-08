@@ -1,8 +1,5 @@
-package kr.co.milionvolt.ifive.domain.userInfo;
+package kr.co.milionvolt.ifive.domain.userinfo;
 
-import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
-import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
-import kr.co.milionvolt.ifive.domain.user.UserDashboradUserCarDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

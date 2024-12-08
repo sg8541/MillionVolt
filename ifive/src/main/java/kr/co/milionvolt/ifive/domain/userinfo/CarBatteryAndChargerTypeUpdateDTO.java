@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.domain.usercar;
+package kr.co.milionvolt.ifive.domain.userinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

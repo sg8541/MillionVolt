@@ -1,14 +1,14 @@
 package kr.co.milionvolt.ifive.service.user;
 
-import kr.co.milionvolt.ifive.domain.payment.UserInfoPaymentListVO;
-import kr.co.milionvolt.ifive.domain.reservation.UserInfoReservationListVO;
+import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
+import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
-import kr.co.milionvolt.ifive.domain.user.UserDashboradUserCarDTO;
-import kr.co.milionvolt.ifive.domain.user.UserInfoDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.UserVO;
-import kr.co.milionvolt.ifive.domain.usercar.CarBatteryAndChargerTypeUpdateDTO;
-import kr.co.milionvolt.ifive.domain.usercar.UserCarInfoDTO;
-import kr.co.milionvolt.ifive.domain.usercar.CarNumberAndModelUpdateDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
 
 import java.util.List;
 

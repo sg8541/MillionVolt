@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.domain.user;
+package kr.co.milionvolt.ifive.domain.userinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

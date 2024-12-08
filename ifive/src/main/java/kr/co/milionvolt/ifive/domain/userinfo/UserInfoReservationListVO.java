@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.domain.reservation;
+package kr.co.milionvolt.ifive.domain.userinfo;
 
 import lombok.*;
 
