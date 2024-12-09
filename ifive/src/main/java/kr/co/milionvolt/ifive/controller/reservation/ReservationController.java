@@ -13,15 +13,22 @@ import java.util.Map;
 
 @RestController
 public class ReservationController {
+
     @Autowired
     ReservationServiceImpl reservationServiceImpl;
 
-    @PostMapping("/api/reservation")
+    @PostMapping("/api/v1/reservation")
     public ResponseEntity<Map<String, Object>> reservation(@RequestBody ReservationDTO reservationDTO) {
+
         boolean success = reservationServiceImpl.saveReservation(reservationDTO);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", success ? "success" : "failure");
+
+        if (success) {
+            response.put("message", "예약이 완료되었습니다.");
+        } else {
+            response.put("message", "이미 예약된 시간이 있습니다. 시간을 확인해주세요.");
+        }
         return ResponseEntity.ok(response);
     }
 }

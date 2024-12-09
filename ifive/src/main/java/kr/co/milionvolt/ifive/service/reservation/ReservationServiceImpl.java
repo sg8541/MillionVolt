@@ -18,6 +18,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public boolean saveReservation(ReservationDTO reservationDTO){
         try {
+            if(reservationMapper.checkConflictReservation(reservationDTO)>0){
+                return false;
+            }
             return reservationMapper.insertReservation(reservationDTO)>0;
         } catch (Exception e) {
             System.err.println("reservation error: " + e.getMessage());
