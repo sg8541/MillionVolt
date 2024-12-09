@@ -15,6 +15,8 @@ public class ReservationDTO {
   private java.sql.Timestamp endTime;
   private Status status;
   private java.sql.Timestamp createdAt;
+  private Integer userId;
+  private Integer stationId;
 
   public enum Status {
     pending,confirmed, cancelled, completed

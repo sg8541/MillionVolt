@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용금 결제</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        header a img {
+            width: 150px; /* 로고 크기 통일 */
+            height: auto;
+            cursor: pointer;
+        }
+
+        .content-wrapper {
+            margin-top: 150px; /* 로고 아래 여백을 더 늘림 */
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header h1::after {
+            content: "";
+            display: block;
+            width: 150px;
+            height: 3px;
+            background-color: #333;
+            margin: 10px auto 0;
+        }
+
+        .booking-info {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .details-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .date {
+            margin-bottom: 20px; /* 이용일시와 상세정보 간격 추가 */
+        }
+
+        .date p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #666;
+            letter-spacing: 0.8px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .booking-details-container {
+            width: 100%;
+            padding: 20px;
+            color: #333;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            background-color: #fff;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: #333;
+            flex: 1;
+        }
+
+        .info-value {
+            text-align: right;
+            color: #666;
+            flex: 1;
+        }
+
+        .confirm {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .confirm button {
+            background-color: #000;
+            color: white;
+            padding: 14px 30px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .confirm button:hover {
+            background-color: #333;
+        }
+
+        .location-container {
+            width: 100%;
+            padding: 20px;
+            color: #333;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .location p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #666;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a href="/main">
+        <img src="images/logo.png" alt="메인으로 이동">
+    </a>
+</header>
+
+<div class="content-wrapper">
+    <div class="header">
+        <h1>금액 결제</h1>
+    </div>
+
+    <div class="booking-info">
+        <div class="details">
+            <p class="details-title"><strong>이용 장소</strong></p>
+            <div class="location-container">
+                <div class="location">
+                    <p>서울특별시 송파구 가락본동</p>
+                </div>
+            </div>
+
+            <p class="details-title"><strong>이용일시</strong></p>
+            <div class="date">
+                <p>11월 28일, 오후 17시 10분 --- 오후 19시 40분</p>
+            </div>
+        </div>
+
+        <div class="details-title">상세 정보</div>
+        <div class="booking-details-container">
+            <div class="info-row">
+                <span class="info-label">예약자</span>
+                <span class="info-value">ooo</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">결제 금액</span>
+                <span class="info-value">27,000원</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">이용초과금액</span>
+                <span class="info-value">0원</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">보증금 반환 금액</span>
+                <span class="info-value">20,000원</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">충전기 번호</span>
+                <span class="info-value">완속 1번</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">예약번호</span>
+                <span class="info-value">mx-17</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="confirm">
+    <button>확인</button>
+</div>
+</body>
+</html>
