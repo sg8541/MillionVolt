@@ -4,13 +4,10 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCarDTO {
-
   private Integer carId;
   private String carNumber;
   private Integer chargerType;
