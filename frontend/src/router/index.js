@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,10 @@ const router = createRouter({
           component: () => import('../pages/my-payment.vue'),
         },
       ],
+    },
+    {
+      path:'/chargingStatus',
+      component : ChargingStatus
     },
     {
       path: '/',
