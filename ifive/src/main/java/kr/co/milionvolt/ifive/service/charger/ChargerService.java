@@ -1,4 +1,5 @@
 package kr.co.milionvolt.ifive.service.charger;
+
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
 
@@ -16,7 +17,7 @@ public interface ChargerService {
     ChargerDTO.ChargerStatus getChargerStatusByStationIdAndChargerId(Integer stationId, Integer chargerId);
 
     // 충전기 상태 변경
-    boolean updateChargerStatus(Integer chargerId, String status);
+    boolean updateChargerStatus(Integer chargerId, ChargerDTO.ChargerStatus status);
 
     // 충전기 상태 필터링
     List<ChargerVO> getChargersByStatus(ChargerDTO.ChargerStatus status);

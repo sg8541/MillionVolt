@@ -14,7 +14,8 @@ loadFonts()
 
 
 // Create vue app
-const app = createApp(App)
+const app = createApp(App);
+const pinia = createPinia(); 
 
 
 // Use plugins
@@ -24,3 +25,4 @@ app.use(router)
 
 // Mount vue app
 app.mount('#app')
+app.use(pinia); 
