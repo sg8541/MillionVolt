@@ -5,6 +5,9 @@ import kr.co.milionvolt.ifive.mapper.ReservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
@@ -21,6 +24,9 @@ public class ReservationServiceImpl implements ReservationService {
             if(reservationMapper.checkConflictReservation(reservationDTO)>0){
                 return false;
             }
+
+            reservationDTO.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+
             return reservationMapper.insertReservation(reservationDTO)>0;
         } catch (Exception e) {
             System.err.println("reservation error: " + e.getMessage());

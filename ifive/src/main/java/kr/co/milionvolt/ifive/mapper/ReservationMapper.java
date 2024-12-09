@@ -27,11 +27,10 @@ public interface ReservationMapper {
     int insertReservation(ReservationDTO reservationDTO);
 
     @Select("SELECT count(*) " +
-            "FROM reservation " +
-            "WHERE start_time BETWEEN #{startTime} AND #{endTime}" +
-            "OR end_time BETWEEN #{startTime} AND #{endTime}" +
-            "OR (start_time <= #{startTime} AND end_Time >= #{endTime})" +
-            "AND charger_id = #{chargerId}" +
-            "AND status != 'cancelled'")
+            " FROM reservation " +
+            " WHERE (start_time BETWEEN #{startTime} AND #{endTime} " +
+            " OR end_time BETWEEN #{startTime} AND #{endTime} " +
+            " OR (start_time <= #{startTime} AND end_Time >= #{endTime})) " +
+            " AND charger_id = #{chargerId} ")
     int checkConflictReservation(ReservationDTO reservationDTO);
 }
