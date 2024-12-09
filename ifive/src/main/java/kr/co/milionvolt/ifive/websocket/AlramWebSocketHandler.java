@@ -35,7 +35,7 @@ public class AlramWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendAlert(WebSocketSession session) throws IOException {
-        String stauts = String.format("충전을 시작해주세요.");
+        String stauts = String.format("충전 예약시간이에요.");
         session.sendMessage(new TextMessage(stauts));
     }
 }
