@@ -1,6 +1,7 @@
 package kr.co.milionvolt.ifive.security;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,10 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 @Configuration
@@ -63,10 +66,12 @@ public class SecurityConfig {
                 // 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/uploads/**").permitAll() // 이미지 파일에 대한 접근 허용
-                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**", "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/main/**", "/api/v1/search/**", "/main/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
+                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**", "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/main/**", "/api/v1/search/**", "/stations/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // 'ADMIN' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 );
+
+
 
         return http.build();
     }

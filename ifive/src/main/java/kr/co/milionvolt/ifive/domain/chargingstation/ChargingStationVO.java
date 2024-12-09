@@ -32,6 +32,10 @@ public class ChargingStationVO {
         slow, medium, fast, super_fast
     }
 
+    public enum ChargerStatus {
+        available, in_use, maintenance
+    }
+
     public enum ChagerType {
         SEVEN_KW,  // 7kW
         FIFTY_KW,  // 50kW
@@ -40,7 +44,4 @@ public class ChargingStationVO {
         THREE_HUNDRED_PLUS_KW // 300kW+
     }
 
-    public enum ChargerStatus {
-        available, in_use, maintenance
-    }
 }

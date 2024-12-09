@@ -9,89 +9,84 @@ import java.util.List;
 
 @Mapper
 public interface ChargingStationMapper {
-    // 전체 충전소 조회(충전기 타입과 충전기 상태 포함)
+
     @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
-            "cs.charger_7kW_count, cs.charger_50kW_count, cs.charger_100kW_count," +
-            "cs.charger_200kW_count, cs.charger_300kW_plus_count, " +
-            "cs.charge_speed, cs.price_per_kwh," +
-            "cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
-            "FROM charging_station cs " +
-            "JOIN charger c ON cs.station_id = c.charger_id")
+            "cs.charger_7kW_count, cs.charger_50kW_Count, cs.charger_100kW_Count, " +
+            "cs.charger_200kW_count, cs.charger_300kW_Plus_Count, cs.charge_speed, cs.price_per_kwh, " +
+            "cs.created_at, cs.file_path " +
+            "FROM charging_station cs")
     List<ChargingStationVO> getAllChargingStationList();
 
-    // 충전소 개별 조회
-    @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, cs.charger_7kW_count, " +
-            "cs.charger_50kW_count, cs.charger_100kW_count, " +
-            "cs.charger_200kW_count, cs.charger_300kW_plus_count,  cs.charge_speed, cs.price_per_kwh, " +
-            "cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
+    @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
+            "cs.charger_7kW_Count, cs.charger_50kW_Count, cs.charger_100kW_Count, " +
+            "cs.charger_200kW_Count, cs.charger_300kW_Plus_Count, cs.charge_speed, cs.price_per_kwh, " +
+            "cs.created_at, cs.file_path, cs.business_info, cs.restrictions, cs.operating_hours, cs.phone_number, " +
+            "c.charger_status " +
             "FROM charging_station cs " +
-            "JOIN charger c ON cs.station_id = c.station_id " +
+            "LEFT JOIN charger c ON cs.station_id = c.station_id " +
             "WHERE cs.station_id = #{stationId}")
-    List<ChargingStationVO> getOneChargingStationList(@Param("stationId") Integer stationId);
+    ChargingStationVO getOneChargingStation(@Param("stationId") Integer stationId);
 
-    // 충전소 수정
     @Update("UPDATE charging_station SET name = #{name}, address = #{address}, total_charger = #{totalCharger}, " +
-            "available_charger = #{availableCharger}, charger_7kW_count = #{charger_7kW_count}, charger_50kW_count = #{charger_50kW_count}, " +
-            "charger_100kW_count = #{charger_100kW_count}, charger_200kW_count = #{charger_200kW_count}, charger_300kW_plus_count = #{charger_300kW_plus_count}," +
+            "available_charger = #{availableCharger}, charger_7kW_Count = #{charger_7kW_Count}, " +
+            "charger_50kW_Count = #{charger_50kW_Count}, charger_100kW_Count = #{charger_100kW_Count}, " +
+            "charger_200kW_Count = #{charger_200kW_Count}, charger_300kW_Plus_Count = #{charger_300kW_Plus_Count}, " +
             "charge_speed = #{chargeSpeed}, price_per_kwh = #{pricePerKWh}, file_path = #{filePath} " +
             "WHERE station_id = #{stationId}")
     int updateChargingStation(ChargingStationDTO chargingStationDTO);
 
-    // 충전기 상태 및 타입 수정 (필요에 따라)
-    @Update("UPDATE charger SET chager_type = #{chagerType}, charger_status = #{chargerStatus} " +
+    @Update("UPDATE charger SET charger_type = #{chargerType}, charger_status = #{chargerStatus} " +
             "WHERE charger_id = #{chargerId}")
     int updateChargerInfo(@Param("chargerId") Integer chargerId,
-                          @Param("chagerType") ChargerDTO.ChagerType chagerType,
+                          @Param("chargerType") ChargerDTO.ChagerType chargerType,
                           @Param("chargerStatus") ChargerDTO.ChargerStatus chargerStatus);
 
-    // 충전소 필터링 (속도, 상태)
     @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
-            "cs.charger_7kW_count, cs.charger_50kW_count, cs.charger_100kW_count, " +
-            "cs.charger_200kW_count, cs.charger_300kW_plus_count, " +
-            "cs.charge_speed, cs.price_per_kwh, cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
+            "cs.charger_7kW_Count, cs.charger_50kW_Count, cs.charger_100kW_Count, " +
+            "cs.charger_200kW_Count, cs.charger_300kW_Plus_Count, cs.charge_speed, cs.price_per_kwh, " +
+            "cs.created_at, cs.file_path " +
             "FROM charging_station cs " +
-            "JOIN charger c ON cs.station_id = c.station_id " +
-            "WHERE 1=1 " +
-            "<if test='chargeSpeed != null'> AND cs.charge_speed = #{chargeSpeed} </if>" +
-            "<if test='chargerStatus != null'> AND c.charger_status = #{chargerStatus} </if>")
+            "WHERE (#{chargeSpeed} IS NULL OR cs.charge_speed = #{chargeSpeed}) AND " +
+            "(#{chargerStatus} IS NULL OR cs.station_id IN (SELECT station_id FROM charger WHERE charger_status = #{chargerStatus}))")
     List<ChargingStationVO> getChargingStationsByFilter(@Param("chargeSpeed") ChargingStationDTO.ChargeSpeed chargeSpeed,
                                                         @Param("chargerStatus") ChargerDTO.ChargerStatus chargerStatus);
 
-
-    // 사용자 위치를 기준으로 충전소 목록 조회
     @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
-            "cs.charger_7kW_count, cs.charger_50kW_count, cs.charger_100kW_count, " +
-            "cs.charger_200kW_count, cs.charger_300kW_plus_count, " +
-            "cs.charge_speed, cs.price_per_kwh, cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
+            "cs.charger_7kW_Count, cs.charger_50kW_Count, cs.charger_100kW_Count, " +
+            "cs.charger_200kW_Count, cs.charger_300kW_Plus_Count, cs.charge_speed, cs.price_per_kwh, " +
+            "cs.created_at, cs.file_path " +
             "FROM charging_station cs " +
-            "JOIN charger c ON cs.station_id = c.station_id " +
-            "WHERE 1=1 " +
-            "<if test='chargeSpeed != null'> AND cs.charge_speed = #{chargeSpeed} </if>" +
-            "<if test='chargerStatus != null'> AND c.charger_status = #{chargerStatus} </if>" +
-            "<if test='address != null '>" +
-            " AND (ST_Distance_Sphere(point(cs.address), point(#{address})) <= 10000)" +  // 10km 내의 충전소 조회
-            "</if>")
+            "WHERE cs.address = #{address}")
+    ChargingStationVO getChargingStationByAddress(@Param("address") String address);
+
+    @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
+            "cs.charger_7kW_Count, cs.charger_50kW_Count, cs.charger_100kW_Count, " +
+            "cs.charger_200kW_Count, cs.charger_300kW_Plus_Count, cs.charge_speed, cs.price_per_kwh, " +
+            "cs.created_at, cs.file_path " +
+            "FROM charging_station cs " +
+            "WHERE (#{chargeSpeed} IS NULL OR cs.charge_speed = #{chargeSpeed}) " +
+            "AND (#{chargerStatus} IS NULL OR cs.station_id IN " +
+            "(SELECT station_id FROM charger WHERE charger_status = #{chargerStatus})) " +
+            "AND (#{address} IS NULL OR cs.address LIKE CONCAT('%', #{address}, '%'))")
     List<ChargingStationVO> getChargingStationsByLocation(@Param("address") String address,
                                                           @Param("chargeSpeed") String chargeSpeed,
                                                           @Param("chargerStatus") String chargerStatus);
 
-    // 검색
-    @Select("SELECT * FROM charging_station WHERE name LIKE CONCAT('%', #{query}, '%')")
+    @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
+            "cs.charger_7kW_Count, cs.charger_50kW_Count, cs.charger_100kW_Count, " +
+            "cs.charger_200kW_Count, cs.charger_300kW_Plus_Count, cs.charge_speed, cs.price_per_kwh, " +
+            "cs.created_at, cs.file_path " +
+            "FROM charging_station cs " +
+            "WHERE cs.name LIKE CONCAT('%', #{query}, '%')")
     List<ChargingStationVO> searchChargingStations(@Param("query") String query);
 
-    // 충전소 API DB 저장
-    @Insert("INSERT INTO charging_station (createdAt, name, address, chargeSpeed, chagerType, chargerStatus) " +
-            "VALUES (#{createdAt}, #{name}, #{address}, #{chargeSpeed}, #{chagerType}, #{chargerStatus})")
-    void insertChargingStation(ChargingStationDTO station);
 
-    // 주소로 충전소 조회
-    @Select("SELECT cs.station_id, cs.name, cs.address, cs.total_charger, cs.available_charger, " +
-            "cs.charger_7kW_count, cs.charger_50kW_count, cs.charger_100kW_count, " +
-            "cs.charger_200kW_count, cs.charger_300kW_plus_count, cs.charge_speed, cs.price_per_kwh, " +
-            "cs.created_at, cs.file_path, c.chager_type, c.charger_status " +
-            "FROM charging_station cs " +
-            "JOIN charger c ON cs.station_id = c.station_id " +
-            "WHERE cs.address = #{address}")
-    ChargingStationVO getChargingStationByAddress(@Param("address") String address);
+    @Insert("INSERT INTO charging_station (station_id, name, address, total_charger, available_charger, " +
+            "charger_7kW_Count, charger_50kW_Count, charger_100kW_Count, " +
+            "charger_200kW_Count, charger_300kW_Plus_Count, charge_speed, price_per_kwh, file_path) " +
+            "VALUES (#{stationId}, #{name}, #{address}, #{totalCharger}, #{availableCharger}, " +
+            "#{charger_7kW_Count}, #{charger_50kW_Count}, #{charger_100kW_Count}, " +
+            "#{charger_200kW_Count}, #{charger_300kW_Plus_Count}, #{chargeSpeed}, #{pricePerKWh}, #{filePath})")
+    void insertChargingStation(ChargingStationDTO station);
 
 }
