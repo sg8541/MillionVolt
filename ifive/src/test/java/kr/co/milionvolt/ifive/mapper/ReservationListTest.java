@@ -14,7 +14,9 @@ public class ReservationListTest {
 
     @Test
     public void test() {
-       List<ReservationListDTO> dtoList = reservationListMapper.printReservations("2024-12-07", "2024-12-08");
+        ReservationListDTO reservationListDTO = new ReservationListDTO();
+
+        List<ReservationListDTO> dtoList = reservationListMapper.selectReservationList(reservationListDTO.getStartTime(), reservationListDTO.getEndTime());
         System.out.println("성공" + dtoList);
     }
 }
