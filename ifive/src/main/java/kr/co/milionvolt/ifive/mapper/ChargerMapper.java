@@ -16,7 +16,7 @@ public interface ChargerMapper {
     List<ChargerVO> getChargers();
 
     // 특정 충전소의 전체 충전기 목록 조회
-    @Select("SELECT c.charger_id, c.station_id, c.chager_type, c.charger_status, c.created_at " +
+    @Select("SELECT c.charger_id, c.station_id, c.charger_type, c.charger_status, c.created_at " +
             "FROM charger c " +
             "JOIN charging_station cs ON c.station_id = cs.station_id " +
             "WHERE cs.station_id = #{stationId}")

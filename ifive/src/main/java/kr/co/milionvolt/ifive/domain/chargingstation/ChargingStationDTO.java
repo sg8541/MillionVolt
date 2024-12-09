@@ -1,8 +1,5 @@
 package kr.co.milionvolt.ifive.domain.chargingstation;
-
-import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import lombok.*;
-
 import java.math.BigDecimal;
 
 // 카카오 지도 API는 주소만으로 위치를 표시할 수 있기 때문에
@@ -31,6 +28,10 @@ public class ChargingStationDTO {
   private String filePath;
   private ChagerType chagerType;
   private ChargerStatus chargerStatus;
+
+
+  public ChargingStationDTO(Integer stationId, String name, Integer availableCharger, ChargingStationVO.ChargeSpeed chargeSpeed, BigDecimal pricePerKWh) {
+  }
 
   public enum ChargeSpeed {
     slow, medium, fast, super_fast
