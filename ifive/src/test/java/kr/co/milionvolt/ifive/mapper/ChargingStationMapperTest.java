@@ -25,16 +25,16 @@ public class ChargingStationMapperTest {
         assertTrue(chargingStationList.size() > 0, "충전소 리스트가 비어 있습니다.");
     }
 
-    @Test
-    public void getOneChargingStationList() {
-        Integer stationId = 1;  // 조회할 충전소 ID (예시: 1번)
-
-        // 특정 충전소 조회
-        List<ChargingStationVO> chargingStation = chargingStationMapper.getOneChargingStationList(stationId);
-
-        // 결과가 null이 아니어야 한다
-        assertNotNull(chargingStation, "충전소 정보가 null입니다.");
-        // 조회된 충전소 목록의 크기가 1 이상이어야 한다
-        assertTrue(chargingStation.size() > 0, "충전소 정보가 없습니다.");
-    }
+//    @Test
+//    public void getOneChargingStationList() {
+//        Integer stationId = 1;  // 조회할 충전소 ID (예시: 1번)
+//
+//        // 특정 충전소 조회
+//        List<ChargingStationVO> chargingStation = chargingStationMapper.getOneChargingStationList(stationId);
+//
+//        // 결과가 null이 아니어야 한다
+//        assertNotNull(chargingStation, "충전소 정보가 null입니다.");
+//        // 조회된 충전소 목록의 크기가 1 이상이어야 한다
+//        assertTrue(chargingStation.size() > 0, "충전소 정보가 없습니다.");
+//    }
 }

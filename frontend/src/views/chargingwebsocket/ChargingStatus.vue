@@ -53,13 +53,21 @@
             <button class="stop-btn" @click="disconnectWebSocket">충전 종료</button>
         </div>
     </div>
+
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted  } from 'vue';
 import { useWebSocketStore } from '@/stores/webSocketChargingStore';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import PayPrice from '../payment/PayPrice.vue';
 
 const store = useWebSocketStore();
+const router = useRouter();
+
+const paymentData = ref('');
+
 
 
 const elapsedTime = ref(0); // 경과 시간 (초 단위)
@@ -102,6 +110,7 @@ onMounted(()=> {
     startTime.value = new Date();
     console.log(formatDateTime(startTime.value));
     startTime.value=formatDateTime(startTime.value);
+    // paymentData.value.chargeStart=startTime.value;
     startTimer();
 })
 
@@ -112,10 +121,31 @@ const disconnectWebSocket = () => {
     console.log("세션 종료.")
     stopTimer();
     endTime.value = new Date();
-    endTime.value=formatDateTime(startTime.value);
+    endTime.value=formatDateTime(endTime.value);
+    // paymentData.value.chargeEnd = endTime.value;
     console.log(endTime.value);
+
+    paymentData.value = {
+            userId:store.chargingData.userId,
+            stationId : store.chargingData.stationId,
+            reservationId:store.chargingData.reservationId,
+            amount:store.chargingData.amount,
+            // chargeStart:null,
+            // chargeEnd:null, // 종료시 설정
+        }
     alert("충전 종료 - 결제 화면으로 이동합니다.");
-    };
+
+    router.push({
+        name: PayPrice,
+        query : {
+            userId:paymentData.value.userId,
+            stationId:paymentData.value.stationId,
+            reservationId:paymentData.value.reservationId,
+            amount:paymentData.value.amount
+        }
+    })
+        
+};
 
 // 경과 시간을 'hh:mm:ss' 형식으로 변환하는 헬퍼 함수
 const formatElapsedTime = () => {

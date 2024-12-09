@@ -33,9 +33,11 @@ public interface ChargingStatusMapper {
     @Update( "UPDATE user_car SET  car_battery =#{carBattery} WHERE car_id=#{carId}")
     public void chargingUpdate(int carId, double carBattery);
 
-    @Update(" UPDATE charger SET charger_status='in_use' WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
+    @Update(" UPDATE charger SET charger_status='in_use' " +
+            " WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
     public void chargingStatusInuse(int chargerId, int stationId); // 충전시 상태 변화
 
-    @Update(" UPDATE charger SET charger_status='available' WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
+    @Update(" UPDATE charger SET charger_status='available' " +
+            " WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
     public void chargingStatusAvailable(int chargerId, int stationId); // 출차시 상태변화???
 }

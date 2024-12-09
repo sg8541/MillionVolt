@@ -14,6 +14,8 @@ export const useWebSocketStore = defineStore('websocket', () => {
             pricePerKWh:'',
             expectAmount: '',
             estimatedTimeSeconds: '',
+            userId:'',
+            stationId:'',
 
         });
     
@@ -47,6 +49,9 @@ export const useWebSocketStore = defineStore('websocket', () => {
             chargingData.value.pricePerKWh = data.pricePerKWh;
             chargingData.value.expectAmount = data.expectAmount;
             chargingData.value.estimatedTimeSeconds = data.estimatedTimeSeconds;
+            chargingData.value.userId = data.userId;
+            chargingData.value.reservationId = data.reservationId;
+            chargingData.value.stationId = data.stationId;
             
         };
     
