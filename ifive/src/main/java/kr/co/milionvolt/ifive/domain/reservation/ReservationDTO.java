@@ -19,7 +19,7 @@ public class ReservationDTO {
   private Integer stationId;
 
   public enum Status {
-    pending,confirmed, cancelled, completed
+    pending, confirmed, cancelled, completed
   }
 
 }

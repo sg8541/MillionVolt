@@ -2,14 +2,12 @@ package kr.co.milionvolt.ifive.controller.payment;
 
 import kr.co.milionvolt.ifive.domain.payment.PayPriceDTO;
 import kr.co.milionvolt.ifive.mapper.PayPriceMapper;
-import kr.co.milionvolt.ifive.service.payment.PayPriceService;
 import kr.co.milionvolt.ifive.service.payment.PayPriceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class PayPriceController {
 
