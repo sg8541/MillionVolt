@@ -2,9 +2,10 @@ package kr.co.milionvolt.ifive.domain.user;
 
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
+import java.math.BigDecimal;
+
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignupDTO {
@@ -13,4 +14,9 @@ public class SignupDTO {
   private String email;
   private String phoneNumber;
   private String password;
+  private String carNumber;
+  private Integer chargerTypeId;
+  private Integer modelId;
+  private BigDecimal carBattery;
 }
+
