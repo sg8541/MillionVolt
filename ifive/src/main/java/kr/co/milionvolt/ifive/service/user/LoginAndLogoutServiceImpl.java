@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -60,7 +61,6 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
 
             return TokenResponseDTO.builder()
                     .id(detailsVO.getId())
-                    .username(detailsVO.getUserId())
                     .userId(detailsVO.getUserId())
                     .role(detailsVO.getRole())
                     .accessToken(accessToken)
@@ -74,19 +74,67 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
 
     @Override
     public void logout(String refreshToken) {
-        
+        Integer id = tokenProvider.getUserIdFromJWT(refreshToken);
+        refreshTokenRepository.deleteById(id);
+        log.debug("Logout 성공: memberId = {}", id);
     }
 
     @Override
     public TokenResponseDTO refreshToken(String refreshToken) {
-        return null;
+        Integer id = tokenProvider.getUserIdFromJWT(refreshToken);
+        Optional<RefreshTokenRedis> tokenOpt = refreshTokenRepository.findById(id); // memberId 사용
+
+        if (!tokenOpt.isPresent() || !tokenOpt.get().getToken().equals(refreshToken)
+                || tokenOpt.get().getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new LoginException("유효하지 않은 Refresh Token입니다.");
+        }
+
+        UserDetailsVO detailsVO = userMapper.findById(id);
+        if(detailsVO == null) {
+            throw new LoginException("사용자를 찾을 수 없습니다.");
+        }
+
+        // 새로운 Access Token 생성
+        String newAccessToken = tokenProvider.generateAccessToken(detailsVO.getId(), detailsVO.getRole());
+
+        // 새로운 Refresh Token 생성
+        String newRefreshToken = tokenProvider.generateRefreshToken(detailsVO.getId());
+
+        // 기존 Refresh Token 삭제
+        refreshTokenRepository.deleteById(id);
+
+        // 새로운 Refresh Token 저장
+        RefreshTokenRedis newTokenEntity = RefreshTokenRedis.builder()
+                .id(detailsVO.getId())
+                .token(newRefreshToken)
+                .expiryDate(LocalDateTime.now().plusSeconds(tokenProvider.getRefreshTokenExpiration() / 1000))
+                .ttl(tokenProvider.getRefreshTokenExpiration() / 1000) // TTL을 초 단위로 설정
+                .build();
+        refreshTokenRepository.save(newTokenEntity);
+
+        log.debug("Refresh Token 갱신 성공: {}", newRefreshToken);
+
+        return TokenResponseDTO.builder()
+                .id(detailsVO.getId())
+                .userId(detailsVO.getUserId())
+                .role(detailsVO.getRole())
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
     }
+
 
     @Override
-    public void saveRefreshToken(String newRefreshToken, Integer id) {
-
+    public void saveRefreshToken(String refreshToken, Integer id) {
+        RefreshTokenRedis tokenEntity = RefreshTokenRedis.builder()
+                .id(id)
+                .token(refreshToken)
+                .expiryDate(LocalDateTime.now().plusSeconds(tokenProvider.getRefreshTokenExpiration() / 1000))
+                .ttl(tokenProvider.getRefreshTokenExpiration() / 1000) // TTL을 초 단위로 설정
+                .build();
+        refreshTokenRepository.save(tokenEntity);
+        log.debug("Refresh Token 저장 성공: {}", refreshToken);
     }
-
 
 }
 

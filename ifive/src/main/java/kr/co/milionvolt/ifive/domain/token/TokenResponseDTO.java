@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TokenResponseDTO {
     private Integer id;
-    private String username;
     private String userId;
     private String role;
     private String accessToken;
