@@ -3,12 +3,14 @@ package kr.co.milionvolt.ifive.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -30,28 +32,39 @@ public class JwtTokenProvider {
     }
 
     // Access Token 생성
-    public String generateAccessToken(Integer memberId, String role) {
+    public String generateAccessToken(Integer id, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenExpiration);
 
-        return Jwts.builder()
+//        return Jwts.builder()
+//                .setHeaderParam("typ", "JWT")
+//                .setSubject(String.valueOf(id)) // memberId를 String으로 변환하여 설정
+//                .claim("role", role)
+//                .setIssuedAt(now)
+//                .setExpiration(expiryDate)
+//                .signWith(SignatureAlgorithm.HS512, getSecretKey())
+//                .compact();
+        String token = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(String.valueOf(memberId)) // memberId를 String으로 변환하여 설정
+                .setSubject(String.valueOf(id))
                 .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, getSecretKey())
                 .compact();
+
+        System.out.println("Generated Token: '" + token + "'");
+        return token.trim();
     }
 
     // Refresh Token 생성
-    public String generateRefreshToken(Integer memberId) {
+    public String generateRefreshToken(Integer id) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + refreshTokenExpiration);
 
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(String.valueOf(memberId)) // memberId를 String으로 변환하여 설정
+                .setSubject(String.valueOf(id)) // memberId를 String으로 변환하여 설정
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, getSecretKey())
@@ -59,7 +72,7 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰에서 memberId 추출
-    public Integer getUserIdFromJWT(String token) {
+    public Integer getIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(getSecretKey())
                 .parseClaimsJws(token)
@@ -71,6 +84,7 @@ public class JwtTokenProvider {
     // JWT 토큰 검증
     public boolean validateToken(String authToken) {
         try {
+            log.info("authToken :  {}", authToken);
             Jwts.parser().setSigningKey(getSecretKey()).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {

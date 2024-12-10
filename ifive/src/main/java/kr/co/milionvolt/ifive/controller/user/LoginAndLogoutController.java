@@ -2,8 +2,9 @@ package kr.co.milionvolt.ifive.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.co.milionvolt.ifive.domain.token.TokenUserInfoDTO;
 import kr.co.milionvolt.ifive.domain.user.LoginDTO;
-import kr.co.milionvolt.ifive.domain.token.TokenResponseDTO;
+import kr.co.milionvolt.ifive.domain.user.TokenResponseDTO;
 import kr.co.milionvolt.ifive.security.JwtTokenProvider;
 import kr.co.milionvolt.ifive.service.user.LoginAndLogoutService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,13 @@ public class LoginAndLogoutController {
 
     private final LoginAndLogoutService loginAndLogoutService;
     private final JwtTokenProvider tokenProvider;
+
+
+    @GetMapping("/info")
+    public ResponseEntity<TokenUserInfoDTO> userInfo(@RequestBody String accessTokenDTO, HttpServletRequest request) {
+        TokenUserInfoDTO memberInfoDTO = loginAndLogoutService.userInfo(accessTokenDTO);
+        return new ResponseEntity<>(memberInfoDTO, HttpStatus.OK);
+    }
 
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {

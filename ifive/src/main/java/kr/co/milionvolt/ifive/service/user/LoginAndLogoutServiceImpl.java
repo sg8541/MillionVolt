@@ -1,7 +1,8 @@
 package kr.co.milionvolt.ifive.service.user;
 
+import kr.co.milionvolt.ifive.domain.token.TokenUserInfoDTO;
+import kr.co.milionvolt.ifive.domain.user.TokenResponseDTO;
 import kr.co.milionvolt.ifive.domain.user.LoginDTO;
-import kr.co.milionvolt.ifive.domain.token.TokenResponseDTO;
 import kr.co.milionvolt.ifive.domain.user.UserDetailsVO;
 import kr.co.milionvolt.ifive.entity.RefreshTokenRedis;
 import kr.co.milionvolt.ifive.exception.LoginException;
@@ -74,14 +75,14 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
 
     @Override
     public void logout(String refreshToken) {
-        Integer id = tokenProvider.getUserIdFromJWT(refreshToken);
+        Integer id = tokenProvider.getIdFromJWT(refreshToken);
         refreshTokenRepository.deleteById(id);
         log.debug("Logout 성공: memberId = {}", id);
     }
 
     @Override
     public TokenResponseDTO refreshToken(String refreshToken) {
-        Integer id = tokenProvider.getUserIdFromJWT(refreshToken);
+        Integer id = tokenProvider.getIdFromJWT(refreshToken);
         Optional<RefreshTokenRedis> tokenOpt = refreshTokenRepository.findById(id); // memberId 사용
 
         if (!tokenOpt.isPresent() || !tokenOpt.get().getToken().equals(refreshToken)
@@ -90,7 +91,7 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
         }
 
         UserDetailsVO detailsVO = userMapper.findById(id);
-        if(detailsVO == null) {
+        if (detailsVO == null) {
             throw new LoginException("사용자를 찾을 수 없습니다.");
         }
 
@@ -134,6 +135,24 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
                 .build();
         refreshTokenRepository.save(tokenEntity);
         log.debug("Refresh Token 저장 성공: {}", refreshToken);
+    }
+
+    @Override
+    public TokenUserInfoDTO userInfo(String accessToken) {
+        Integer id = tokenProvider.getIdFromJWT(accessToken);
+        TokenUserInfoDTO userInfoDTO = new TokenUserInfoDTO();
+        userInfoDTO.setId(id);
+
+        // Optional 처리
+        Optional<UserDetailsVO> optionalUser = Optional.ofNullable(userMapper.findById(id));
+        if (optionalUser.isPresent()) {
+            String role = optionalUser.get().getRole() != null ? optionalUser.get().getRole() : null;
+            userInfoDTO.setRole(role);
+        } else {
+            throw new IllegalArgumentException("Member not found with id: " + id);
+        }
+
+        return userInfoDTO;
     }
 
 }

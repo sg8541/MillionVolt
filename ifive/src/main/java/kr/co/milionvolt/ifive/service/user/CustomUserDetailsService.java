@@ -40,12 +40,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserById(Integer id) throws UsernameNotFoundException {
-        log.debug("Attempting to load user by memberId: {}", id);
+        log.debug("Attempting to load user by id: {}", id);
         UserDetailsVO detailsVO = userMapper.findById(id);
 
         if (detailsVO == null) {
             log.error("User not found with id: {}", id);
-            return (UserDetails) new UsernameNotFoundException("User not found with memberId: " + id);
+            return (UserDetails) new UsernameNotFoundException("User not found with id: " + id);
         }
 
         return new org.springframework.security.core.userdetails.User(
