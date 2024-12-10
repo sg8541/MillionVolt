@@ -14,12 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ChargingWebSocketHandler extends TextWebSocketHandler {
-    private final ConcurrentHashMap<String, Double> payMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Double> currentBatteryMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Double> payMap = new ConcurrentHashMap<>(); // 요금을 계속해서 누적해서 저장하기 위한 Map
+    private final ConcurrentHashMap<String, Double> currentBatteryMap = new ConcurrentHashMap<>();// 충전을 계속 누적해서 저장하기 위한 MAP
     private final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private double originCurrentBattery;
     private double chargingSpeed;
     private Integer carId;
+    private int batteryPercent;
+
 
     private final ChargingStatusSerivce chargingStatusSerivce;
 
@@ -59,9 +61,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
         System.out.println("웹소켓 연결 종료" + userId);
          sessions.remove(userId);// 세션 유지 무조건 종료를 눌렀을때만 종료.
         stopCharging(session);
-
     }
-
 
     private void startCharging(WebSocketSession session) {
 
@@ -69,18 +69,14 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
             try {
                 String query = session.getUri().getQuery();
                 String userId = getParameterFromQuery(query, "userId");
-                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, 1);
-               chargingStatusSerivce.chargingStatusInuse(dto.getChargerId(),dto.getStationId()); // 충전상태로 변환
+                int reservationId = Integer.parseInt(getParameterFromQuery(query, "reservationId"));
+                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, reservationId);
+                chargingStatusSerivce.chargingStatusInuse(dto.getChargerId(),dto.getStationId()); // 충전상태로 변환
                 double totalBattery = dto.getModelBattery();
                 double currentBattery = dto.getCarBattery(); // 현재 배터리 상태
                 originCurrentBattery = dto.getCarBattery(); // 초기 현재 배터리 상태
                 currentBatteryMap.put(userId, currentBattery);
-
-
                 carId = dto.getCarId();
-
-                double pay = dto.getPricePerKWh()/3600;
-                payMap.put(userId, pay);
                 chargingSpeed = getChargingSpeed(dto.getChargerType()); // 몇 kw인지 구분.
                 double chargeAmount = chargingSpeed / 3600; // 초당 충전량
                 // 초기 배터리 상태를 가져오기 위한 서비스 호출
@@ -96,17 +92,16 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
                         if(currentBattery>= totalBattery){
                             currentBattery = totalBattery;
-                            chargingStatusSerivce.chargingUpdate(carId,dto.getCarBattery());
+                            chargingStatusSerivce.chargingUpdate(carId,currentBattery);
+                            String status = String.format(
+                                    "{\"message\": \"충전이 완료되었습니다.\"}"
+                            );
+                            session.sendMessage(new TextMessage(status));
                             System.out.println("100% 충전완료, 세션 종료.");
                             break; // 충전 완료 시 루프 종료
                         }
                     currentBatteryMap.put(userId, currentBattery);
                     dto.setCarBattery(currentBattery);
-
-
-                    double totalPay = (payMap.get(userId)+pay);
-                    payMap.put(userId,totalPay);
-                    dto.setTotalPay(totalPay);
 
                     // 충전 상태를 클라이언트에 전송
                     if (session != null && session.isOpen()) {
@@ -120,27 +115,33 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
     }
 
 
-
     private void sendChargingStatus(WebSocketSession session ,String userId,ChargingStatusDTO dto ) {
        try{
-           double chargingKwh = dto.getCarBattery()-originCurrentBattery;
-           double amount =  (dto.getTotalPay()*(chargingKwh)); // 충전중인 요금
+           double chargingKwh = dto.getCarBattery()-originCurrentBattery; // 충전 누적 Kwh
+           //double amount =  dto.getTotalPay()*chargingKwh; // 충전중인 요금
+           double expectAmount = (dto.getModelBattery()-originCurrentBattery)*dto.getPricePerKWh(); // 예상 총 금액.
 
-           double expectAmount = (dto.getModelBattery()-originCurrentBattery)*dto.getPricePerKWh();
-           int batteryPercent = (int) ((dto.getCarBattery()/dto.getModelBattery())*100); // 충전 퍼센트
 
-           double remainingBattery = dto.getModelBattery() - originCurrentBattery;
-           double estimatedTimeSeconds = remainingBattery / chargingSpeed * 3600;
+           batteryPercent = (int) ((dto.getCarBattery()/dto.getModelBattery())*100); // 충전 퍼센트
+           double remainingBattery = dto.getModelBattery() - originCurrentBattery; // 앞으로 충전해야할 배터리량(총베터리량 - 초기 배터리량)
+           double estimatedTimeSeconds = remainingBattery / chargingSpeed * 3600; // 예상 시간.
+
+            double oneSecondCharge = expectAmount/estimatedTimeSeconds;
+            double amount = payMap.getOrDefault(userId, 0.0);
+            amount += oneSecondCharge;
+            payMap.put(userId,amount);
+
+           dto.setTotalPay(amount);
 
            String status = String.format(
                    "{\"batteryPercent\": %d, \"amount\": %.2f, \"chargingKwh\": %.2f, " +
                            "\"chargerType\": \"%s\", \"name\": \"%s\", \"address\": \"%s\", \"userId\": %s, \"username\": \"%s\", " +
                            "\"modelId\": %d, \"reservationId\": %d, \"stationId\": %d, \"carNumber\": \"%s\",\"pricePerKWh\": %.2f, " +
-                           " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f }",
-                   batteryPercent, amount, chargingKwh,
+                           " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f , \"message\": \"%s\"}",
+                   batteryPercent, dto.getTotalPay(), chargingKwh,
                    dto.getChargerType(), dto.getName(), dto.getAddress(), dto.getId(),
                    dto.getUsername(), dto.getModelId(), dto.getReservationId(), dto.getStationId(), dto.getCarNumber(),
-                   dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds);
+                   dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds, dto.getMessage());
            session.sendMessage(new TextMessage(status));
        }catch (Exception e){
            e.printStackTrace();
