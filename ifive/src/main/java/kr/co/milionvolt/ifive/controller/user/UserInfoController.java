@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.controller.user;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
@@ -21,12 +22,14 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/info")
+@RequestMapping("/api/v1/myinfo")
 public class UserInfoController {
 
     private final UserService userService;
     private final int PAYMENT_LIST_NO_DATA = 0;
     private final int RESERVATION_LIST_NO_DATA = 0;
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> userInfo(@PathVariable Integer id) {
