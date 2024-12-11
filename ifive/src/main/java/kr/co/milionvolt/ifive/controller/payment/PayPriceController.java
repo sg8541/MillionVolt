@@ -21,6 +21,7 @@ public class PayPriceController {
     public ResponseEntity<String> savePayment(@PathVariable String imp_uid, @RequestBody PayPriceDTO payPriceDTO ) {
         try {
             System.out.println(imp_uid);
+            System.out.println(payPriceDTO);
             // 결제 검증 서비스 호출
             if (payPriceServiceImpl.verifyPayment(imp_uid)){
 
