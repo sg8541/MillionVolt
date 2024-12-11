@@ -76,7 +76,6 @@ const moveToTestAlarm = () => {
 const paymentData = ref('');
 
 
-
 // 시간 포맷 함수
 const formatDateTime = (date) => {
     if (!date) return 'N/A';
