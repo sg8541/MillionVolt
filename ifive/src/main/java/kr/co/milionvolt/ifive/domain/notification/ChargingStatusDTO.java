@@ -29,4 +29,5 @@ public class ChargingStatusDTO {
     private String chargerType;
 
     private double totalPay;
+    private String message;
 }

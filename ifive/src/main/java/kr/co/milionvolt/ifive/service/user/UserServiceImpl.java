@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     // 유저 정보 조회
     @Override
     public UserInfoDTO getUserInfo(Integer id) {
-        UserInfoDTO getUserInfo = userMapper.selectUser(id);
+        UserInfoDTO getUserInfo = userMapper.selectId(id);
         log.info(getUserInfo.toString());
         return getUserInfo;
     }
