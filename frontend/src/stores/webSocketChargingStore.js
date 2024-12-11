@@ -61,11 +61,10 @@ export const useWebSocketStore = defineStore('websocket', () => {
         socketInstance.value.onopen = () => {
             isConnected.value = true;
             socketInstance.value.send('start');
-          
+        
             startTimer();
             startTime.value = new Date();
            // socketInstance.value.send(reservationId);
-        
         };
     
         socketInstance.value.onmessage = (event) => {

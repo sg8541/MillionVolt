@@ -59,7 +59,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
         String query = session.getUri().getQuery();
         String userId = getParameterFromQuery(query, "userId");
         System.out.println("웹소켓 연결 종료" + userId);
-         sessions.remove(userId);// 세션 유지 무조건 종료를 눌렀을때만 종료.
+         sessions.remove(userId);
         stopCharging(session);
     }
 
