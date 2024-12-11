@@ -16,6 +16,7 @@ public class AlramWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("Reservation WebSocket Connection Established: " + session.getId());
+
     }
 
     @Override
