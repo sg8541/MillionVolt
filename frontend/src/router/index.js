@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
-import Reservation from '@/views/payment/Reservation.vue'
+import PayPrice from '@/views/payment/PayPrice.vue'
+import TestAlarm from '@/views/alarm/TestAlarm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,7 +31,18 @@ const router = createRouter({
     },
     {
       path:'/chargingStatus',
+      name: 'ChargingStatus',
       component : ChargingStatus
+    },
+    { 
+      path:'/payPrice',
+      name : PayPrice,
+      component : PayPrice
+    },
+    {
+      path:'/testAlarm',
+      name:TestAlarm,
+      component:TestAlarm
     },
     {
       path: '/',

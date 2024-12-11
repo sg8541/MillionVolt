@@ -2,6 +2,7 @@
     <!-- <div class="logo" @click="mainmove">
         <img src="images/logo.png" alt="백만불트 로고">
     </div> -->
+    <button @click="moveToTestAlarm">TestAlarm으로 이동</button>
     <div class="charging-container">
         <div class="charging-header">
             <h2>{{ store.chargingData.name }}</h2>
@@ -44,7 +45,7 @@
             </div>
             <div class="info-item">
                 <span>단가</span>
-                <strong>{{store.chargingData.pricePerKWh}} kWh</strong>
+                <strong>{{store.chargingData.pricePerKWh}}/kWh</strong>
 
             </div>
         </div>
@@ -56,53 +57,36 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted  } from 'vue';
 import { useWebSocketStore } from '@/stores/webSocketChargingStore';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import TestAlarm from '../alarm/TestAlarm.vue';
+import PayPrice from '../payment/PayPrice.vue';
 
 const store = useWebSocketStore();
+const router = useRouter();
 
-
-const elapsedTime = ref(0); // 경과 시간 (초 단위)
-let timer = null; // 타이머 ID
-
-const startTime = ref(null); // 충전 시작 시간
-const endTime = ref(null);  // 충전 종료 시간
-
-// 타이머 시작
-const startTimer = () => {
-    timer = setInterval(() => {
-    elapsedTime.value += 1; // 1초마다 증가
-  }, 1000); // 1000ms = 1초
+const moveToTestAlarm = () => {
+    router.push({
+        name:TestAlarm
+    }); 
 };
 
-// 타이머 정리
-const stopTimer = () => {
-    if (timer) {
-        clearInterval(timer);
-        timer = null;
-    }
-};
+const paymentData = ref('');
+
 
 // 시간 포맷 함수
 const formatDateTime = (date) => {
     if (!date) return 'N/A';
-    return date.toLocaleString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-    });
+    const isoString = date.toISOString();
+    const formatted = isoString.slice(0, 19); // 'YYYY-MM-DDTHH:MM:SS' 부분만 추출
+    return formatted; 
 };
 
 
 onMounted(()=> {
     store.connectWebSocket();
-    startTime.value = new Date();
-    console.log(formatDateTime(startTime.value));
-    startTime.value=formatDateTime(startTime.value);
-    startTimer();
 })
 
 
@@ -110,18 +94,35 @@ onMounted(()=> {
 const disconnectWebSocket = () => {
     store.disconnectWebSocket();
     console.log("세션 종료.")
-    stopTimer();
-    endTime.value = new Date();
-    endTime.value=formatDateTime(startTime.value);
-    console.log(endTime.value);
+    paymentData.value = {
+            userId:store.chargingData.userId,
+            stationId : store.chargingData.stationId,
+            reservationId:store.chargingData.reservationId,
+            amount:store.chargingData.amount,
+            chargeStart:formatDateTime(store.startTime),
+            chargeEnd:formatDateTime(store.endTime),
+        }
     alert("충전 종료 - 결제 화면으로 이동합니다.");
-    };
+
+    router.push({
+        name: PayPrice,
+        query : {
+            userId:paymentData.value.userId,
+            stationId:paymentData.value.stationId,
+            reservationId:paymentData.value.reservationId,
+            amount:paymentData.value.amount,
+            chargeStart:paymentData.value.chargeStart,
+            chargeEnd:paymentData.value.chargeEnd,
+        }
+    })
+        
+};
 
 // 경과 시간을 'hh:mm:ss' 형식으로 변환하는 헬퍼 함수
 const formatElapsedTime = () => {
-    const hours = String(Math.floor(elapsedTime.value / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((elapsedTime.value % 3600) / 60)).padStart(2, '0');
-    const seconds = String(elapsedTime.value % 60).padStart(2, '0');
+    const hours = String(Math.floor(store.elapsedTime / 3600)).padStart(2, '0');
+    const minutes = String(Math.floor((store.elapsedTime % 3600) / 60)).padStart(2, '0');
+    const seconds = String(store.elapsedTime % 60).padStart(2, '0');
     return `${hours}:${minutes}:${seconds}`;
 };    
 
@@ -129,7 +130,7 @@ const remainingTime = ref('');
 
 watchEffect(() => {
     const remainingSeconds = store.chargingData.estimatedTimeSeconds || 0; // 예상 남은 시간 (초)
-    const adjustedRemainingSeconds = remainingSeconds - elapsedTime.value; // 경과 시간 반영
+    const adjustedRemainingSeconds = remainingSeconds - store.elapsedTime; // 경과 시간 반영
     const hours = Math.floor(adjustedRemainingSeconds / 3600); // 시간 계산
     const minutes = Math.floor((adjustedRemainingSeconds % 3600) / 60); // 분 계산
     if (adjustedRemainingSeconds <= 0) {
@@ -146,11 +147,30 @@ const formatCurrency = (amount) => {
 };
 
 watchEffect(() => {
-    if (store.chargingData.batteryPercent >= 99) {
-        store.chargingData.batteryPercent = 100; // 99퍼에서 화면이 멈추는 현상이 발견해서 강제로 100 %부여.
-        alert("충전이 완료되었습니다.");
-        stopTimer(); // 타이머 중지
+    if (store.chargingData.batteryPercent == 100) {
         store.disconnectWebSocket(); // 웹 소켓 연결 종료
+
+        paymentData.value = {
+            userId:store.chargingData.userId,
+            stationId : store.chargingData.stationId,
+            reservationId:store.chargingData.reservationId,
+            amount:store.chargingData.amount,
+            chargeStart:formatDateTime(store.startTime),
+            chargeEnd:formatDateTime(store.endTime),
+        }
+        alert("충전 종료 - 결제 화면으로 이동합니다.");
+
+        router.push({
+            name: PayPrice,
+            query : {
+                userId:paymentData.value.userId,
+                stationId:paymentData.value.stationId,
+                reservationId:paymentData.value.reservationId,
+                amount:paymentData.value.amount,
+                chargeStart:paymentData.value.chargeStart,
+                chargeEnd:paymentData.value.chargeEnd,
+            }
+        })
     }
 });
 
