@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
+import Reservation from '@/views/payment/Reservation.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +18,7 @@ const router = createRouter({
           path: 'account-settings',
           component: () => import('../pages/account-settings.vue'),
         },
-        {
+        { 
           path: 'my-reservation',
           component: () => import('../pages/my-reservation.vue'),
         },
@@ -42,6 +43,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path:'/Reservation',
+      name: 'Reservation',
+      component: () => import('../views/payment/Reservation.vue'),
+    }
   ],
 })
 

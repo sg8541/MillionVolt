@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @ToString
 @Setter
 @Getter
 public class ReservationListDTO {
     private int reservationId;
     private String status;
-    private java.sql.Timestamp startTime;
-    private java.sql.Timestamp endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }
