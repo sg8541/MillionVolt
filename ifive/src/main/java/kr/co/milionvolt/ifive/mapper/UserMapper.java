@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.mapper;
 
+import kr.co.milionvolt.ifive.domain.user.UserDetailsVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
@@ -26,7 +27,12 @@ public interface UserMapper {
     @Select("select username, user_id, email, phone_number " +
             "from user " +
             "where id = #{id}")
-    UserInfoDTO selectUser(Integer id);
+    UserInfoDTO selectId(Integer id);
+    // 유저 정보 조회
+    @Select("select username, user_id, email, phone_number " +
+            "from user " +
+            "where user_id = #{userId}")
+    UserInfoDTO selectUser(String userId);
 
     // 유저 비밀번호 변경
     @Update("update user " +
@@ -68,7 +74,7 @@ public interface UserMapper {
             "using (station_id) " +
             "left join user " +
             "using (user_id) " +
-            "where user_id = #{userId}" +
+            "where user_id = #{userId} " +
             "order by r.created_at desc")
     List<UserInfoReservationListVO> findByUserReservationList(@Param("userId") Integer id);
 
@@ -118,4 +124,12 @@ public interface UserMapper {
             "order by p.created_at desc " +
             "limit 5")
     List<UserInfoPaymentListVO> getDashboardPayments(Integer id);
+
+
+    @Select("select id, user_id, password, role from user where user_id = #{userId}")
+    UserDetailsVO findByUserId(String userId);
+
+    @Select("select id, user_id, password, role from user where id = #{id}")
+    UserDetailsVO findById(Integer id);
+
 }
