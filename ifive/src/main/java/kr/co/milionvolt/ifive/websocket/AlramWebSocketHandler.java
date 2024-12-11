@@ -15,13 +15,18 @@ public class AlramWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("Reservation WebSocket Connection Established: " + session.getId());
+        sessions.put("alarm",session);
 
     }
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         System.out.println("Reservation WebSocket Message: " + message.getPayload());
+        String payload = message.getPayload();
+        // redis 예약 객체 만들어서
+
+        //service단 의존성 주입 후 조회.
+
 
     }
 
@@ -36,7 +41,7 @@ public class AlramWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendAlert(WebSocketSession session) throws IOException {
-        String stauts = String.format("충전 예약시간이에요.");
-        session.sendMessage(new TextMessage(stauts));
+
+
     }
 }
