@@ -77,7 +77,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 originCurrentBattery = dto.getCarBattery(); // 초기 현재 배터리 상태
                 currentBatteryMap.put(userId, currentBattery);
                 carId = dto.getCarId();
-                chargingSpeed = getChargingSpeed(dto.getChargerType()); // 몇 kw인지 구분.
+                chargingSpeed = getChargingSpeed(dto.getChargerSpeed()); // 몇 kw인지 구분.
                 double chargeAmount = chargingSpeed / 3600; // 초당 충전량
                 // 초기 배터리 상태를 가져오기 위한 서비스 호출
 
@@ -140,7 +140,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                            "\"modelId\": %d, \"reservationId\": %d, \"stationId\": %d, \"carNumber\": \"%s\",\"pricePerKWh\": %.2f, " +
                            " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f , \"message\": \"%s\"}",
                    batteryPercent, dto.getTotalPay(), chargingKwh,
-                   dto.getChargerType(), dto.getName(), dto.getAddress(), dto.getId(),
+                   dto.getChargerSpeed(), dto.getName(), dto.getAddress(), dto.getId(),
                    dto.getUsername(), dto.getModelId(), dto.getReservationId(), dto.getStationId(), dto.getCarNumber(),
                    dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds, dto.getMessage());
            session.sendMessage(new TextMessage(status));
