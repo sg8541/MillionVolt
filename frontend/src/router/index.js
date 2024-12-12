@@ -30,6 +30,21 @@ const router = createRouter({
       ],
     },
     {
+      path: '/login',
+      name: 'Login',
+      component : () => import('../views/pages/user-account/Login.vue'),
+    },
+    {
+      path: '/agreement',
+      neme: 'Agreement',
+      component : () => import('../views/pages/user-account/Agreement.vue'),
+    },
+    {
+      path: '/signup',
+      neme: 'Signup',
+      component : () => import('../views/pages/user-account/Signup.vue'),
+    },
+    {
       path:'/chargingStatus',
       name: 'ChargingStatus',
       component : ChargingStatus
