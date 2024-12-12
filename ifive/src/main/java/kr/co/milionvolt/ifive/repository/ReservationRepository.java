@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends CrudRepository<ReservationRedis,Integer> {
-    public List<ReservationRedis> findByUserId(int userId);
+
 }

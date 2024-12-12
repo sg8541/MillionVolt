@@ -98,6 +98,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                             );
                             session.sendMessage(new TextMessage(status));
                             System.out.println("100% 충전완료, 세션 종료.");
+                            payMap.clear();
                             break; // 충전 완료 시 루프 종료
                         }
                     currentBatteryMap.put(userId, currentBattery);
@@ -163,6 +164,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 if (currentBattery != null) {
                     // 현재 배터리 상태 업데이트
                     chargingStatusSerivce.chargingUpdate(carId, currentBattery);
+                    payMap.clear();
                     currentBatteryMap.remove(userId); // 맵에서 제거
                 }
                 // WebSocket 세션 종료

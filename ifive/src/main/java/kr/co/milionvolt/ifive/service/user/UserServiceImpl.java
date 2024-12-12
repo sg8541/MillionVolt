@@ -149,4 +149,10 @@ public class UserServiceImpl implements UserService {
         userMapper.newPassword(dto);
     }
 
+    @Override
+    public int selectUserId(String userId) {
+      int id =   userMapper.selectFindId(userId);
+      return id;
+    }
+
 }

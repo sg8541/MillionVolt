@@ -54,6 +54,8 @@ dependencies {
     // Jackson JSON 직렬화 (RefreshToken을 JSON으로 저장하기 위함)
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+
+
 }
 
 tasks.named('test') {

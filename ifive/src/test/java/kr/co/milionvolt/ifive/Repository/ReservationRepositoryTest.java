@@ -40,13 +40,12 @@ public class ReservationRepositoryTest {
         List<ReservationRedis> list = (List<ReservationRedis>) reservationRepository.findAll();
         list.stream().forEach(System.out::println);
 
-//       List<Timestamp> startTime =  allReservations.stream()
-//            .filter(reservation -> reservation.getUserId() == 1) // userId로 필터링
-//                .map(ReservationRedis::getStartTime) // startTime 추출
-//                .toList();
-//        startTime.stream().forEach(System.out::println);
-
+        System.out.println("-------------------------");
+//        List<ReservationRedis> lists = reservationRepository.findByUserId(1);
+//        lists.stream().forEach(System.out::println);
+        List<ReservationRedis> lists = list.stream().filter(reservationRedis -> reservationRedis.getUserId()==1)
+                .toList();
+        lists.forEach(System.out::println);
 
     }
-
 }
