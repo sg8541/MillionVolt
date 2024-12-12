@@ -13,9 +13,9 @@ public interface SignupMapper {
             "values (#{username}, #{userId}, #{email}, #{phoneNumber}, #{password})")
     boolean insertUser(SignupDTO signupDTO);
 
-    @Insert("insert into user_car(car_id, car_number, model_id, car_battery, charger_type_id) " +
-            "values (#{carId}, #{carNumber}, #{modelId}, #{carBattery}, #{chargerTypeId})")
-    boolean insertUserCar(String carId, String carNumber, Integer chargerTypeId, Integer modelId, BigDecimal carBattery);
+    @Insert("insert into user_car(car_id, car_number, model_id, charger_speed_id) " +
+            "values (#{carId}, #{carNumber}, #{modelId}, #{chargerSpeedId})")
+    boolean insertUserCar(String carId, String carNumber, Integer chargerSpeedId, Integer modelId, BigDecimal carBattery);
 
 
     @Select("select id from user where email = #{email}")

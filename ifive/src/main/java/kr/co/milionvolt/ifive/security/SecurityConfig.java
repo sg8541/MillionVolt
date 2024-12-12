@@ -78,7 +78,7 @@ public class SecurityConfig {
                                 "/api/v1/reservation/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
                         .requestMatchers("/api/v1/info/**").hasRole("MEMBER") // 'member' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
-                );
+                )
 
         // JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

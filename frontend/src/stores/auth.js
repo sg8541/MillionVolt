@@ -10,9 +10,9 @@ export const useAuthStore = defineStore('auth', {
     errorMessage: ''
   }),
   actions: {
-    async login(email, password) {
+    async login(userId, password) {
       try {
-        const response = await api.post('/login', { email, password })
+        const response = await api.post('/login', { userId, password })
 
         // Access Token 저장
         this.accessToken = response.data.accessToken
@@ -20,16 +20,14 @@ export const useAuthStore = defineStore('auth', {
 
         // 사용자 정보 저장
         this.user = {
-          memberId: response.data.memberId,
-          name: response.data.name,
-          email: response.data.email,
-          nickname: response.data.nickname,
-          roleId: response.data.roleId
+          id: response.data.id,
+          userId: response.data.userId,
+          role: response.data.role
         }
         localStorage.setItem('user', JSON.stringify(this.user))
 
         // 로그인 성공 시 리디렉션
-        router.push('/intro') // 원하는 페이지로 변경 가능
+        router.push('/dashboard') // 원하는 페이지로 변경 가능
       } catch (error) {
         if (error.response && error.response.data) {
           this.errorMessage = error.response.data

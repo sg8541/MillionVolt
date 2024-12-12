@@ -18,7 +18,7 @@
           </div>
           <div class="form-row">
             <label for="id">아이디<span class="star">*</span></label>
-            <input v-model="form.user_id" type="text" id="id" placeholder="아이디를 입력해주세요" required />
+            <input v-model="form.user_id" type="text" id="user_id" placeholder="아이디를 입력해주세요" required />
             <button type="button" class="verify-btn" @click="checkDuplicate('user_id')">중복확인</button>
           </div>
           <div class="form-row">
@@ -54,7 +54,7 @@
           </div>
           <div class="form-row">
             <label>선호 충전기 타입</label>
-            <select v-model="form.charger_type" id="charging" required>
+            <select v-model="form.charger_speed_id" id="charging" required>
               <option value="">선택안함</option>
               <option v-for="charger in chargers" :value="charger.value" :key="charger.value">{{ charger.text }}</option>
             </select>
@@ -73,6 +73,9 @@
   </template>
   
   <script>
+  import api from '../../../axios' // Axios 인스턴스 import
+
+
   export default {
     data() {
       return {
@@ -84,25 +87,25 @@
           email: '',
           phone_number: '',
           modal_id: '',
-          charger_type: '',
+          charge_speed_id: 4,
           car_number: '',
         },
         cars: [
-          { value: '1', text: 'EV6' },
-          { value: '2', text: 'EV9' },
-          { value: '3', text: 'IONIQ6' },
-          { value: '4', text: 'IONIQ5' },
-          { value: '5', text: 'Tesla Model S' },
-          { value: '6', text: 'Tesla Model X' },
-          { value: '7', text: 'Taycan' },
-          { value: '8', text: 'Mercedes-Benz EQC' },
+          { value: 1, text: 'EV6' },
+          { value: 2, text: 'EV9' },
+          { value: 3, text: 'IONIQ6' },
+          { value: 4, text: 'IONIQ5' },
+          { value: 5, text: 'Tesla Model S' },
+          { value: 6, text: 'Tesla Model X' },
+          { value: 7, text: 'Taycan' },
+          { value: 8, text: 'Mercedes-Benz EQC' },
         ],
         chargers: [
-          { value: '7kw', text: '7kw' },
-          { value: '50kw', text: '50kw' },
-          { value: '100kw', text: '100kw' },
-          { value: '200kw', text: '200kw' },
-          { value: '300kw+', text: '300kw 이상' },
+          { value: 1, text: '7kw' },
+          { value: 2, text: '50kw' },
+          { value: 3, text: '100kw' },
+          { value: 4, text: '200kw' },
+          { value: 5, text: '300kw 이상' },
         ],
       };
     },
@@ -112,13 +115,35 @@
       },
     },
     methods: {
+      async submitForm() {
+        try{
+          const response = await api.post('http://localhost:8081/api/v1/signup', {
+            username: this.form.username,
+            userId: this.form.user_id,
+            email: this.form.email,
+            phoneNumber: this.form.phone_number,
+            password: this.form.password,
+            modelId: this.form.modal_id,
+            chargerSpeedId: this.form.charger_speed_id,
+            carNumber: this.form.car_number
+          }) 
+          if(response.status == 200){
+            alert('가입 신청이 완료되었습니다!');
+            console.log(this.form);
+            window.location.href = '/login';
+          }
+        } catch(error){
+           alert(error) 
+        }
+      },
+
       checkDuplicate(field) {
         alert(`${field} 중복 확인 요청됨.`);
       },
-      submitForm() {
-        alert('가입 신청이 완료되었습니다!');
-        console.log(this.form);
-      },
+      // submitForm() {
+      //   alert('가입 신청이 완료되었습니다!');
+      //   console.log(this.form);
+      // },
     },
   };
   </script>

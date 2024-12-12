@@ -28,7 +28,7 @@ public class SignupServiceImpl implements SignupService {
             boolean insertUserResult = signupMapper.insertUser(signupDTO);
             if (insertUserResult) {
                 String carId = signupMapper.findById(signupDTO.getEmail());
-                boolean insertUserCarResult = signupMapper.insertUserCar(carId, signupDTO.getCarNumber(), signupDTO.getChargerTypeId(), signupDTO.getModelId(), signupDTO.getCarBattery());
+                boolean insertUserCarResult = signupMapper.insertUserCar(carId, signupDTO.getCarNumber(), signupDTO.getChargerSpeedId(), signupDTO.getModelId(), signupDTO.getCarBattery());
             } else {
                 sqlSession.rollback();
                 throw new DuplicateKeyException("이미 사용중인 이메일 또는 아이디입니다.");
