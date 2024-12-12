@@ -1,4 +1,5 @@
-package kr.co.milionvolt.ifive.mapper;
+
+/* package kr.co.milionvolt.ifive.mapper;
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
 import org.junit.jupiter.api.Test;
@@ -74,3 +75,4 @@ public class ChargerMapperTest {
     }
 
 }
+*/

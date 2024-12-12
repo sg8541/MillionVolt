@@ -2,6 +2,8 @@ package kr.co.milionvolt.ifive.domain.reservation;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
@@ -11,15 +13,15 @@ public class ReservationDTO {
 
   private Integer reservationId;
   private Integer chargerId;
-  private java.sql.Timestamp startTime;
-  private java.sql.Timestamp endTime;
+  private LocalDateTime startTime;
+  private LocalDateTime endTime;
   private Status status;
-  private java.sql.Timestamp createdAt;
+  private LocalDateTime createdAt;
   private Integer userId;
   private Integer stationId;
+  private String impUid;
 
   public enum Status {
-    pending,confirmed, cancelled, completed
+    pending, confirmed, cancelled, completed
   }
-
 }

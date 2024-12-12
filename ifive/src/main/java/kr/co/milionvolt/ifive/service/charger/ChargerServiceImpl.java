@@ -12,39 +12,38 @@ public class ChargerServiceImpl implements ChargerService {
 
     private final ChargerMapper chargerMapper;
 
-    // 생성자 주입 방식
     public ChargerServiceImpl(ChargerMapper chargerMapper) {
         this.chargerMapper = chargerMapper;
     }
 
-    // 충전기 전체 조회
+    // 1. 특정 충전소의 모든 충전기 조회
     @Override
-    public List<ChargerVO> getChargers() {
-        return chargerMapper.getChargers();
-    }
-
-    // 특정 충전소의 충전기 목록 조회
-    @Override
-    public List<ChargerVO> getChargersByStationId(Integer stationId) {
+    public List<ChargerDTO> getChargersByStationId(Integer stationId) {
         return chargerMapper.getChargersByStationId(stationId);
     }
 
-    // 특정 충전소의 특정 충전기의 상태 조회
+    // 2. 특정 충전기의 상태 조회
     @Override
-    public ChargerDTO.ChargerStatus getChargerStatusByStationIdAndChargerId(Integer stationId, Integer chargerId) {
-        return chargerMapper.getChargerStatusByStationIdAndChargerId(stationId, chargerId);
+    public ChargerVO getChargerById(Integer chargerId) {
+        return chargerMapper.getChargerById(chargerId);
     }
 
-    // 충전기 상태 변경
+    // 3. 충전기 상태 변경
     @Override
-    public boolean updateChargerStatus(Integer chargerId, ChargerDTO.ChargerStatus status) {
-        int result = chargerMapper.updateChargerStatus(chargerId, status.name()); // Enum을 String으로 변환
-        return result > 0; // 0보다 크면 상태가 변경된 것
+    public boolean updateChargerStatus(Integer chargerId, String status) {
+        int updatedRows = chargerMapper.updateChargerStatus(chargerId, status);
+        return updatedRows > 0; // 변경된 행이 있으면 성공
     }
 
-    // 충전기 상태 필터링
+    // 4. 특정 충전소의 예약 가능한 충전기 조회
     @Override
-    public List<ChargerVO> getChargersByStatus(ChargerDTO.ChargerStatus status) {
+    public List<ChargerVO> getAvailableChargersByStationId(Integer stationId) {
+        return chargerMapper.getAvailableChargersByStationId(stationId);
+    }
+
+    // 5. 충전기 상태에 따른 필터링
+    @Override
+    public List<ChargerVO> getChargersByStatus(String status) {
         return chargerMapper.getChargersByStatus(status);
     }
 }

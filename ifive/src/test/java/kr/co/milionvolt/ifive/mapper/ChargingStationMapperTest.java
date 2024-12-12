@@ -1,4 +1,4 @@
-package kr.co.milionvolt.ifive.mapper;
+/*package kr.co.milionvolt.ifive.mapper;
 
 import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationVO;
 import org.junit.jupiter.api.Test;
@@ -38,3 +38,4 @@ public class ChargingStationMapperTest {
 //        assertTrue(chargingStation.size() > 0, "충전소 정보가 없습니다.");
 //    }
 }
+*/

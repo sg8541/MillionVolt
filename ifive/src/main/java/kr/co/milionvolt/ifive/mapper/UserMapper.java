@@ -1,11 +1,10 @@
 package kr.co.milionvolt.ifive.mapper;
 
-import kr.co.milionvolt.ifive.domain.user.UserDetailsVO;
+import kr.co.milionvolt.ifive.domain.user.*;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
-import kr.co.milionvolt.ifive.domain.user.UserVO;
 import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
@@ -131,5 +130,26 @@ public interface UserMapper {
 
     @Select("select id, user_id, password, role from user where id = #{id}")
     UserDetailsVO findById(Integer id);
+
+    @Select(" SELECT user_id, created_at FROM user " +
+            " WHERE username = #{username} " +
+            " AND email = #{email} ")
+    public FindIdDTO findByIdUserId(String username, String email);
+
+    @Select(" SELECT email FROM user " +
+            " WHERE user_id = #{userId}")
+    public String findPasswordByUserId(String userId);
+
+    @Select(" SELECT username, user_id, email, password " +
+            " FROM user " +
+            " WHERE username = #{username} " +
+            " AND email = #{email} ")
+    public FindFwdDTO findPassword(String username , String email);
+
+    @Update(" UPDATE user SET password = #{password}" +
+            " WHERE user_id = #{userId} " +
+            " AND username = #{username} " +
+            " AND email = #{email} ")
+    public void newPassword(ResetDTO dto);
 
 }
