@@ -19,7 +19,7 @@ const router = createRouter({
           path: 'account-settings',
           component: () => import('../pages/account-settings.vue'),
         },
-        {
+        { 
           path: 'my-reservation',
           component: () => import('../pages/my-reservation.vue'),
         },
@@ -55,6 +55,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path:'/Reservation',
+      name: 'Reservation',
+      component: () => import('../views/payment/Reservation.vue'),
+    }
   ],
 })
 
