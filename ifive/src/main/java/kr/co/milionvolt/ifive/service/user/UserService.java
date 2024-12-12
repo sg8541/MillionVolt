@@ -1,11 +1,10 @@
 package kr.co.milionvolt.ifive.service.user;
 
+import kr.co.milionvolt.ifive.domain.user.*;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
-import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
-import kr.co.milionvolt.ifive.domain.user.UserVO;
 import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
 import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
@@ -37,4 +36,10 @@ public interface UserService {
     List<UserInfoReservationListVO> getDashboardReservations(Integer id);
     // 유저 대시보드 결제 리스트
     List<UserInfoPaymentListVO> getDashboardPayments(Integer id);
+
+
+    public FindIdDTO findByID(String username, String email); // 아이디 찾기
+    public String findPasswordByUserId(String userId); // 비밀번호 찾기1
+    public FindFwdDTO findPass(String username, String email); // 비밀번호 찾기2
+    public void newPwd(ResetDTO dto);// 비밀번호 초기화
 }
