@@ -82,6 +82,9 @@ private void scheduleAlarms(WebSocketSession session , int userId) {
             LocalDateTime now = LocalDateTime.now();
             System.out.println("현재시간 : "+now);
             List<ReservationRedis> reservations = reservationRedisService.findReservationInfoByUserId(userId);
+            if (reservations == null || reservations.isEmpty()) {
+                System.out.println("No reservations found for userId: " + userId);
+            }
             for (ReservationRedis reservation : reservations) {
                 LocalDateTime reservationTime = reservation.getStartTime();
                 System.out.println("예약한 시간 : "+reservationTime);

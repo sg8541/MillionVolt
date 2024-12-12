@@ -27,10 +27,10 @@ public class ReservationRepositoryTest {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12,11,13,10,1);
         LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12,11,13,10,2);
 
-        dto.setReservationId(3);
+        dto.setReservationId(12);
         dto.setStartTime(localDateTime);
         dto.setEndTime(localDateTime2);
-        dto.setUserId(2);
+        dto.setUserId(1);
 
         reservationRepository.save(dto);
     }

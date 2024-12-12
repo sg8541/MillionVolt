@@ -1,6 +1,7 @@
 <template>
-    <div @click="moveCharginStatus" class="alert-box" v-if="store.alarm.message && showAlert">
+    <div class="alert-box" v-if="store.alarm.message && showAlert">
             {{store.alarm.message}} 
+            <p @click="moveCharginStatus">충전하러 가기</p>
             <button class="close-btn" @click="closeAlert">X</button>
     </div>
     <div></div>
@@ -25,7 +26,7 @@ onMounted(()=>{
 
 const moveCharginStatus = () => {
     router.push({
-        name:ChargingStatus,
+        name:'ChargingStatus',
         query : {
             reservationId : store.alarm.reservationId,
         }
