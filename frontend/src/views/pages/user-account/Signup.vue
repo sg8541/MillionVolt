@@ -1,6 +1,7 @@
 <template>
         <div class="header">
-      <a href="../templates/main.html"><img src="images/logo.png" alt="백 만 볼트 로고" class="logo"></a>
+      <a href="../templates/main.html">
+        <img src="images/logo.png" alt="백 만 볼트 로고" class="logo"></a>
     </div>
     <div class="wrap">
 

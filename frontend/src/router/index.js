@@ -45,6 +45,11 @@ const router = createRouter({
       component : () => import('../views/pages/user-account/Signup.vue'),
     },
     {
+      path: '/find-id',
+      neme: 'FindByUserId',
+      component : () => import('../views/pages/user-account/FindByUserId.vue'),
+    },
+    {
       path:'/chargingStatus',
       name: 'ChargingStatus',
       component : ChargingStatus
