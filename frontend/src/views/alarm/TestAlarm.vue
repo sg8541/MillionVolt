@@ -1,6 +1,7 @@
 <template>
     <!-- 이동 버튼 -->
     <button @click="moveToTestAlarm">ChargingStatus 이동</button>
+    <button @click="movereservationAlarm">reservationAlarm 이동</button>
     
     <!-- 알림창 -->
     <div class="alert-box" v-if="store.finishAlarm.message && showAlert">
@@ -22,6 +23,11 @@
   const moveToTestAlarm = () => {
     router.push({
       name: 'ChargingStatus',
+    });
+  };
+  const movereservationAlarm = () => {
+    router.push({
+      name: 'ReservationAlarm',
     });
   };
   

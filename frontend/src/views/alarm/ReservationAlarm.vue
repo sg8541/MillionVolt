@@ -1,7 +1,8 @@
 <template>
+    <button @click="moveToTestAlarm">TestAlarm으로 이동</button>
     <div class="alert-box" v-if="store.alarm.message && showAlert">
-            {{store.alarm.message}} 
-            <p @click="moveCharginStatus">충전하러 가기</p>
+           <div> {{store.alarm.message}} </div> <br>
+            <div @click="moveCharginStatus">충전하러 가기</div>
             <button class="close-btn" @click="closeAlert">X</button>
     </div>
     <div></div>
@@ -13,7 +14,6 @@
 import { onMounted } from 'vue';
 import { useAlarmWebSocketStore } from '@/stores/webSocketAlarmStore';
 import { useRouter } from 'vue-router';
-import ChargingStatus from '../chargingwebsocket/ChargingStatus.vue';
 
 const store = useAlarmWebSocketStore();
 const router = useRouter();
@@ -23,6 +23,12 @@ onMounted(()=>{
     console.log("온마운트됨.");
 })
 
+
+const moveToTestAlarm = () => {
+    router.push({
+        name:'TestAlarm',
+    })
+}
 
 const moveCharginStatus = () => {
     router.push({
@@ -34,6 +40,7 @@ const moveCharginStatus = () => {
 }
 const closeAlert = () => {
     showAlert.value = false;
+    store.clearAlarmMessage();
 };
 
 
@@ -49,8 +56,8 @@ const closeAlert = () => {
     background-color: #ffffff;
     color: #000000;
     padding: 10px 20px;
-    border: 1px solid #3f3f3f;
-    border-radius: 5px;
+    border: 1px solid #c7c6c6;
+    border-radius: 15px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     font-size: 14px;
     animation: fadeIn 0.5s ease-in-out;

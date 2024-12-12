@@ -61,7 +61,6 @@ import { onMounted  } from 'vue';
 import { useWebSocketStore } from '@/stores/webSocketChargingStore';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import TestAlarm from '../alarm/TestAlarm.vue';
 import PayPrice from '../payment/PayPrice.vue';
 
 const store = useWebSocketStore();
@@ -69,7 +68,7 @@ const router = useRouter();
 
 const moveToTestAlarm = () => {
     router.push({
-        name:TestAlarm
+        name:'TestAlarm'
     }); 
 };
 
@@ -79,9 +78,13 @@ const paymentData = ref('');
 // 시간 포맷 함수
 const formatDateTime = (date) => {
     if (!date) return 'N/A';
-    const isoString = date.toISOString();
-    const formatted = isoString.slice(0, 19); // 'YYYY-MM-DDTHH:MM:SS' 부분만 추출
-    return formatted; 
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
 
@@ -101,6 +104,7 @@ const disconnectWebSocket = () => {
             amount:store.chargingData.amount,
             chargeStart:formatDateTime(store.startTime),
             chargeEnd:formatDateTime(store.endTime),
+            chargingKwh:store.chargingData.chargingKwh,
         }
     alert("충전 종료 - 결제 화면으로 이동합니다.");
 
@@ -113,6 +117,7 @@ const disconnectWebSocket = () => {
             amount:paymentData.value.amount,
             chargeStart:paymentData.value.chargeStart,
             chargeEnd:paymentData.value.chargeEnd,
+            chargingKwh:paymentData.value.chargingKwh,
         }
     })
         
@@ -157,6 +162,7 @@ watchEffect(() => {
             amount:store.chargingData.amount,
             chargeStart:formatDateTime(store.startTime),
             chargeEnd:formatDateTime(store.endTime),
+            chargingKwh:store.chargingData.chargingKwh,
         }
         alert("충전 종료 - 결제 화면으로 이동합니다.");
 
@@ -169,6 +175,7 @@ watchEffect(() => {
                 amount:paymentData.value.amount,
                 chargeStart:paymentData.value.chargeStart,
                 chargeEnd:paymentData.value.chargeEnd,
+                chargingKwh:paymentData.value.chargingKwh,
             }
         })
     }

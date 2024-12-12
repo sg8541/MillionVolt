@@ -75,19 +75,19 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 console.log("충전 완료 상태 감지됨");
                 console.log(finishAlarm.value.message);
             } else {
-                chargingData.value.batteryPercent = data.batteryPercent;
-                chargingData.value.amount = data.amount;
-                chargingData.value.chargingKwh = data.chargingKwh;
-                chargingData.value.chargerType = data.chargerType;
-                chargingData.value.name = data.name;
-                chargingData.value.address = data.address;
-                chargingData.value.carNumber = data.carNumber;
-                chargingData.value.pricePerKWh = data.pricePerKWh;
-                chargingData.value.expectAmount = data.expectAmount;
-                chargingData.value.estimatedTimeSeconds = data.estimatedTimeSeconds;
-                chargingData.value.userId = data.userId;
-                chargingData.value.reservationId = data.reservationId;
-                chargingData.value.stationId = data.stationId;
+                chargingData.value.batteryPercent = data.batteryPercent; // 배터리 퍼센트
+                chargingData.value.amount = data.amount; // 현재 충전 요금
+                chargingData.value.chargingKwh = data.chargingKwh; // 충전량 
+                chargingData.value.chargerType = data.chargerType; // 충전 타입 몇 kW
+                chargingData.value.name = data.name; // 충전소 명
+                chargingData.value.address = data.address; // 주소
+                chargingData.value.carNumber = data.carNumber; // 유저 차번호
+                chargingData.value.pricePerKWh = data.pricePerKWh; // kWh당 가격
+                chargingData.value.expectAmount = data.expectAmount;  // 예상금액
+                chargingData.value.estimatedTimeSeconds = data.estimatedTimeSeconds; //예상 시간
+                chargingData.value.userId = data.userId; // 유저 아이디(PK)
+                chargingData.value.reservationId = data.reservationId; // 예약번호
+                chargingData.value.stationId = data.stationId; // 충전소 pK
             }
         };
         

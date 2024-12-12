@@ -57,12 +57,12 @@ const router = createRouter({
     },
     {
       path:'/testAlarm',
-      name:TestAlarm,
+      name: 'TestAlarm',
       component:TestAlarm
     },
     {
       path:'/reservationAlarm',
-      name:ReservationAlarm,
+      name:'ReservationAlarm',
       component:ReservationAlarm
     },
     {
