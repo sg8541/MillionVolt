@@ -1,211 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>이용약관 페이지</title>
-</head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-    }
+<template>
+    <div class="terms-page">
+      <a href="../templates/main.html">
+        <img src="images/logo.png" alt="백만볼트 로고" class="logo" width="150" />
+      </a>
+      <div class="terms-container">
+        <div class="terms-header">이용약관</div>
+        <div class="terms-item" v-for="term in terms" :key="term.name">
+          <label>{{ term.label }}<span>{{ term.required ? '[필수]' : '[선택]' }}</span></label>
+          <div class="radio-group" v-if="term.name === 'term4'">
+            <label>
+              <img class="modal-image" src="images/modal-click.png" @click="openModal">
+            </label>
+          </div>
+          <div class="radio-group" v-if="term.type === 'radio'">
+            <label v-for="option in term.options" :key="option.value">
+              <input type="radio" :name="term.name" :value="option.value" v-model="term.selected" @change="handleRadioChange"> {{ option.label }}
+            </label>
+          </div>
 
-    /* 로고 스타일 */
-    .logo {
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        width: 150px; /* 로고 크기 조절 */
-    }
-
-    /* 컨테이너 스타일 */
-    .terms-container {
-        width: 800px;
-        height : 600px;
-        background: #fff;
-        border: 1px solid #ccc;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .terms-header {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        border-bottom: 3px solid #969696;
-        margin-top: 20px;
-        padding-bottom: 30px;
-    }
-
-    /* 약관 항목 스타일 */
-    .terms-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 15px 0;
-        border-bottom: 1px solid #ccc;
-        padding-bottom : 20px;
-        margin-bottom : 30px;
-    }
-
-    .terms-item label {
-        flex-grow: 1;
-        font-size: 16px;
-    }
-
-    .terms-item label span {
-        margin-left: 10px;
-        color: #007BFF;
-        font-size: 14px;
-    }
-
-    /* 라디오 버튼 */
-    .terms-item .radio-group {
-        display: flex;
-        gap: 10px;
-    }
-
-    /* 전체 동의 스타일 */
-    .agree-all {
-        font-size: 18px;
-        margin: 20px 0;
-        text-align: left;
-    }
-
-    /* 버튼 스타일 */
-    .next-button {
-        width: 100%;
-        height : 65px;
-        padding: 15px;
-        font-size: 16px;
-        color: white;
-        background-color: #ccc;
-        border: none;
-        border-radius: 8px;
-        cursor: not-allowed;
-        margin-top : 15px;
-    }
-
-    .next-button.enabled {
-        background-color: #141414;
-        cursor: pointer;
-    }
-    .modal-image{
-        width:16px;
-        height: 16px;
-        margin-right:10px;
-    }
-     .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        width: 80%;
-        max-width: 800px;
-        max-height: 70vh; /* 최대 높이 설정 */
-        overflow-y: auto; /* 세로 스크롤 활성화 */
-    }
-
-    .modal-content h2 {
-        margin-bottom: 10px;
-    }
-
-    .modal-content p {
-        margin-bottom: 20px;
-        line-height: 1.5;
-    }
-
-    .close-button {
-        background: #007BFF;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    span{
-      font-size : 16px;
-    }
-</style>
-<body>
-<!-- 로고 -->
-<a href="../templates/main.html"><img src="images/logo.png" alt="백만볼트 로고" class="logo" width="150"></a>
-
-<!-- 약관 동의 컨테이너 -->
-<div class="terms-container">
-    <div class="terms-header">이용약관</div>
-
-    <!-- 약관 항목 -->
-    <div class="terms-item">
-        <label>이용약관<span>[필수]</span></label>
-        <div class="radio-group">
-            <label><input type="radio" name="term1" value="agree"> 동의</label>
         </div>
-    </div>
-
-    <div class="terms-item">
-        <label>개인정보 수집 및 이용에 관한 안내<span>[필수]</span></label>
-        <div class="radio-group">
-            <label><input type="radio" name="term2" value="agree"> 동의</label>
+  
+        <div class="agree-all">
+          <label>
+            <input type="checkbox" id="agreeAll" v-model="agreeAll" @change="handleAgreeAll"> 모든 이용약관에 동의합니다.
+          </label>
+          <button class="next-button" id="nextButton" :disabled="!allAgreed" @click="nextClick" :class="{ enabled: allAgreed }">다음</button>
         </div>
-    </div>
-
-    <div class="terms-item">
-        <label>개인정보 제3자 제공 및 취급 위탁<span>[선택]</span></label>
-        <div class="radio-group">
-            <label><input type="radio" name="term3" value="agree"> 동의</label>
-            <label><input type="radio" name="term3" value="disagree"> 미동의</label>
-        </div>
-    </div>
-
-    <div class="terms-item">
-        <label>공공금융충전인프라 서비스 공급 및 이용약관<span>[필수]</span></label>
-        <div class="radio-group">
-            <label><img class="modal-image" src="images/modal-click.png"></label>
-        </div>
-    </div>
-
-    <div class="terms-item">
-        <label>만 14세 이상 가입 가능<span>[필수]</span></label>
-        <div class="radio-group">
-            <label><input type="radio" name="term5" value="agree"> 동의</label>
-        </div>
-    </div>
-
-    <!-- 전체 동의 -->
-    <div class="agree-all">
-        <label>
-            <input type="radio" id="agreeAll"> 모든 이용약관에 동의합니다.
-        </label>
-    </div>
-
-    <!-- 다음 버튼 -->
-    <button class="next-button" id="nextButton" disabled>다음</button>
-</div>
-
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <h2>이용약관</h2>
+  
+       
+      </div>
+  
+      <div id="modal" v-if="modalVisible" class="modal">
+        <div class="modal-content">
+          <span id="closeModal" @click="closeModal">&times;</span>
+          <p id="modalText"><h2>이용약관</h2>
         <p> <span>제1장 총칙</span><br><br>
 
             <span>제1조 (목적)</span><br>
@@ -631,56 +459,171 @@
             3. 본 약관은 2024.01.08. 부터 개정 시행합니다.<br>
 
         </p>
-        <button class="close-button" id="closeModal">닫기</button>
+        <button class="close-button" id="closeModal" @click="closeModal">닫기</button></p>
+        </div>
+      </div>
     </div>
-</div>
+  </template>
 
-<script>
-    const agreeAllCheckbox = document.getElementById('agreeAll');
-    const nextButton = document.getElementById('nextButton');
-    const radioGroups = document.querySelectorAll('.radio-group input[type="radio"]');
-    const modal = document.getElementById('modal');
-    const closeModalButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-
-    // 약관 이미지 클릭 시 모달 열기
-    document.querySelectorAll('.modal-image').forEach(image => {
-        image.addEventListener('click', () => {
-            modal.style.display = 'flex';
+  <script>
+  export default {
+    data() {
+      return {
+        agreeAll: false,
+        modalVisible: false,
+        terms: [
+          { name: "term1", label: "이용약관", required: true, type: "radio", options: [{ value: "agree", label: "동의" }] },
+          { name: "term2", label: "개인정보 수집 및 이용에 관한 안내", required: true, type: "radio", options: [{ value: "agree", label: "동의" }] },
+          { name: "term3", label: "개인정보 제3자 제공 및 취급 위탁", required: false, type: "radio", options: [{ value: "agree", label: "동의" }, { value: "disagree", label: "미동의" }] },
+          { name: "term4", label: "공공금융충전인프라 서비스 공급 및 이용약관", required: true, type: "radio",  options: [{ value: "agree", label: "동의" }] },
+          { name: "term5", label: "만 14세 이상 가입 가능", required: true, type: "radio", options: [{ value: "agree", label: "동의" }] }
+        ]
+      };
+    },
+    computed: {
+      allAgreed() {
+        return this.terms.every(term => term.selected === "agree" || !term.required);
+      }
+    },
+    methods: {
+      openModal() {
+        this.modalVisible = true;
+      },
+      closeModal() {
+        this.modalVisible = false;
+      },
+      handleAgreeAll() {
+        this.terms.forEach(term => {
+          term.selected = this.agreeAll ? "agree" : null;
         });
-    });
-
-    // 모달 닫기
-    closeModalButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    // 전체 동의 및 버튼 활성화
-    agreeAllCheckbox.addEventListener('change', () => {
-        const isChecked = agreeAllCheckbox.checked;
-        radioGroups.forEach(radio => radio.checked = isChecked && radio.value === "agree");
-        toggleButton();
-    });
-
-    radioGroups.forEach(radio => {
-        radio.addEventListener('change', () => {
-            const allAgreed = Array.from(radioGroups).every(radio => radio.checked || radio.name.includes("term3"));
-            toggleButton(allAgreed);
-        });
-    });
-
-    function toggleButton() {
-        const allAgreed = Array.from(radioGroups).every(radio => radio.checked || radio.name.includes("term3"));
-        nextButton.disabled = !allAgreed;
-        nextButton.classList.toggle('enabled', allAgreed);
+      },
+      handleRadioChange() {
+        this.agreeAll = this.terms.every(term => term.selected === "agree" || !term.required);
+      },
+      nextClick() {
+        if (this.allAgreed) {
+          this.$router.push("/signup");
+        }
+      }
     }
+  };
+  </script>
+  
+  <style scoped>
+   .terms-page {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
 
-     let nextclick = document.getElementsByClassName('next-button');
+.logo {
+  top: 5px;
+  left: 5px;
+  width: 150px;
+}
 
-      nextclick[0].onclick = function() {
-        window.location.href = "join.html";
-    };
+.terms-container {
+  width: 800px;
+  height: 630px;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-</script>
-</body>
-</html>
+.terms-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #969696;
+  margin-top: 20px;
+  padding-bottom: 30px;
+}
+
+.terms-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.terms-item label {
+  flex-grow: 1;
+  font-size: 16px;
+}
+
+.terms-item label span {
+  margin-left: 10px;
+  color: #007BFF;
+  font-size: 14px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 10px;
+}
+
+.agree-all {
+  font-size: 18px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.next-button {
+  width: 100%;
+  height: 65px;
+  padding: 15px;
+  font-size: 16px;
+  color: white;
+  background-color: #ccc;
+  border: none;
+  border-radius: 8px;
+  cursor: not-allowed;
+  margin-top: 15px;
+}
+
+.next-button.enabled {
+  background-color: #141414;
+  cursor: pointer;
+}
+
+.modal-image {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.modal {
+  display: flex; /* 기본값 수정 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+  </style>
+  

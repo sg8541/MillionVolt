@@ -20,7 +20,7 @@ const router = createRouter({
           path: 'account-settings',
           component: () => import('../pages/account-settings.vue'),
         },
-        {
+        { 
           path: 'my-reservation',
           component: () => import('../pages/my-reservation.vue'),
         },
@@ -29,6 +29,21 @@ const router = createRouter({
           component: () => import('../pages/my-payment.vue'),
         },
       ],
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component : () => import('../views/pages/user-account/Login.vue'),
+    },
+    {
+      path: '/agreement',
+      neme: 'Agreement',
+      component : () => import('../views/pages/user-account/Agreement.vue'),
+    },
+    {
+      path: '/signup',
+      neme: 'Signup',
+      component : () => import('../views/pages/user-account/Signup.vue'),
     },
     {
       path:'/chargingStatus',
@@ -61,6 +76,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path:'/Reservation',
+      name: 'Reservation',
+      component: () => import('../views/payment/Reservation.vue'),
+    }
   ],
 })
 

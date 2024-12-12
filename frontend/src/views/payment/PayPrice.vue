@@ -86,6 +86,7 @@ console.log('route.query:', route.query);
 });
 
 
+
 const payment = () => {
     const imp = window.IMP; // Iamport 객체
 
@@ -109,6 +110,7 @@ const payment = () => {
             `http://localhost:8081/api/v1/payment/save/${rsp.imp_uid}`,
             {
                 imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
+
                 paymentId: 2, // 주문 고유 ID
                 payment_method: rsp.pay_method, // 결제 방법
                 payment_status: rsp.status, // 결제 상태 (성공/실패)

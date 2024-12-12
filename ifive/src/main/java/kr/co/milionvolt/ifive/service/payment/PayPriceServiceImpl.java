@@ -14,15 +14,11 @@ import java.io.IOException;
 @Service
 public class PayPriceServiceImpl implements PayPriceService {
 
-    private final PayPriceMapper payPriceMapper;
+    @Autowired
+    private PayPriceMapper payPriceMapper;
 
     @Autowired
     private IamportClient iamportClient;
-
-    @Autowired
-    public PayPriceServiceImpl(PayPriceMapper payPriceMapper) {
-        this.payPriceMapper = payPriceMapper;
-    }
 
     public boolean verifyPayment(String imp_uid) throws IamportResponseException, IOException {
         IamportResponse<Payment> response = iamportClient.paymentByImpUid(imp_uid);
