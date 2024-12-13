@@ -3,29 +3,41 @@ import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
 import PayPrice from '@/views/payment/PayPrice.vue'
 import TestAlarm from '@/views/alarm/TestAlarm.vue'
 
+import { useAuthStore } from '@/stores/auth'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/dashboard' },
+    { path: '/', redirect: '/myinfo/dashboard/:id' },
     {
-      path: '/',
+      path: '/myinfo/',
       component: () => import('../layouts/default.vue'),
+      props: true,
+      meta: { requiresAuth: true, requiresMember: true },
       children: [
         {
-          path: 'dashboard',
+          path: 'dashboard/:id',
           component: () => import('../pages/dashboard.vue'),
+          props: true,
+          meta: { requiresAuth: true, requiresMember: true },
         },
         {
-          path: 'account-settings',
+          path: 'account-settings/:id',
           component: () => import('../pages/account-settings.vue'),
+          props: true,
+          meta: { requiresAuth: true, requiresMember: true },
         },
         { 
           path: 'my-reservation',
           component: () => import('../pages/my-reservation.vue'),
+          props: true,
+          meta: { requiresAuth: true, requiresMember: true },
         },
         {
           path: 'my-payment',
           component: () => import('../pages/my-payment.vue'),
+          props: true,
+          meta: { requiresAuth: true, requiresMember: true },
         },
       ],
     },
@@ -82,5 +94,23 @@ const router = createRouter({
     }
   ],
 })
+
+  // 라우터 가드 설정
+  router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore()
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!authStore.accessToken) {
+        next({ name: 'Login' })
+      } else if (to.matched.some(record => record.meta.requiresMember) && authStore.user.role !== 'MEMBER') {
+        // 유저 확인
+        next({ path: '/dashboard:id' })
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  })
+
 
 export default router

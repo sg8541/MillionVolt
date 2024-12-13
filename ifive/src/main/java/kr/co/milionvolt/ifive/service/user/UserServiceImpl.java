@@ -1,13 +1,7 @@
 package kr.co.milionvolt.ifive.service.user;
 
 import kr.co.milionvolt.ifive.domain.user.*;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.*;
 import kr.co.milionvolt.ifive.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,8 +73,8 @@ public class UserServiceImpl implements UserService {
     }
     // 차 배터리 + 선호 충전 타입 변경
     @Override
-    public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO) {
-        boolean success = userMapper.updateUserCarBatteryAndChargerType(updateDTO);
+    public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO) {
+        boolean success = userMapper.updateUserCarBatteryAndChargerSpeed(updateDTO);
         return success;
     }
 
@@ -147,6 +141,22 @@ public class UserServiceImpl implements UserService {
     public void newPwd(ResetDTO dto) {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         userMapper.newPassword(dto);
+    }
+
+    @Override
+    public List<UserDashboradChartDTO> getDashboardChart(Integer id) {
+        List<UserDashboradChartDTO> dashboradChartDTO = userMapper.getDashboardChartData(id);
+        return dashboradChartDTO;
+    }
+
+    @Override
+    public boolean updateUserInfo(UpdateUserInfoDTO infoDTO) {
+        try{
+            boolean result = userMapper.updateUserInfo(infoDTO);
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
