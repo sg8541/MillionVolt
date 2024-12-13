@@ -12,7 +12,7 @@ public interface ChargingStatusMapper {
     @Select(" SELECT u.id, u.user_id, u.username, uc.car_battery, uc.car_number, uc.car_id , " +
             " cm.model_id, cm.model_battery,r.reservation_id, r.start_time, r.end_time, " +
             " cs.station_id, cs.name, cs.address, " +
-            " c.charger_id, cs.price_per_kWh, ct.charger_type " +
+            " c.charger_id, cs.price_per_kWh, csp.charger_speed " +
             " FROM user u" +
             " JOIN user_car uc " +
             " ON u.id = uc.car_id " +
@@ -24,8 +24,8 @@ public interface ChargingStatusMapper {
             " ON r.reservation_id = c.charger_id " +
             " JOIN charging_station cs " +
             " ON cs.station_id = c.station_id " +
-            " JOIN charger_type ct " +
-            " ON ct.charger_type_id = c.charger_type_id " +
+            " JOIN charge_speed csp " +
+            " ON c.charger_speed_id = csp.charger_speed_id " +
             " WHERE u.user_id = #{userId} " +
             " AND r.reservation_id = #{reservationId}")
     public ChargingStatusDTO chargingStatus(String userId, int reservationId);
@@ -33,11 +33,11 @@ public interface ChargingStatusMapper {
     @Update( "UPDATE user_car SET  car_battery =#{carBattery} WHERE car_id=#{carId}")
     public void chargingUpdate(int carId, double carBattery);
 
-    @Update(" UPDATE charger SET charger_status='in_use' " +
+    @Update(" UPDATE charger SET charger_status_id = 2 " +
             " WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
     public void chargingStatusInuse(int chargerId, int stationId); // 충전시 상태 변화
 
-    @Update(" UPDATE charger SET charger_status='available' " +
+    @Update(" UPDATE charger SET charger_status_id = 1" +
             " WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
     public void chargingStatusAvailable(int chargerId, int stationId); // 출차시 상태변화???
 }

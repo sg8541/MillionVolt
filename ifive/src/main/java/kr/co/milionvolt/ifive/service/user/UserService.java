@@ -42,4 +42,6 @@ public interface UserService {
     public String findPasswordByUserId(String userId); // 비밀번호 찾기1
     public FindFwdDTO findPass(String username, String email); // 비밀번호 찾기2
     public void newPwd(ResetDTO dto);// 비밀번호 초기화
+
+    public int selectUserId(String userId); // 예약번호 조회 알림때 사용하는 메서드
 }

@@ -131,25 +131,32 @@ public interface UserMapper {
     @Select("select id, user_id, password, role from user where id = #{id}")
     UserDetailsVO findById(Integer id);
 
+
+    //아이디찾기
     @Select(" SELECT user_id, created_at FROM user " +
             " WHERE username = #{username} " +
             " AND email = #{email} ")
     public FindIdDTO findByIdUserId(String username, String email);
 
+    // 1. 비밀번호 찾기
     @Select(" SELECT email FROM user " +
             " WHERE user_id = #{userId}")
     public String findPasswordByUserId(String userId);
 
+    // 2. 비밀번호 찾기
     @Select(" SELECT username, user_id, email, password " +
             " FROM user " +
             " WHERE username = #{username} " +
             " AND email = #{email} ")
     public FindFwdDTO findPassword(String username , String email);
 
+    // 3. 비밀번호 찾기
     @Update(" UPDATE user SET password = #{password}" +
             " WHERE user_id = #{userId} " +
             " AND username = #{username} " +
             " AND email = #{email} ")
     public void newPassword(ResetDTO dto);
 
+    @Select(" SELECT id FROM user where user_id=#{userId}")
+    public Integer selectFindId(String userId);
 }
