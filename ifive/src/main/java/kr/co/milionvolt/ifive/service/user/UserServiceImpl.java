@@ -157,6 +157,10 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+      
+    public int selectUserId(String userId) {
+      int id =   userMapper.selectFindId(userId);
+      return id;
     }
 
 }

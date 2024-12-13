@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
 import PayPrice from '@/views/payment/PayPrice.vue'
 import TestAlarm from '@/views/alarm/TestAlarm.vue'
+import ReservationAlarm from '@/views/alarm/ReservationAlarm.vue'
 
 import { useAuthStore } from '@/stores/auth'
 
@@ -75,6 +76,11 @@ const router = createRouter({
       path:'/testAlarm',
       name:TestAlarm,
       component:TestAlarm
+    },
+    {
+      path:'/reservationAlarm',
+      name:ReservationAlarm,
+      component:ReservationAlarm
     },
     {
       path: '/',
