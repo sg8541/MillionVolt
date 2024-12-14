@@ -25,7 +25,7 @@
           </div>
           <button type="submit" class="login-button">로 그 인</button>
           <div class="signup-link">
-            <router-link to="/findID">아이디 찾기</router-link>
+            <router-link to="/find-id">아이디 찾기</router-link>
             <router-link to="/findPWD">비밀번호 찾기</router-link>
             <router-link to="/agreement">회원가입</router-link>
           </div>
@@ -122,7 +122,7 @@
   
   /* 로그인 버튼 스타일 */
   .login-button {
-    width: 430px;
+    width: 400px;
     padding: 10px;
     height: 65px;
     background-color: #0b0b0b;

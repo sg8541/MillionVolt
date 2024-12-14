@@ -13,4 +13,5 @@ public class DashboardResponseDTO {
     private UserDashboradUserCarDTO userCarInfo;
     private List<UserInfoReservationListVO> reservationList;
     private List<UserInfoPaymentListVO> paymentList;
+    private List<UserDashboradChartDTO> paymentChartList;
 }

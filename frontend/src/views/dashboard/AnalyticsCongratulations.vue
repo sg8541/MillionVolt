@@ -6,6 +6,22 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
 const { global } = useTheme()
 const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrationJohnDark : illustrationJohnLight)
+
+import { defineProps } from 'vue'
+import { useRoute } from 'vue-router'
+
+
+const route = useRoute()
+
+defineProps({
+  userCarInfo: {
+    type: Object,
+    required: true
+  },
+})
+
+
+
 </script>
 
 <template>
@@ -19,15 +35,15 @@ const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrat
       >
         <VCardItem>
           <VCardTitle class="text-md-h5 text-primary">
-            환영합니다 백만볼트님! 🎉
+            환영합니다 {{userCarInfo.username}}님! 🎉
           </VCardTitle>
         </VCardItem>
 
         <VCardText>
           <span>
-            차량 : 
+            차량 : {{ userCarInfo.modelName }}
             <br>
-            현재 배터리 : 
+            현재 배터리 : {{ userCarInfo.carBattery }}
           </span>
           <br>
           <br>
@@ -43,7 +59,7 @@ const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrat
           <VerticalNavLink
             :item="{
               title: '배터리 업데이트',
-              to: '/account-settings',
+              to: '/myinfo/account-settings/'+route.params.id,
             }"
           >배터리 업데이트
             </VerticalNavLink>
@@ -59,7 +75,7 @@ const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrat
         class="text-center"
       >
         <img
-          :src="illustrationJohn"
+          :src="userCarInfo.modelFilepath"
           :height="$vuetify.display.xs ? '150' : '175'"
           :class="$vuetify.display.xs ? 'mt-6 mb-n2' : 'position-absolute'"
           class="john-illustration flip-in-rtl"
