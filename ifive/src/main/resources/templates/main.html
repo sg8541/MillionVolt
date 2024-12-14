@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전기차 충전소 지도</title>
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey="></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9cc35d8f9e7435ff9fe2a4eb25f11087&libraries=services"></script>
     <style>
-
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -21,7 +20,8 @@
             padding: 0 20px;
         }
         #header img {
-            height: 40px;
+            max-height: 100%;
+            width: auto;
         }
         #header nav {
             display: flex;
@@ -39,163 +39,299 @@
             flex: 3;
             height: 100%;
         }
-        #infoPanel {
-            flex: 1;
-            max-width: 300px;
-            background: #f7f7f7;
-            padding: 20px;
-            overflow-y: auto;
-            border-left: 1px solid #ddd;
-        }
-        #infoPanel h2 {
-            margin-top: 0;
-        }
-        #infoPanel ul {
-            list-style: none;
-            padding: 0;
-        }
-        #infoPanel ul li {
-            margin: 5px 0;
-            padding: 5px;
-            background: #eaeaea;
-            border-radius: 5px;
-        }
-        /* 오버레이 배경 */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none; /* 기본적으로 숨김 */
-        }
-
-        /* 모달 창 */
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            max-height: 70%; /* 모달 최대 높이 */
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            overflow: hidden; /* 모달 전체 크기 고정 */
-        }
-
-        /* 닫기 버튼 */
-        .modal .close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* 모달 내용 영역 */
-        .modal-content {
-            padding: 20px;
-            overflow-y: auto; /* 수직 스크롤 활성화 */
-            max-height: calc(70% - 40px); /* 모달 최대 높이에서 여백 제외 */
-        }
-
-        #mycharge {
-            text-align: center;
-        }
-
-        #myplace {
-            margin-top: 40px;
-        }
-
-        /* 기본 스타일 */
         .dropdown {
             position: relative;
             display: inline-block;
         }
 
-        .dropdown-toggle {
+        .dropdown-button {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             padding: 10px 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
+            font-size: 16px;
             cursor: pointer;
         }
 
         .dropdown-menu {
-            display: none; /* 기본적으로 숨김 */
+            display: none;
             position: absolute;
-            top: 100%;
-            left: 0;
-            width: 300px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
+            background-color: white;
+            border: 1px solid #ddd;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            z-index: 100;
         }
 
-        .dropdown-menu .options {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-
-        .option {
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
-            cursor: pointer;
-        }
-
-        .toggle {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .actions {
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* 활성화 상태 */
-        .dropdown-menu.show {
+        .dropdown-menu.active {
             display: block;
         }
 
-        .option.active {
-            background: #007bff;
+        .dropdown-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .speed-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .speed-option {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .speed-option.active {
+            background-color: #007bff;
             color: white;
             border-color: #007bff;
         }
+        .apply-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
 
-        #chargerStation {
-            background-color: #ffffff;
+        .button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button.reset {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .button.apply {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 모달창 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 어두운 배경 */
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+        }
+
+        .station-image-wrapper {
+            width: 100%;
+            height: auto;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .station-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+
+        .station-info {
             text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .station-info h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .station-info p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .station-details {
+            margin: 20px 0;
+        }
+
+        .station-details h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .station-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .station-details ul li {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .charger-status {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+
+        .charger {
+            flex: 1 1 calc(25% - 10px); /* 네 개의 열로 배치 */
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+
+        .reserve-button {
+            padding: 10px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .reserve-button.active {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .reserve-button.inactive {
+            background-color: #ddd;
+            color: #888;
+            cursor: not-allowed;
+        }
+        .charger {
+            flex: 1 1 calc(25% - 10px); /* 네 개의 열로 배치 */
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s ease;
+        }
+
+        .charger:hover {
+            background-color: #f0f8ff; /* 블록 hover 효과 */
+        }
+
+        .charger[style*="not-allowed"]:hover {
+            background-color: #f9f9f9; /* 비활성화된 상태는 hover 효과 제거 */
+        }
+
+        /* 사이드바 */
+        #sidebar-container {
+            flex: 1;
+            background-color: #f8f9fa;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #search-box {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        #charging-station-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        #charging-station-list li {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #charging-station-list li:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* 페이지네이션 */
+        #pagination {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #pagination span {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: white;
+            transition: background-color 0.3s;
+        }
+
+        #pagination span:hover {
+            background-color: #f0f8ff;
+        }
+
+        #pagination span.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
         }
     </style>
 </head>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전기차 충전소 지도</title>
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9cc35d8f9e7435ff9fe2a4eb25f11087"></script>
-    <style>
-        /* 기존 스타일 유지 */
-    </style>
-</head>
 <body>
-<!-- 상단(Header) -->
 <header id="header">
     <img src="/static/images/millionvolte.png" alt="로고" style="width: 120px; height: 120px">
     <nav>
@@ -206,160 +342,390 @@
         <a href="#">로그아웃</a>
     </nav>
 </header>
-
-<!-- 충전속도 카테고리 -->
 <div class="dropdown">
-    <button class="dropdown-toggle">충전속도</button>
+    <button class="dropdown-button">충전속도</button>
     <div class="dropdown-menu">
-        <div class="options">
-            <button class="option">7kW</button>
-            <button class="option">50kW</button>
-            <button class="option">100kW</button>
-            <button class="option">200kW</button>
-            <button class="option">300kW 이상</button>
+        <div class="dropdown-header">충전속도</div>
+        <div class="speed-options">
+            <div class="speed-option" data-speed="7kW">7kW</div>
+            <div class="speed-option" data-speed="50kW">50kW</div>
+            <div class="speed-option" data-speed="100kW">100kW</div>
+            <div class="speed-option" data-speed="200kW">200kW</div>
+            <div class="speed-option" data-speed="300kW">300kW 이상</div>
         </div>
-        <div class="actions">
-            <button id="reset">초기화</button>
-            <button id="apply">적용하기</button>
+        <div class="apply-buttons">
+            <button class="button reset" id="resetButton">초기화</button>
+            <button class="button apply" id="applyButton">적용하기</button>
         </div>
     </div>
 </div>
-
-<!-- 메인(Main) -->
 <div id="main">
-    <!-- 지도 -->
     <div id="map"></div>
 
-    <!-- 고정 정보 창 -->
-    <div id="infoPanel">
+    <!-- 사이드바 -->
+    <div id="sidebar-container">
         <div id="searchContainer">
-            <input type="text" id="searchInput" placeholder="충전소, 지역 검색" style="margin-top: 70px; width: 70%;">
-            <button onclick="searchStations()">검색</button>
+        <input type="text" id="search-box" placeholder="충전소, 지역 검색" />
+        <button onclick="searchStations()">검색</button>
         </div>
-        <div id="myplace">
-            <h2 id="mycharge">내 주변 충전소</h2>
-            <ul id="stationList">
-                <!-- 타임리프를 사용하여 충전소 목록 출력 -->
-                <li th:each="station : ${chargingStations}" id="chargerStation">
-                    <span th:text="${station.name}">충전소 이름</span><br>
-                    <span th:text="${station.chargers.size()}">충전기 개수</span><br>
-                    <span th:text="${station.chargeSpeed}">충전 속도</span> |
-                    <span th:text="${station.chargeRate}">충전 요금</span>
-                </li>
-            </ul>
+        <ul id="charging-station-list"></ul>
+        <div id="pagination">
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
         </div>
-        <div id="selectedStation">
-            <!-- 선택된 충전소 정보 -->
+    </div>
+
+    <!-- 모달창 -->
+    <div id="stationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="stationDetails">
+                <!-- 충전소 사진 -->
+                <div class="station-image-wrapper">
+                    <img id="stationImage" src="" alt="충전소 사진" class="station-image">
+                </div>
+                <!-- 충전소 이름 및 주소 -->
+                <div class="station-info">
+                    <h2 id="stationName">충전소 이름</h2>
+                    <p id="stationAddress">충전소 주소</p>
+                    <p><strong>사용 가능 충전기:</strong> <span id="stationChargers"></span></p>
+                </div>
+
+                <!-- 충전소 상세 정보 -->
+                <div class="station-details">
+                    <h3>충전소 정보</h3>
+                    <ul>
+                        <li><strong>사업자:</strong> <span id="operator"></span></li>
+                        <li><strong>사용 제한:</strong> <span id="usageRestriction"></span></li>
+                        <li><strong>운영 시간:</strong> <span id="operatingHours"></span></li>
+                        <li><strong>전화번호:</strong> <span id="contactNumber"></span></li>
+                    </ul>
+                </div>
+                <!-- 충전기 상태 -->
+                <div class="charger-status">
+                    <!-- 각 충전기의 상태가 동적으로 추가 -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
+    <script>
+        // 지도 초기화
+    function initializeMap() {
+        const container = document.getElementById('map');
+        const options = {
+            center: new kakao.maps.LatLng(37.5665, 126.9780),
+            level: 5
+        };
+        const map = new kakao.maps.Map(container, options);
 
-<div id="modalOverlay" class="overlay"></div>
-<div id="modal" class="modal">
-    <span class="close" onclick="closeModal()">×</span>
-    <h2>충전소 정보</h2>
-    <div id="modalContent" class="modal-content">
-        <!-- 충전소 정보 목록 -->
-        <ul>
-            <li th:each="charger : ${selectedStation.chargers}">
-                <span th:text="'충전기 ' + ${charger.id} + ': ' + ${charger.status}">충전기 상태</span>
-            </li>
-        </ul>
-    </div>
-</div>
+        // 사용자 현재 위치 가져오기
+        getCurrentLocation((lat, lng) => {
+            const userPosition = new kakao.maps.LatLng(lat, lng);
+            map.setCenter(userPosition);
 
-<script>
-    // 카카오 맵 초기화
-    var mapContainer = document.getElementById('map');
-    var mapOption = {
-        center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
-        level: 5
+            // 사용자 위치 마커 추가
+            const userMarker = new kakao.maps.Marker({
+                position: userPosition,
+                map: map
+            });
+
+            // 사용자 위치 정보 창
+            const userInfoWindow = new kakao.maps.InfoWindow({
+                content: '<div style="padding:5px;">현재 위치</div>'
+            });
+            userInfoWindow.open(map, userMarker);
+
+            // 충전소 데이터 로드
+            loadChargingStationsWithGeocoding(map);
+        });
+    }
+
+    // 현재 위치 가져오기
+    function getCurrentLocation(callback) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    callback(lat, lng);
+                },
+                () => {
+                    console.error("위치 정보를 가져오는 데 실패했습니다.");
+                    callback(37.5665, 126.9780);
+                }
+            );
+        } else {
+            console.error("Geolocation API를 지원하지 않는 브라우저입니다.");
+            callback(37.5665, 126.9780);
+        }
+    }
+
+    // 주소 -> 좌표 전환
+    function getCoordinatesFromAddress(address, callback) {
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, function (result, status) {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                const coords = {
+                    latitude: parseFloat(result[0].y),
+                    longitude: parseFloat(result[0].x)
+                };
+                callback(coords);
+            } else {
+                callback(null);
+            }
+        });
+    }
+
+    // 충전소 데이터 가져오기
+    function loadChargingStationsWithGeocoding(map) {
+        const bounds = new kakao.maps.LatLngBounds();
+
+        // 충전소 데이터 API 호출
+        fetch('/api/v1/charging-stations/markers')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    console.error("충전소 데이터가 없습니다.");
+                    return;
+                }
+
+                data.forEach(station => {
+                    if (!station.address) {
+                        return;
+                    }
+
+                    // 주소 → 좌표 변환
+                    getCoordinatesFromAddress(station.address, (coords) => {
+                        if (coords) {
+                            const stationPosition = new kakao.maps.LatLng(coords.latitude, coords.longitude);
+
+                            // 마커 생성
+                            const marker = new kakao.maps.Marker({
+                                position: stationPosition,
+                                map: map
+                            });
+
+                            // 마커 클릭 시 모달창 열기
+                            kakao.maps.event.addListener(marker, 'click', () => {
+                                console.log("마커 클릭:", station); // 디버깅 로그
+                                openModalWithStationInfo(station); // 모달창 열기
+                            });
+
+                            bounds.extend(stationPosition); // 지도 경계 확장
+                        }
+                    });
+                });
+                // 사이드바에 충전소 리스트 추가
+                updateSidebar(stations);
+            })
+            .catch(error => console.error("충전소 데이터를 가져오는 중 오류 발생:", error));
+    }
+
+        // 사이드바 업데이트
+        function updateSidebar(stations) {
+            const sidebar = document.getElementById('charging-station-list');
+            sidebar.innerHTML = '';
+
+            stations.forEach((station) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+            <div><strong>${station.name}</strong></div>
+            <div>사용 가능 충전기: ${station.availableCharger} / ${station.totalCharger}</div>
+            <div>충전 속도: ${station.chargerSpeedId || '정보 없음'} / 충전 요금: ${station.pricePerKWh || '정보 없음'}</div>
+        `;
+
+                li.addEventListener('click', () => {
+                    openModalWithStationInfo(station);
+                });
+
+                sidebar.appendChild(li);
+            });
+        }
+
+        // 검색 기능
+        document.getElementById('search-box').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('#charging-station-list li');
+
+            items.forEach((item) => {
+                const name = item.querySelector('div strong').textContent.toLowerCase();
+                item.style.display = name.includes(query) ? '' : 'none';
+            });
+        });
+
+    window.onload = function () {
+        initializeMap();
     };
-    var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    // 충전소 데이터 예제 (타임리프는 서버에서 이 데이터를 처리)
-    var chargingStations = [[${chargingStations}]];  // 타임리프를 통해 서버에서 전달된 데이터를 받아옴
+    // 충전 속도 선택
+    document.addEventListener('click', event => {
+        const dropdown = document.getElementById('speedOptions');
+        const toggleButton = document.getElementById('speedDropdown');
 
-    // 마커 생성 및 클릭 이벤트
-    chargingStations.forEach(function(station) {
-        var marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(station.lat, station.lng),
-            map: map
-        });
+        if (toggleButton.contains(event.target)) {
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        } else if (!dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
 
-        kakao.maps.event.addListener(marker, 'click', function() {
-            showStationInfo(station);
+    async function fetchStations(speeds) {
+        const query = speeds.length > 0 ? `?speeds=${speeds.join(',')}` : '';
+        const response = await fetch(`/api/v1/charging-stations/markers${query}`);
+        return response.json();
+    }
+
+    let markers = []; // 현재 표시된 마커 저장
+
+    function clearMarkers() {
+        markers.forEach(marker => marker.setMap(null)); // 모든 마커 제거
+        markers = []; // 배열 초기화
+    }
+
+    document.querySelectorAll('#speedOptions input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', async () => {
+            const selectedSpeeds = Array.from(
+                document.querySelectorAll('#speedOptions input[type="checkbox"]:checked')
+            ).map(cb => cb.value);
+
+            const stations = await fetchStations(selectedSpeeds);
+            addMarkers(map, stations);
+
+            // 마커 업데이트
+            clearMarkers();
+            addMarkers(map, stations);
         });
     });
 
-    // 충전소 정보 표시
-    function showStationInfo(station) {
-        var infoDiv = document.getElementById('selectedStation');
-        infoDiv.innerHTML = `<h4>${station.name}</h4>`;
-        var ul = document.createElement('ul');
-        station.chargers.forEach(function(charger) {
-            var li = document.createElement('li');
-            li.textContent = `충전기 ${charger.id}: ${charger.status}`;
-            ul.appendChild(li);
-        });
-        infoDiv.appendChild(ul);
-    }
+    // 드롭다운 버튼 및 메뉴
+    const dropdownButton = document.querySelector('.dropdown-button');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const speedOptions = document.querySelectorAll('.speed-option');
+    const resetButton = document.getElementById('resetButton');
+    const applyButton = document.getElementById('applyButton');
 
-    // 검색 기능 (예제)
-    function searchStations() {
-        var query = document.getElementById('searchInput').value;
-        alert(`검색어 "${query}"로 충전소 검색을 수행합니다.`);
-    }
-
-    function openModal() {
-        document.getElementById('modalOverlay').style.display = 'block';
-        document.getElementById('modal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('modalOverlay').style.display = 'none';
-        document.getElementById('modal').style.display = 'none';
-    }
-
-    // 드롭다운 토글
-    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
-        const dropdownMenu = document.querySelector('.dropdown-menu');
-        dropdownMenu.classList.toggle('show');
+    // 드롭다운 열기/닫기 기능
+    dropdownButton.addEventListener('click', (event) => {
+        dropdownMenu.classList.toggle('active'); // 메뉴 열기/닫기 토글
+        event.stopPropagation(); // 클릭 이벤트 전파 방지
     });
 
-    // 옵션 클릭 이벤트
-    document.querySelectorAll('.option').forEach(option => {
+    // 드롭다운 외부 클릭 시 닫기
+    document.addEventListener('click', (event) => {
+        if (!dropdownMenu.contains(event.target) && !dropdownButton.contains(event.target)) {
+            dropdownMenu.classList.remove('active'); // 메뉴 닫기
+        }
+    });
+
+    // 충전속도 옵션 선택 시 스타일 토글
+    speedOptions.forEach(option => {
         option.addEventListener('click', () => {
-            option.classList.toggle('active');
+            option.classList.toggle('active'); // 선택된 항목 스타일 변경
         });
     });
 
     // 초기화 버튼
-    document.getElementById('reset').addEventListener('click', () => {
-        document.querySelectorAll('.option').forEach(option => {
-            option.classList.remove('active');
-        });
+    resetButton.addEventListener('click', () => {
+        speedOptions.forEach(option => option.classList.remove('active')); // 모든 옵션 비활성화
     });
 
-    // 적용하기 버튼
-    document.getElementById('apply').addEventListener('click', () => {
-        const selectedOptions = Array.from(document.querySelectorAll('.option.active'))
-            .map(option => option.textContent.trim());
+    // 속도 적용 버튼
+    applyButton.addEventListener('click', async () => {
+        const selectedSpeeds = Array.from(speedOptions)
+            .filter(option => option.classList.contains('active'))
+            .map(option => option.dataset.speed); // 선택된 속도 추출
 
-        console.log('Selected Options:', selectedOptions);
+        console.log('선택된 충전속도:', selectedSpeeds);
+
+        // 선택된 속도로 서버 요청
+        const stations = await fetchStations(selectedSpeeds);
+        clearMarkers(); // 기존 마커 제거
+        addMarkers(map, stations); // 새로운 마커 추가
+
+        dropdownMenu.classList.remove('active'); // 메뉴 닫기
     });
 
-    // 필터 적용하기 버튼 이벤트
-    document.getElementById('apply').addEventListener('click', () => {
-        const selectedOptions = Array.from(document.querySelectorAll('.option.active'))
-            .map(option => option.textContent.trim());
+    // 모달창 엘리먼트
+    const modal = document.getElementById('stationModal');
+    const closeButton = document.querySelector('.close-button');
 
-        const chargeSpeed = selectedOptions.length ? selectedOptions[0] : null; // 첫 번째 옵션
-        const chargerStatus = selectedOptions.length > 1 ? selectedOptions[1] : null; // 두 번째 옵션
-
-        // 필터 적용을 위한 URL로 이동
-        window.location.href = `/charging/filter?chargeSpeed=${chargeSpeed}&chargerStatus=${chargerStatus}`;
+    // 모달창 닫기 이벤트
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
     });
-</script>
+
+        function openModalWithStationInfo(station) {
+            const modal = document.getElementById('stationModal');
+            const stationImage = document.getElementById('stationImage');
+            const stationName = document.getElementById('stationName');
+            const stationAddress = document.getElementById('stationAddress');
+            const stationChargers = document.getElementById('stationChargers');
+            const chargerStatusContainer = document.querySelector('.charger-status');
+
+            // 충전소 정보 채우기
+            stationImage.src = station.filePath || '/static/images/default.jpg';
+            stationName.textContent = station.name || '정보 없음';
+            stationAddress.textContent = station.address || '정보 없음';
+            stationChargers.textContent = `${station.availableCharger || 0} / ${station.totalCharger || 0}`;
+
+            // 충전기 상태 표시
+            chargerStatusContainer.innerHTML = ''; // 기존 상태 초기화
+
+            const totalChargerCount = station.totalCharger || 0; // 총 충전기 개수
+            const chargers = station.chargers || []; // 충전기 데이터
+            const chargerType = station.chargerType || '정보 없음';
+
+            // 총 충전기 개수만큼 블록 생성
+            for (let i = 0; i < totalChargerCount; i++) {
+                const charger = chargers[i] || {}; // i번째 충전기 데이터 (없으면 빈 객체)
+                const chargerElement = document.createElement('div');
+                chargerElement.classList.add('charger');
+
+                // 상태에 따라 블록 스타일 설정
+                const isAvailable = charger.chargerStatusId === 1; // 1: 사용 가능
+                chargerElement.style.cursor = isAvailable ? 'pointer' : 'not-allowed';
+                chargerElement.style.backgroundColor = isAvailable ? '#e0f7fa' : '#f5f5f5';
+
+                // 충전기 블록 내용
+                chargerElement.innerHTML = `
+            <div><strong>충전기 ${i + 1}</strong></div>
+            <div>타입: ${station.chargerType}</div>
+            <div>속도: ${charger.chargerSpeedId || '정보 없음'}</div>
+            <div>상태: ${getChargerStatus(charger.chargerStatusId)}</div>
+        `;
+
+                // 클릭 이벤트 추가
+                chargerElement.addEventListener('click', () => {
+                    if (isAvailable) {
+                        // 예약 페이지로 이동
+                        window.location.href = `/reservation?chargerId=${charger.chargerId}`;
+                    } else {
+                        alert('충전기가 사용 중이거나 점검 중입니다.');
+                    }
+                });
+
+                chargerStatusContainer.appendChild(chargerElement);
+            }
+
+            // 모달창 열기
+            modal.style.display = 'block';
+        }
+
+        // 충전기 상태 ID를 텍스트로 변환
+        function getChargerStatus(chargerStatusId) {
+            switch (chargerStatusId) {
+                case 1: return '사용 가능';
+                case 2: return '충전 중';
+                case 3: return '점검 중';
+                default: return '정보 없음';
+            }
+        }
+
+
+    </script>
 </body>
 </html>

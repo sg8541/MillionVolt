@@ -1,13 +1,7 @@
 package kr.co.milionvolt.ifive.service.user;
 
 import kr.co.milionvolt.ifive.domain.user.*;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
+import kr.co.milionvolt.ifive.domain.userinfo.*;
 
 import java.util.List;
 
@@ -25,7 +19,7 @@ public interface UserService {
     // 유저 차 번호 + 모델 업데이트
     boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO);
     // 유저 배터리 + 선호 타입 업데이트
-    boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO);
+    boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO);
     // 유저의 예약 내역
     List<UserInfoReservationListVO> getUserReservationList(Integer id);
     // 유저의 결제 내역
@@ -42,4 +36,9 @@ public interface UserService {
     public String findPasswordByUserId(String userId); // 비밀번호 찾기1
     public FindFwdDTO findPass(String username, String email); // 비밀번호 찾기2
     public void newPwd(ResetDTO dto);// 비밀번호 초기화
+
+    List<UserDashboradChartDTO> getDashboardChart(Integer id);
+
+    boolean updateUserInfo(UpdateUserInfoDTO infoDTO);
+    public int selectUserId(String userId); // 예약번호 조회 알림때 사용하는 메서드
 }

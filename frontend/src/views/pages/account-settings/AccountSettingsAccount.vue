@@ -1,21 +1,61 @@
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
+import api from '@/axios';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router'
 
-const accountData = {
-  avatarImg: avatar1,
-  firstName: 'john',
-  id: 'milionvolt',
-  email: 'milionvolt@example.com',
-  phone: '010-1234-5678',
-}
+const route = useRoute()
+const id = route.params.id;
 
-const refInputEl = ref()
-const accountDataLocal = ref(structuredClone(accountData))
-const isAccountDeactivated = ref(false)
+console.log("route.params.id : " +id);
 
+// 초기 값 설정
+const info = ref({});
+const accountDataLocal = ref({
+  username: '',
+  userId: '',
+  email: '',
+  phoneNumber: ''
+});
+
+// 회원 정보 가져오기
+const fetchMyInfo = async () => {
+  try {
+    const response = await api.get('/myinfo/' + id);
+    info.value = response.data;
+    accountDataLocal.value = { ...info.value };
+  } catch (error) {
+    console.error("Error fetching my info:", error);
+  }
+};
+
+// 회원 정보 리셋
 const resetForm = () => {
-  accountDataLocal.value = structuredClone(accountData)
-}
+  accountDataLocal.value = { ...info.value };
+};
+
+// 회원 정보 수정
+const updateInfo = async () => {
+  try {
+    const response = await api.post('/myinfo/' + id, {
+      username: accountDataLocal.value.username,
+      email: accountDataLocal.value.email,
+      phoneNumber: accountDataLocal.value.phoneNumber
+    });
+
+    if (response.status === 200) {
+      alert('회원정보가 성공적으로 변경되었습니다.');
+      console.log(accountDataLocal.value); // 변경된 데이터 확인
+    }
+  } catch (error) {
+    console.error("Error updating info:", error);
+    alert("정보 변경에 실패하였습니다.");
+  }
+};
+
+onMounted(() => {
+  fetchMyInfo();
+});
 
 // const changeAvatar = file => {
 //   const fileReader = new FileReader()
@@ -51,8 +91,8 @@ const resetForm = () => {
                 cols="12"
               >
                 <VTextField
-                  v-model="accountDataLocal.firstName"
-                  placeholder="John"
+                  v-model="accountDataLocal.username"
+                  :placeholder="info.username"
                   label="성명"
                   readonly
                 />
@@ -64,9 +104,9 @@ const resetForm = () => {
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.id"
+                  v-model="accountDataLocal.userId"
                   label="ID"
-                  placeholder="milionvolt"
+                  :placeholder="info.userId"
                   readonly
                 />
               </VCol>
@@ -76,19 +116,10 @@ const resetForm = () => {
                 cols="12"
                 md="6"
               >
-                <!-- <VTextField 
-                  v-model="accountDataLocal.email"
-                  label="E-mail"
-                  placeholder="milionvolt@gmail.com"
-                  type="email">
-                  <div style="text-align: right; position: relative;">
-                    <VBtn style="float: right;">이메일 변경</VBtn>
-                  </div>
-                  </VTextField> -->
                   <VTextField
                   v-model="accountDataLocal.email"
                   label="E-mail"
-                  placeholder="milionvolt@gmail.com"
+                  :placeholder="info.email"
                   type="email"
                   outlined
                 >
@@ -111,9 +142,9 @@ const resetForm = () => {
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.phone"
+                  v-model="accountDataLocal.phoneNumber"
                   label="Phone Number"
-                  placeholder="+1 (917) 543-9876"
+                  :placeholder="info.phoneNumber"
                 />
               </VCol>
 
@@ -122,7 +153,8 @@ const resetForm = () => {
                 cols="12"
                 class="d-flex flex-wrap gap-4"
               >
-                <VBtn>정보 변경</VBtn>
+                <VBtn
+                @click.prevent="updateInfo">정보 변경</VBtn>
 
                 <VBtn
                   color="secondary"

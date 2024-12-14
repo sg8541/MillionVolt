@@ -1,15 +1,7 @@
 package kr.co.milionvolt.ifive.controller.user;
 
-import jakarta.servlet.http.HttpServletRequest;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
+import kr.co.milionvolt.ifive.domain.userinfo.*;
 import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.DashboardResponseDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
 import kr.co.milionvolt.ifive.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +31,17 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원조회 실패");
         }
         return ResponseEntity.status(HttpStatus.OK).body(infoDTO);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> userInfoUpdate(@PathVariable Integer id, @RequestBody UpdateUserInfoDTO infoDTO) {
+        infoDTO.setId(id);
+        boolean success = userService.updateUserInfo(infoDTO);
+        if (success) {
+            return ResponseEntity.status(HttpStatus.OK).body(infoDTO);
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원정보 변경에 실패하였습니다.");
+        }
     }
 
     // 비밀번호 변경
@@ -77,7 +80,7 @@ public class UserInfoController {
 
     // 내 차 수정(차 배터리 + 선호 kW 정보)
     @PatchMapping("/car/{id}")
-    public ResponseEntity<?> updateUserCarBatteryAndChargerType(@PathVariable Integer id,  @RequestBody CarBatteryAndChargerTypeUpdateDTO updateDTO) {
+    public ResponseEntity<?> updateUserCarBatteryAndChargerType(@PathVariable Integer id,  @RequestBody CarBatteryAndChargerSpeedUpdateDTO updateDTO) {
         updateDTO.setCarId(id);
         boolean success = userService.updateUserCarBatteryAndChargerType(updateDTO);
         if(success) {
@@ -116,11 +119,13 @@ public class UserInfoController {
         UserDashboradUserCarDTO dashboradUserCarDTO = userService.getDashboardUserCarInfo(id);
         List<UserInfoReservationListVO> reservationListDTO = userService.getDashboardReservations(id);
         List<UserInfoPaymentListVO> paymentListDTO = userService.getDashboardPayments(id);
+        List<UserDashboradChartDTO> dashboradChartDTO = userService.getDashboardChart(id);
 
         DashboardResponseDTO dashboardResponseDTO = new DashboardResponseDTO();
         dashboardResponseDTO.setUserCarInfo(dashboradUserCarDTO);
         dashboardResponseDTO.setReservationList(reservationListDTO);
         dashboardResponseDTO.setPaymentList(paymentListDTO);
+        dashboardResponseDTO.setPaymentChartList(dashboradChartDTO);
         return ResponseEntity.status(HttpStatus.OK).body(dashboardResponseDTO);
     }
 

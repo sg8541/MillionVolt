@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarBatteryAndChargerTypeUpdateDTO {
+public class CarBatteryAndChargerSpeedUpdateDTO {
     private Integer carId;
-    private Integer chargerTypeId;
+    private Integer chargerSpeedId;
     private BigDecimal carBattery;
 }
