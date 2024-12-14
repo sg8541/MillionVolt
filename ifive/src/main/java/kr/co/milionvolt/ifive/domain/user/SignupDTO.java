@@ -15,7 +15,7 @@ public class SignupDTO {
   private String phoneNumber;
   private String password;
   private String carNumber;
-  private Integer chargerTypeId;
+  private Integer chargerSpeedId;
   private Integer modelId;
   private BigDecimal carBattery;
 }

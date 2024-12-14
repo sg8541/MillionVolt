@@ -30,7 +30,7 @@ public class LoginAndLogoutController {
         return new ResponseEntity<>(memberInfoDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
         try {
             TokenResponseDTO tokenResponseDTO = loginAndLogoutService.authenticate(loginDTO);

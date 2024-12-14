@@ -15,5 +15,5 @@ public class UserDashboradUserCarDTO {
     private String modelName;
     private Integer modelBattery;
     private String modelFilepath;
-    private String chargerType;
+    private String chargerSpeed;
 }

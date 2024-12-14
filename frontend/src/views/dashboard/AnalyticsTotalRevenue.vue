@@ -6,6 +6,13 @@ import {
 } from 'vuetify'
 import { hexToRgb } from '@layouts/utils'
 
+defineProps({
+  paymentChartList: {
+    type: Array,
+    required: true
+  },
+})
+
 const vuetifyTheme = useTheme()
 const display = useDisplay()
 
