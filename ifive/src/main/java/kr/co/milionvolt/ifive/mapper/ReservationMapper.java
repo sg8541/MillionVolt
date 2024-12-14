@@ -26,11 +26,24 @@ public interface ReservationMapper {
         """)
     int insertReservation(ReservationDTO reservationDTO);
 
-    @Select("SELECT count(*) " +
+//    @Select("SELECT count(*) " +
+//            " FROM reservation " +
+//            " WHERE (start_time BETWEEN #{startTime} AND #{endTime} " +
+//            " OR end_time BETWEEN #{startTime} AND #{endTime} " +
+//            " OR (start_time <= #{startTime} AND end_Time >= #{endTime})) " +
+//            " AND charger_id = #{chargerId} ")
+//    int checkConflictReservation(ReservationDTO reservationDTO);
+
+//
+    @Select(" SELECT count(*) " +
             " FROM reservation " +
-            " WHERE (start_time BETWEEN #{startTime} AND #{endTime} " +
-            " OR end_time BETWEEN #{startTime} AND #{endTime} " +
-            " OR (start_time <= #{startTime} AND end_Time >= #{endTime})) " +
-            " AND charger_id = #{chargerId} ")
+            " WHERE (DATE(start_time) = DATE(#{startTime}) " +
+            " AND TIME(start_time) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
+            " OR (DATE(end_time) = DATE(#{startTime}) " +
+            " AND TIME(end_time) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
+            " OR  (DATE(start_time) = DATE(#{startTime}) " +
+            " AND TIME(start_time) <= TIME(#{startTime}) " +
+            " AND TIME(end_time) >= TIME(#{endTime})) " +
+            " AND charger_id = #{chargerId}")
     int checkConflictReservation(ReservationDTO reservationDTO);
 }
