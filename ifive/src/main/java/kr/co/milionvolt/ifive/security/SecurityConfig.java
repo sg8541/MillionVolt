@@ -80,11 +80,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 )
 
-                // JWT 필터 추가
+        // JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
 
+        return http.build();
     }
 
     // AuthenticationManager 빈 등록
