@@ -20,9 +20,9 @@ public interface ReservationMapper {
 
     @Insert("""
         INSERT INTO reservation 
-        (reservation_id, start_time, end_time, status, created_at, charger_id, user_id, station_id)
+        (start_time, end_time, status, created_at, charger_id, user_id, station_id, imp_uid)
         VALUES 
-        (#{reservationId}, #{startTime}, #{endTime}, #{status}, #{createdAt}, #{chargerId}, #{userId}, #{stationId})
+        (#{startTime}, #{endTime}, #{status}, #{createdAt}, #{chargerId}, #{userId}, #{stationId}, #{impUid})
         """)
     int insertReservation(ReservationDTO reservationDTO);
 

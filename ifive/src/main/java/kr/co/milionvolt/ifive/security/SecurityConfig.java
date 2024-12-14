@@ -73,17 +73,18 @@ public class SecurityConfig {
                         .requestMatchers("/uploads/**").permitAll() // 이미지 파일에 대한 접근 허용
                         .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/find/**",
                                 "/api/v1/reset/**", "/api/v1/logout/**", "/api/v1/main/**", "/api/v1/search/**",
-                                "/main/**","/charging/**",  "/stations/**",
-                                "/api/v1/payment/**", "/reservationList/**", "/api/v1/reservation/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
+                                "/api/v1/email/**", "/api/v1/findId/**",  "/api/v1/findPwd/**", "/api/v1/resetPwd/**",
+                                " /main/**","/charging/**", "/stations/**", "/api/v1/payment/**", "/reservationList/**",
+                                "/api/v1/reservation/**", "/api/v1/payment/cancel").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
                         .requestMatchers("/api/v1/info/**").hasRole("MEMBER") // 'member' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
-                );
+                )
 
-        // JWT 필터 추가
+                // JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
+
     }
 
     // AuthenticationManager 빈 등록
