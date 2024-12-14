@@ -65,6 +65,7 @@ const stationId = ref('');
 
 onMounted(()=> {
     store.connectCharger();
+    reservationMove();
 });
 
 onBeforeUnmount(()=>{
