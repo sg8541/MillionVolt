@@ -217,7 +217,7 @@ watchEffect(() => {
     font-family: Arial, sans-serif;
     background: #ffffff;
     border-radius: 16px;
-    border: 5px solid #aaaff5;
+    border: 5px solid #333;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     padding: 35px;
     text-align: center;
@@ -262,7 +262,7 @@ watchEffect(() => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #9c7dfa;
+    color: #333;
     background: rgba(255, 255, 255, 0.4); /* 반투명 효과 */
     border-radius: 50%;
 }
@@ -323,7 +323,7 @@ watchEffect(() => {
     font-size: 1em;
     cursor: pointer;
     transition: background 0.3s;
-    background: #7780ed;
+    background: #333;
     color: #fff;
     height: 50px;
 }
@@ -331,6 +331,6 @@ watchEffect(() => {
 
 
 .stop-btn:hover {
-    background: #4e5af2;
+    background: #676767;
 }
 </style>

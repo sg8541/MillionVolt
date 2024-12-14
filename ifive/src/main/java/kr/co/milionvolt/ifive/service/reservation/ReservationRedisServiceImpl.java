@@ -13,7 +13,6 @@ public class ReservationRedisServiceImpl implements ReservationRedisService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-
     @Override
     public List<ReservationRedis> findReservationInfoByUserId(int userId) {
         List<ReservationRedis> list= (List<ReservationRedis>) reservationRepository.findAll();
@@ -26,5 +25,10 @@ public class ReservationRedisServiceImpl implements ReservationRedisService {
             }
 
         return reservationStartTimeList;
+    }
+
+    @Override
+    public void save(ReservationRedis reservationRedis) {
+        reservationRepository.save(reservationRedis);
     }
 }

@@ -8,9 +8,9 @@
       {{ store.finishAlarm.message }}
       <button class="close-btn" @click="closeAlert">X</button>
     </div>
-  </template>
+</template>
   
-  <script setup>
+<script setup>
   import { onMounted, ref } from 'vue';
   import { useWebSocketStore } from '@/stores/webSocketChargingStore';
   import { useRouter } from 'vue-router';

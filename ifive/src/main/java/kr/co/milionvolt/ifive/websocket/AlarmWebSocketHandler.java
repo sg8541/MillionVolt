@@ -45,15 +45,9 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        System.out.println(payload);
         int userId = userService.selectUserId(payload); // 클라이언트가 보낸 ID로 조회
-        System.out.println("User ID: " + userId);
-
         uid.put(payload, userId); // 사용자 ID와 이름 매핑
         sessions.put(payload, session); // 세션 저장
-
-
-      //  System.out.println("Reservations for userId " + userId + ": " + reservations);
 
         // 1분마다 예약 시간 확인 및 알림
         scheduleAlarms(session, userId);

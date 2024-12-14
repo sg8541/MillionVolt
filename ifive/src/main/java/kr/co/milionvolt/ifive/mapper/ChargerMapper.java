@@ -14,7 +14,7 @@ public interface ChargerMapper {
     ChargerDTO findChargerByStationAndSpeed(@Param("stationId") Integer stationId, @Param("chargerSpeedId") Integer chargerSpeedId);
 
     // 1. 특정 충전소의 모든 충전기 조회
-    @Select("SELECT charger_id, charger_speed_id, charger_status_id FROM chargers WHERE station_id = #{stationId}")
+    @Select("SELECT charger_id, charger_speed_id, charger_status_id FROM charger WHERE station_id = #{stationId}")
     List<ChargerDTO> getChargersByStationId(@Param("stationId") Integer stationId);
 
     // 2. 특정 충전기의 상태 조회

@@ -1,12 +1,28 @@
 <template>
     <button @click="moveToTestAlarm">TestAlarm으로 이동</button>
     <div class="alert-box" v-if="store.alarm.message && showAlert">
-           <div> {{store.alarm.message}} </div> <br>
-            <div @click="moveCharginStatus">충전하러 가기</div>
+            <div class="message">
+                {{store.alarm.message}} 
+            </div> <br>
+            <!-- <div @click="moveCharginStatus" class="">
+                충전하러 가기
+            </div> -->
+            <div @click="showModal" class="moveCharging">
+                충전하러 가기
+            </div>
             <button class="close-btn" @click="closeAlert">X</button>
     </div>
-    <div></div>
-    <div></div>
+    <div v-if="isModalVisible" class ="alert-modal" @click.self="hideModal">
+        <div class="modal-content">
+            
+            <img class="modal-image" src="/images/charger-info.png">
+            <h2>충전을 시작하시겠습니까?</h2>
+            <p>주의! 충전기를 꽂아 둔 상태여야 합니다. </p>
+            <button @click="moveCharginStatus" class="modal-click">충전시작</button>
+            <button @click="hideModal" class="modal-btn">취소</button>
+        </div>
+    </div>
+    
 
 </template>
 
@@ -17,18 +33,27 @@ import { useRouter } from 'vue-router';
 
 const store = useAlarmWebSocketStore();
 const router = useRouter();
+const isModalVisible = ref(false);
+
 const showAlert = ref(true);
 onMounted(()=>{
     store.connectAlarmWebSocket();
     console.log("온마운트됨.");
 })
 
+const showModal = () => {
+    isModalVisible.value = true;
+}
 
 const moveToTestAlarm = () => {
     router.push({
         name:'TestAlarm',
     })
 }
+
+const hideModal = () => {
+    isModalVisible.value = false;
+};
 
 const moveCharginStatus = () => {
     router.push({
@@ -37,10 +62,13 @@ const moveCharginStatus = () => {
             reservationId : store.alarm.reservationId,
         }
     })
+    store.clearAlarmMessage();
 }
+
+
+
 const closeAlert = () => {
     showAlert.value = false;
-    store.clearAlarmMessage();
 };
 
 
@@ -87,5 +115,63 @@ const closeAlert = () => {
     transform: translateY(0);
     }
 
+}
+
+.message{
+    margin : 10px;
+}
+
+.alert-modal{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+.modal-btn {
+  margin-top: 15px;
+  padding: 8px 36px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modal-btn:hover {
+  background-color: #555;
+}
+.modal-image{
+    width: 50%;
+}
+.modal-click{
+  margin-top: 15px;
+  margin-right: 20px;
+  padding: 5px 16px;
+  background-color: #fff;
+  color: #333;
+  border: 3px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+.modal-click:hover {
+  background-color: #e6e6e6;
 }
 </style>

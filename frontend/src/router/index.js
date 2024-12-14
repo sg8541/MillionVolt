@@ -3,7 +3,7 @@ import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
 import PayPrice from '@/views/payment/PayPrice.vue'
 import TestAlarm from '@/views/alarm/TestAlarm.vue'
 import ReservationAlarm from '@/views/alarm/ReservationAlarm.vue'
-
+import ChargerChangeState from '@/views/chargingwebsocket/ChargerChangeState.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -56,14 +56,19 @@ const router = createRouter({
       component : PayPrice
     },
     {
-      path:'/testAlarm',
+      path:'/testalarm',
       name: 'TestAlarm',
       component:TestAlarm
     },
     {
-      path:'/reservationAlarm',
+      path:'/reservationalarm',
       name:'ReservationAlarm',
       component:ReservationAlarm
+    },
+    {
+      path:'/chargerstate',
+      name:'chargerstate',
+      component:ChargerChangeState
     },
     {
       path: '/',

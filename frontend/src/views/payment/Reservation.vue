@@ -339,7 +339,7 @@ const reserve = async () => {
             const response = await axios.post(`http://localhost:8081/api/v1/reservation/${reservation.value.impUid}`, {
             startTime: reservationStartDate.value.toISOString(),
             endTime: reservationEndDate.value.toISOString(),
-            userId: 2,
+            userId: 1,
             reservationId: 9,
             stationId: 2,
             chargerId: 2,

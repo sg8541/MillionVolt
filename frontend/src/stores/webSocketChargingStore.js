@@ -1,8 +1,10 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useRoute } from 'vue-router';
 
 export const useWebSocketStore = defineStore('websocket', () => {
     const socketInstance = ref(null);
+
     const chargingData = ref({
             batteryPercent: '',
             amount: '',
@@ -25,6 +27,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
     const elapsedTime = ref(0); // 경과 시간 (초 단위)
     let timer = null; // 타이머 ID
 
+    
 
 // 타이머 시작
     const startTimer = () => {
@@ -53,9 +56,10 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 console.log("이미연결된 웹소켓.");
                 return;
             }
-        
+           
+        const route = useRoute();
         const userId = 'wogjsdl1244'; // 사용자 ID 동적으로 바꿀 수 있습니다.
-        const reservationId ='12'; 
+        const reservationId = route.query.reservationId; 
         socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}`);
     
         socketInstance.value.onopen = () => {
@@ -105,7 +109,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
             };
         };
     
-        // 컴포넌트 언마운트 시 WebSocket 닫기
         const disconnectWebSocket = () => {
         if (socketInstance.value) {
             socketInstance.value.close();
