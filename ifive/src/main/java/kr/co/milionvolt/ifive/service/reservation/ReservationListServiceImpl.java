@@ -15,6 +15,7 @@ public class ReservationListServiceImpl implements ReservationListService {
     @Autowired
     private ReservationListMapper reservationListMapper;
 
+
     @Override
     public List<ReservationListDTO> printReservationList(LocalDateTime startTime, LocalDateTime endTime) {
         return reservationListMapper.selectReservationList(startTime, endTime);
