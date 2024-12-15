@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserDetailsVO detailsVO = userMapper.findByUserId(userId);
         if (detailsVO == null) {
             log.error("User not found with userId: {}", userId);
-            return (UserDetails) new UsernameNotFoundException("User not found with userId: " + userId);
+            throw new UsernameNotFoundException("User not found with userId: " + userId);
         }
 
         log.info("User info : {} ", detailsVO.toString());
@@ -45,7 +45,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (detailsVO == null) {
             log.error("User not found with id: {}", id);
-            return (UserDetails) new UsernameNotFoundException("User not found with id: " + id);
+            throw new UsernameNotFoundException("User not found with id: " + id);
         }
 
         return new org.springframework.security.core.userdetails.User(

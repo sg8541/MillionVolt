@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,8 +15,9 @@ public class ReservationListServiceImpl implements ReservationListService {
     @Autowired
     private ReservationListMapper reservationListMapper;
 
+
     @Override
-    public List<ReservationListDTO> printReservationList(Timestamp startTime, Timestamp endTime) {
+    public List<ReservationListDTO> printReservationList(LocalDateTime startTime, LocalDateTime endTime) {
         return reservationListMapper.selectReservationList(startTime, endTime);
     }
 }

@@ -2,14 +2,15 @@ package kr.co.milionvolt.ifive.controller.payment;
 
 import kr.co.milionvolt.ifive.domain.payment.PayPriceDTO;
 import kr.co.milionvolt.ifive.mapper.PayPriceMapper;
-import kr.co.milionvolt.ifive.service.payment.PayPriceService;
 import kr.co.milionvolt.ifive.service.payment.PayPriceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:8081")
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @RestController
 public class PayPriceController {
 
@@ -23,9 +24,9 @@ public class PayPriceController {
     public ResponseEntity<String> savePayment(@PathVariable String imp_uid, @RequestBody PayPriceDTO payPriceDTO ) {
         try {
             System.out.println(imp_uid);
+            System.out.println(payPriceDTO);
             // 결제 검증 서비스 호출
             if (payPriceServiceImpl.verifyPayment(imp_uid)){
-
                 payPriceDTO.setImpUid(imp_uid);
 
                 // 결제 정보 DB에 삽입

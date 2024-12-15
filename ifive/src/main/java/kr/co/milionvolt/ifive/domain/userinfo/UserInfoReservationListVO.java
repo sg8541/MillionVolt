@@ -8,12 +8,12 @@ import lombok.*;
 @NoArgsConstructor
 public class UserInfoReservationListVO {
   private Integer reservationId;
-  private java.sql.Timestamp startTime;
-  private java.sql.Timestamp endTime;
+  private String startTime;
+  private String endTime;
   private Status status;
-  private java.sql.Timestamp createdAt;
+  private String createdAt;
   private Integer chargerId;
-  private String address;
+  private String name;
 
   public enum Status {
     pending,confirmed, cancelled, completed

@@ -10,6 +10,24 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
 
 const vuetifyTheme = useTheme()
 
+import { defineProps } from 'vue'
+
+import { useRoute } from 'vue-router'
+
+
+const route = useRoute()
+console.log(``)
+
+const props = defineProps({
+  id: {
+    type: Number,
+    required: true
+  }
+})
+
+onMounted(()=>{
+  console.log(props.id)
+})
 </script>
 
 <template>
@@ -38,28 +56,28 @@ const vuetifyTheme = useTheme()
         :item="{
           title: 'Dashboard',
           icon: 'bx-home',
-          to: '/dashboard',
+          to: '/myinfo/dashboard/'+route.params.id,
         }"
       />
       <VerticalNavLink
         :item="{
           title: '내 정보',
           icon: 'mdi-account-cog-outline',
-          to: '/account-settings',
+          to: '/myinfo/account-settings/'+route.params.id,
         }"
       />
       <VerticalNavLink
         :item="{
           title: '나의 예약 정보',
           icon: 'bx-time',
-          to: '/my-reservation',
+          to: '/myinfo/my-reservation/'+route.params.id,
         }"
       />
       <VerticalNavLink
         :item="{
           title: '나의 결제 정보',
           icon: 'bx-wallet-alt',
-          to: '/my-payment',
+          to: '/myinfo/my-payment/'+route.params.id,
         }"
       />
 

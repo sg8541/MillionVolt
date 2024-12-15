@@ -1,15 +1,8 @@
 package kr.co.milionvolt.ifive.service.user;
 
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoPaymentListVO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoReservationListVO;
-import kr.co.milionvolt.ifive.domain.user.PasswordDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserDashboradUserCarDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarBatteryAndChargerTypeUpdateDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.UserCarInfoDTO;
-import kr.co.milionvolt.ifive.domain.userinfo.CarNumberAndModelUpdateDTO;
+import kr.co.milionvolt.ifive.domain.user.*;
+import kr.co.milionvolt.ifive.domain.userinfo.*;
 import kr.co.milionvolt.ifive.mapper.UserMapper;
-import kr.co.milionvolt.ifive.domain.user.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -80,8 +73,8 @@ public class UserServiceImpl implements UserService {
     }
     // 차 배터리 + 선호 충전 타입 변경
     @Override
-    public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerTypeUpdateDTO updateDTO) {
-        boolean success = userMapper.updateUserCarBatteryAndChargerType(updateDTO);
+    public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO) {
+        boolean success = userMapper.updateUserCarBatteryAndChargerSpeed(updateDTO);
         return success;
     }
 
@@ -121,4 +114,53 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    //아이디 찾기
+    @Override
+    public FindIdDTO findByID(String username, String email) {
+        FindIdDTO dto = userMapper.findByIdUserId(username, email);
+        return dto;
+    }
+
+    //비밀번호 찾기1
+    @Override
+    public String findPasswordByUserId(String userId) {
+        String  email = userMapper.findPasswordByUserId(userId);
+        return email;
+    }
+
+
+    //비밀번호 찾기2
+    @Override
+    public FindFwdDTO findPass(String username, String email) {
+        FindFwdDTO dto =  userMapper.findPassword(username,email);
+        return dto;
+    }
+
+    //비밀번호 찾기3
+    @Override
+    public void newPwd(ResetDTO dto) {
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userMapper.newPassword(dto);
+    }
+
+    @Override
+    public List<UserDashboradChartDTO> getDashboardChart(Integer id) {
+        List<UserDashboradChartDTO> dashboradChartDTO = userMapper.getDashboardChartData(id);
+        return dashboradChartDTO;
+    }
+
+    @Override
+    public boolean updateUserInfo(UpdateUserInfoDTO infoDTO) {
+        try {
+            boolean result = userMapper.updateUserInfo(infoDTO);
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int selectUserId(String userId) {
+        int id = userMapper.selectFindId(userId);
+        return id;
+    }
 }

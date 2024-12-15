@@ -1,43 +1,23 @@
 <script setup>
-const desserts = [
-{
-    name: 'Frozen Yogurt',
-    chargerId: 1,
-    createdAt : '24.12.05',
-    startTime: '12:00',
-    endTime: '15:00',
-    status: 24,
-    amount: 4,
-  },
-{
-    name: 'Frozen Yogurt',
-    chargerId: 1,
-    createdAt : '24.12.05',
-    startTime: '12:00',
-    endTime: '15:00',
-    status: 24,
-    amount: 4,
-  },
-{
-    name: 'Frozen Yogurt',
-    chargerId: 1,
-    createdAt : '24.12.05',
-    startTime: '12:00',
-    endTime: '15:00',
-    status: 24,
-    amount: 4,
-  },
-{
-    name: 'Frozen Yogurt',
-    chargerId: 1,
-    createdAt : '24.12.05',
-    startTime: '12:00',
-    endTime: '15:00',
-    status: 24,
-    amount: 4,
-  },
 
-]
+defineProps({
+  reservations: {
+    type: Array,
+    required: true
+  }
+})
+
+
+const getStatusText = (status) => {
+  const statusMap = {
+    completed: '예약완료',
+    pending: '예약대기',
+    cancelled: '예약취소',
+    confirmed: '예약확정'
+  };
+  return statusMap[status] || '알 수 없음';
+};
+
 </script>
 
 <template>
@@ -56,10 +36,10 @@ const desserts = [
     <thead>
       <tr>
         <th class="text-uppercase">
-          예약 장소
+          충전소 명
         </th>
         <th>
-          충전기 번호
+          충전기
         </th>
         <th>
           예약일
@@ -78,8 +58,8 @@ const desserts = [
 
     <tbody>
       <tr
-        v-for="item in desserts"
-        :key="item.dessert"
+        v-for="item in reservations"
+        :key="item.reservations"
       >
         <td>
           {{ item.name }}
@@ -94,10 +74,10 @@ const desserts = [
           {{ item.startTime }} - {{ item.endTime }}
         </td>
         <td class="text-center">
-          {{ item.status }}
+          {{ getStatusText(item.status) }}
         </td>
         <td class="text-center">
-          {{ item.amount }}
+          5,000원
         </td>
       </tr>
     </tbody>

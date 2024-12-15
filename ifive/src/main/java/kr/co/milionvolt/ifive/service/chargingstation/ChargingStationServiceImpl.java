@@ -1,12 +1,11 @@
 package kr.co.milionvolt.ifive.service.chargingstation;
 
-import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationDTO;
 import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationVO;
+import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.mapper.ChargingStationMapper;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.JsonNode;
-import java.math.BigDecimal;
+
 import java.util.List;
 
 @Service
@@ -17,47 +16,88 @@ public class ChargingStationServiceImpl implements ChargingStationService {
     public ChargingStationServiceImpl(ChargingStationMapper chargingStationMapper) {
         this.chargingStationMapper = chargingStationMapper;
     }
-
     @Override
-    public List<ChargingStationVO> getAllChargingStations() {
-        return chargingStationMapper.getAllChargingStationList();
+    public void saveStationsToDb(List<ChargingStationDTO> stations) {
+        for (ChargingStationDTO dto : stations) {
+            insertChargingStation(dto); // 변환된 VO를 insert 메서드에 전달
+        }
     }
 
     @Override
-    public List<ChargingStationVO> getChargingStationById(Integer stationId) {
-        ChargingStationVO station = chargingStationMapper.getOneChargingStation(stationId);
-        return station != null ? List.of(station) : List.of();
+    public void insertChargingStation(ChargingStationDTO station) {
+        chargingStationMapper.insertChargingStation(station);
     }
 
-    @Override
-    public boolean updateChargingStation(ChargingStationDTO chargingStationDTO) {
-        int updatedRows = chargingStationMapper.updateChargingStation(chargingStationDTO);
-        return updatedRows > 0;
-    }
-
-    @Override
-    public boolean updateChargerInfo(Integer chargerId, ChargerDTO.ChagerType chagerType, ChargerDTO.ChargerStatus chargerStatus) {
-        int updatedRows = chargingStationMapper.updateChargerInfo(chargerId, chagerType, chargerStatus);
-        return updatedRows > 0;
-    }
-
-    @Override
-    public List<ChargingStationVO> getChargingStationsByFilter(ChargingStationDTO.ChargeSpeed chargeSpeed, ChargerDTO.ChargerStatus chargerStatus) {
-        return chargingStationMapper.getChargingStationsByFilter(chargeSpeed, chargerStatus);
-    }
-
-    @Override
-    public List<ChargingStationVO> getChargingStationsByLocation(String address, ChargingStationDTO.ChargeSpeed chargeSpeed, ChargerDTO.ChargerStatus chargerStatus) {
-        return chargingStationMapper.getChargingStationsByLocation(
-                address,
-                chargeSpeed != null ? chargeSpeed.name() : null,
-                chargerStatus != null ? chargerStatus.name() : null
+    private ChargingStationVO convertDtoToVo(ChargingStationDTO dto) {
+        return new ChargingStationVO(
+                dto.getStationId(),
+                dto.getName(),
+                dto.getAddress(),
+                dto.getTotalCharger(),
+                dto.getAvailableCharger(),
+                dto.getChargerSpeedId(),
+                dto.getPricePerKWh(),
+                dto.getFilePath(),
+                dto.getFacilityType(),
+                dto.getDeviceType(),
+                dto.getChargerType(),
+                dto.getChargerStatusId(),
+                dto.getChargers()
         );
     }
 
     @Override
-    public List<ChargingStationVO> searchChargingStations(String query) {
-        return chargingStationMapper.searchChargingStations(query);
+    public List<ChargingStationVO> getAllChargingStations(int page, int size) {
+        int offset = (page - 1) * size;
+        return chargingStationMapper.getAllChargingStations(offset, size);
+    }
+
+    @Override
+    public List<ChargingStationVO> getNearbyStations(String address, Integer charger_speed_id) {
+        return chargingStationMapper.getSidebarStations(address); // address 기반으로 조회
+    }
+
+    @Override
+    public ChargingStationVO getChargingStationById(Integer stationId) {
+        return chargingStationMapper.getChargingStationById(stationId);
+    }
+
+    @Override
+    public List<ChargingStationVO> searchChargingStations(String query, int page, int size) {
+        int offset = (page - 1) * size;
+        return chargingStationMapper.searchChargingStations(query, offset, size);
+    }
+
+    @Override
+    public List<ChargingStationVO> getSidebarStations(String address) {
+        return chargingStationMapper.getSidebarStations(address);
+    }
+
+    @Override
+    public List<ChargingStationVO> filterByChargeSpeed(Integer chargerSpeedId, String address) {
+        return chargingStationMapper.findStationsByChargeSpeed(chargerSpeedId, address);
+    }
+
+    @Override
+    public ChargingStationDTO getChargingStationWithChargers(Integer stationId) {
+        // 충전소 정보 조회
+        ChargingStationDTO station = chargingStationMapper.findStationById(stationId);
+
+        // 충전소에 속한 충전기 리스트 조회
+        List<ChargerDTO> chargers = chargingStationMapper.findChargersByStationId(stationId);
+        station.setChargers(chargers); // 충전소에 충전기 리스트 추가
+
+        return station;
+    }
+
+    @Override
+    public List<ChargingStationVO> getStationsByLocation(double latitude, double longitude, int radius) {
+        return chargingStationMapper.findNearbyStations(latitude, longitude, radius);
+    }
+
+    @Override
+    public ChargingStationDTO getStationWithChargers(Integer stationId) {
+        return chargingStationMapper.findStationWithChargers(stationId);
     }
 
 }

@@ -2,23 +2,25 @@ package kr.co.milionvolt.ifive.service.charger;
 
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface ChargerService {
 
-    // 충전기 전체 조회
-    List<ChargerVO> getChargers();
+    // 1. 충전소의 모든 충전기 조회
+    List<ChargerDTO> getChargersByStationId(Integer stationId);
 
-    // 특정 충전소의 전체 충전기 목록 조회
-    List<ChargerVO> getChargersByStationId(Integer stationId);
+    // 2. 특정 충전기의 상태 조회
+    ChargerVO getChargerById(Integer chargerId);
 
-    // 특정 충전소의 특정 충전기의 상태 조회
-    ChargerDTO.ChargerStatus getChargerStatusByStationIdAndChargerId(Integer stationId, Integer chargerId);
+    // 3. 충전기 상태 변경 (예약 가능/불가능 등)
+    boolean updateChargerStatus(Integer chargerId, String status);
 
-    // 충전기 상태 변경
-    boolean updateChargerStatus(Integer chargerId, ChargerDTO.ChargerStatus status);
+    // 4. 특정 충전소의 예약 가능한 충전기 조회
+    List<ChargerVO> getAvailableChargersByStationId(Integer stationId);
 
-    // 충전기 상태 필터링
-    List<ChargerVO> getChargersByStatus(ChargerDTO.ChargerStatus status);
+    // 5. 충전기 상태에 따른 필터링
+    List<ChargerVO> getChargersByStatus(String status);
 }
