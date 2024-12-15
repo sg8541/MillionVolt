@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @RestController
 public class PayPriceController {
 
@@ -24,7 +27,6 @@ public class PayPriceController {
             System.out.println(payPriceDTO);
             // 결제 검증 서비스 호출
             if (payPriceServiceImpl.verifyPayment(imp_uid)){
-
                 payPriceDTO.setImpUid(imp_uid);
 
                 // 결제 정보 DB에 삽입

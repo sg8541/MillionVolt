@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -19,7 +20,7 @@ public class PayPriceDTO {
     private String paymentStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private LocalDateTime chargeStart;
-    private LocalDateTime chargeEnd;
+    private Timestamp chargeStart;
+    private Timestamp chargeEnd;
     private String impUid;
 }
