@@ -10,16 +10,23 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         startTime: '',
     });
 
+    const isConnected = ref(false);
+
     const connectAlarmWebSocket = () => {
+
+        if(isConnected.value) {
+            console.log("이미연결된 웹소켓.");
+            return;
+        }
+    
         socketAlarm.value = new WebSocket('ws://localhost:8081/alarm');
         console.log('웹소켓 연결.');
-
-        console.log(alarm.value.message);
 
         // 웹소켓 연결 성공 시
         socketAlarm.value.onopen = () => {
         const userId = 'wogjsdl1244'; // 실제 사용자는 토큰을 디코딩해서 전달
         socketAlarm.value.send(userId);
+        isConnected.value = true;
         };
 
         // 메시지 수신 처리
@@ -36,8 +43,13 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         };
     };
 
+    const clearAlarmMessage = () => {
+        alarm.value.message = '';
+    };
+
     return {
         connectAlarmWebSocket,
         alarm,
+        clearAlarmMessage,
     };
 });

@@ -6,6 +6,7 @@ import ReservationAlarm from '@/views/alarm/ReservationAlarm.vue'
 
 import { useAuthStore } from '@/stores/auth'
 
+import ChargerChangeState from '@/views/chargingwebsocket/ChargerChangeState.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -73,14 +74,19 @@ const router = createRouter({
       component : PayPrice
     },
     {
-      path:'/testAlarm',
-      name:TestAlarm,
+      path:'/testalarm',
+      name: 'TestAlarm',
       component:TestAlarm
     },
     {
-      path:'/reservationAlarm',
-      name:ReservationAlarm,
+      path:'/reservationalarm',
+      name:'ReservationAlarm',
       component:ReservationAlarm
+    },
+    {
+      path:'/chargerstate',
+      name:'chargerstate',
+      component:ChargerChangeState
     },
     {
       path: '/',

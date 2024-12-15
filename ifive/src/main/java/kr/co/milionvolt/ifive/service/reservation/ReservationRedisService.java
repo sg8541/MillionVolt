@@ -8,6 +8,5 @@ import java.util.List;
 @Service
 public interface ReservationRedisService {
     public List<ReservationRedis> findReservationInfoByUserId(int userId);
-
-
+    public void save(ReservationRedis reservationRedis);
 }

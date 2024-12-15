@@ -151,16 +151,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUserInfo(UpdateUserInfoDTO infoDTO) {
-        try{
+        try {
             boolean result = userMapper.updateUserInfo(infoDTO);
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-      
-    public int selectUserId(String userId) {
-      int id =   userMapper.selectFindId(userId);
-      return id;
     }
 
+    public int selectUserId(String userId) {
+        int id = userMapper.selectFindId(userId);
+        return id;
+    }
 }

@@ -1,8 +1,10 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useRoute } from 'vue-router';
 
 export const useWebSocketStore = defineStore('websocket', () => {
     const socketInstance = ref(null);
+
     const chargingData = ref({
             batteryPercent: '',
             amount: '',
@@ -25,6 +27,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
     const elapsedTime = ref(0); // 경과 시간 (초 단위)
     let timer = null; // 타이머 ID
 
+    
 
 // 타이머 시작
     const startTimer = () => {
@@ -53,9 +56,10 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 console.log("이미연결된 웹소켓.");
                 return;
             }
-        
-        const userId = 'dohun123'; // 사용자 ID 동적으로 바꿀 수 있습니다.
-        const reservationId ='1'; 
+           
+        const route = useRoute();
+        const userId = 'wogjsdl1244'; // 사용자 ID 동적으로 바꿀 수 있습니다.
+        const reservationId = route.query.reservationId; 
 
         socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}`);
     
@@ -76,19 +80,19 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 console.log("충전 완료 상태 감지됨");
                 console.log(finishAlarm.value.message);
             } else {
-                chargingData.value.batteryPercent = data.batteryPercent;
-                chargingData.value.amount = data.amount;
-                chargingData.value.chargingKwh = data.chargingKwh;
-                chargingData.value.chargerType = data.chargerType;
-                chargingData.value.name = data.name;
-                chargingData.value.address = data.address;
-                chargingData.value.carNumber = data.carNumber;
-                chargingData.value.pricePerKWh = data.pricePerKWh;
-                chargingData.value.expectAmount = data.expectAmount;
-                chargingData.value.estimatedTimeSeconds = data.estimatedTimeSeconds;
-                chargingData.value.userId = data.userId;
-                chargingData.value.reservationId = data.reservationId;
-                chargingData.value.stationId = data.stationId;
+                chargingData.value.batteryPercent = data.batteryPercent; // 배터리 퍼센트
+                chargingData.value.amount = data.amount; // 현재 충전 요금
+                chargingData.value.chargingKwh = data.chargingKwh; // 충전량 
+                chargingData.value.chargerType = data.chargerType; // 충전 타입 몇 kW
+                chargingData.value.name = data.name; // 충전소 명
+                chargingData.value.address = data.address; // 주소
+                chargingData.value.carNumber = data.carNumber; // 유저 차번호
+                chargingData.value.pricePerKWh = data.pricePerKWh; // kWh당 가격
+                chargingData.value.expectAmount = data.expectAmount;  // 예상금액
+                chargingData.value.estimatedTimeSeconds = data.estimatedTimeSeconds; //예상 시간
+                chargingData.value.userId = data.userId; // 유저 아이디(PK)
+                chargingData.value.reservationId = data.reservationId; // 예약번호
+                chargingData.value.stationId = data.stationId; // 충전소 pK
             }
         };
         
@@ -106,7 +110,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
             };
         };
     
-        // 컴포넌트 언마운트 시 WebSocket 닫기
         const disconnectWebSocket = () => {
         if (socketInstance.value) {
             socketInstance.value.close();

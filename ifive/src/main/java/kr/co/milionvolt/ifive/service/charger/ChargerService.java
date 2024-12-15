@@ -2,9 +2,11 @@ package kr.co.milionvolt.ifive.service.charger;
 
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface ChargerService {
 
     // 1. 충전소의 모든 충전기 조회

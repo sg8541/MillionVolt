@@ -45,15 +45,9 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        System.out.println(payload);
         int userId = userService.selectUserId(payload); // 클라이언트가 보낸 ID로 조회
-        System.out.println("User ID: " + userId);
-
         uid.put(payload, userId); // 사용자 ID와 이름 매핑
         sessions.put(payload, session); // 세션 저장
-
-
-      //  System.out.println("Reservations for userId " + userId + ": " + reservations);
 
         // 1분마다 예약 시간 확인 및 알림
         scheduleAlarms(session, userId);
@@ -82,6 +76,9 @@ private void scheduleAlarms(WebSocketSession session , int userId) {
             LocalDateTime now = LocalDateTime.now();
             System.out.println("현재시간 : "+now);
             List<ReservationRedis> reservations = reservationRedisService.findReservationInfoByUserId(userId);
+            if (reservations == null || reservations.isEmpty()) {
+                System.out.println("No reservations found for userId: " + userId);
+            }
             for (ReservationRedis reservation : reservations) {
                 LocalDateTime reservationTime = reservation.getStartTime();
                 System.out.println("예약한 시간 : "+reservationTime);
