@@ -23,7 +23,7 @@ public interface ReservationListMapper {
 //            "FROM reservation " +
 //            "WHERE DATE(start_time) >= DATE(#{startTime}) " +
 //            "OR DATE(end_time) <= DATE(#{endTime})")
-    @Select("SELECT charger_id, status, start_time, end_time " +
+    @Select("SELECT reservation_id ,charger_id, status, start_time, end_time " +
             "FROM reservation " +
             "WHERE (DATE(start_time) BETWEEN DATE(#{startTime}) AND DATE(#{endTime})) " +
             "OR (DATE(end_time) BETWEEN DATE(#{startTime}) AND DATE(#{endTime})) " +
