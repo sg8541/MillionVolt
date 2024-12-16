@@ -30,13 +30,13 @@ const router = createRouter({
           meta: { requiresAuth: true, requiresMember: true },
         },
         { 
-          path: 'my-reservation',
+          path: 'my-reservation/:id',
           component: () => import('../pages/my-reservation.vue'),
           props: true,
           meta: { requiresAuth: true, requiresMember: true },
         },
         {
-          path: 'my-payment',
+          path: 'my-payment/:id',
           component: () => import('../pages/my-payment.vue'),
           props: true,
           meta: { requiresAuth: true, requiresMember: true },
