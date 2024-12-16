@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUserInfo(UpdateUserInfoDTO infoDTO) {
-        try {
+        try{
             boolean result = userMapper.updateUserInfo(infoDTO);
             return result;
         } catch (Exception e) {
@@ -159,8 +159,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
     public int selectUserId(String userId) {
-        int id = userMapper.selectFindId(userId);
+        int id =   userMapper.selectFindId(userId);
         return id;
     }
+
 }

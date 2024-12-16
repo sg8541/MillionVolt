@@ -67,7 +67,7 @@ public class UserInfoController {
     }
 
     // 내 차 수정(차 번호 + 차 넘버 변경)
-    @PutMapping("/car/{id}")
+    @PostMapping("/car/{id}")
     public ResponseEntity<?> updateUserCarNumberAndCarModel(@PathVariable Integer id, @RequestBody CarNumberAndModelUpdateDTO carNumberDTO) {
         carNumberDTO.setCarId(id);
         boolean success = userService.updateUserCarNumberAndCarModel(carNumberDTO);
