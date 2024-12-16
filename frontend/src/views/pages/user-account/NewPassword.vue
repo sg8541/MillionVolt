@@ -35,24 +35,58 @@
   </template>
   
   <script>
+  import api from '@/axios'
   export default {
     data() {
       return {
-        userId: this.$route.query.userId || "",
+        userId: this.$route.query.userId || '',
         password: "",
         passwordConfirm: "",
       };
     },
+    created(){
+      this.userId = this.$route.query.userId || '';  // 쿼리 파라미터가 존재하면 userId를 할당
+    },
     methods: {
-      handleSubmit() {
+      async handleSubmit() {
+        // 비밀번호 변경 API 호출
         if (this.password === this.passwordConfirm) {
-          alert("비밀번호가 성공적으로 변경되었습니다.");
-          // 비밀번호 변경 API 호출
+          try{
+            const response = await api.post(`/resetPwd`,{
+              password: this.password,
+              userId: this.userId,
+              username: this.$route.query.username,
+              email : this.$route.query.email,
+            })
+            if(response.status === 200) {
+              alert("비밀번호가 성공적으로 변경되었습니다.");
+              alert("로그인 화면으로 이동합니다.");
+              this.$router.replace({path: '/login' })
+            }
+          }catch(error){
+            alert("비밀번호 초기화 중 에러가 발생하였습니다. " + error);
+          }
         } else {
           alert("비밀번호가 일치하지 않습니다.");
         }
       },
     },
+
+    beforeRouteUpdate(to, from, next) {
+      // 쿼리 파라미터에서 userId, username, email 확인
+      if (to.query.userId) {
+        this.userId = to.query.userId;
+      }
+      if (to.query.username) {
+        this.username = to.query.username;
+      }
+      if (to.query.email) {
+        this.email = to.query.email;
+      }
+
+      // 모든 값이 업데이트된 후 next 호출
+      next();
+    }
   };
   </script>
   

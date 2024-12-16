@@ -41,7 +41,7 @@ public class UserController {
         return entity;
     }
 
-    @PutMapping("/resetPwd")
+    @PostMapping("/resetPwd")
     @Transactional
     public ResponseEntity<String> resetPwd(@RequestBody ResetDTO dto){
         userService.newPwd(dto);
