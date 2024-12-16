@@ -114,6 +114,21 @@ const router = createRouter({
       neme: 'FindPassword',
       component : () => import('../views/pages/user-account/FindPassword.vue'),
     },
+    {
+      path: '/find-password/email',
+      neme: 'FindPWDEmail',
+      component : () => import('../views/pages/user-account/FindPWDEmail.vue'),
+    },
+    {
+      path: '/new-password',
+      neme: 'NewPassword',
+      component : () => import('../views/pages/user-account/NewPassword.vue'),
+    },
+    {
+      path: '/exit',
+      neme: 'ExitUser',
+      component : () => import('../views/pages/user-account/ExitUser.vue'),
+    },
   ],
 })
 
