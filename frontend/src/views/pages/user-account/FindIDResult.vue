@@ -13,7 +13,7 @@
         <div class="info-box" v-if="userInfo">
           <div class="info-item">
             <span class="info-hash"># 아이디 :</span>
-            <span class="info-text">{{ userInfo.username }}</span>
+            <span class="info-text">{{ userInfo.userId }}</span>
           </div>
           <div class="info-item">
             <span class="info-hash"># 가입일 :</span>
@@ -32,12 +32,14 @@
   </template>
   
   <script>
+  import api from '@/axios'
+
   export default {
     data() {
       return {
         userInfo: {
-          username: "재헌짱123",
-          joinDate: "2020년 4월 7일",
+          userId: this.$route.query.userId || '',
+          joinDate: this.$route.query.joinDate || '',
         },
       };
     },
@@ -45,15 +47,16 @@
       goToLogin() {
         alert("로그인 페이지로 이동합니다.");
         // 로그인 페이지 이동 로직
-        window.location.href = "login.html";
+        this.$router.push({ path: '/login' });
       },
       findPassword() {
         alert("비밀번호 찾기 페이지로 이동합니다.");
         // 비밀번호 찾기 페이지 이동 로직
-        window.location.href = "findPWD.html";
+        this.$router.push({ path: '/find-password' });
       },
     },
   };
+
   </script>
   
   <style scoped>

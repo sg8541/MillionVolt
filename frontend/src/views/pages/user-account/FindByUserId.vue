@@ -75,7 +75,14 @@
             const response = await api.get(`/findId/${this.username}/${this.email}`);
             if(response.status == 200){
               alert(`아이디 찾기 요청이 전송되었습니다.`);
-              this.$router.push({ path: '/find-result' });
+              console.log(response.data.userId + " , " + response.data.createdAt)
+              this.$router.push({
+                path: '/find-result',
+                query: {
+                  userId: response.data.userId,
+                  joinDate: response.data.createdAt,
+                },
+              });
             }
           }catch(error){
             console.error("아이디 찾기 오류:", error);
