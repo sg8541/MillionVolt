@@ -11,7 +11,7 @@
         <p class="description">비밀번호를 찾고자하는 아이디를 입력해주세요.</p>
         <input
           type="text"
-          v-model="username"
+          v-model="userId"
           placeholder="아이디를 입력해주세요."
           class="input-box"
         />
@@ -26,28 +26,46 @@
   </template>
   
   <script>
+  import api from '@/axios'
+
   export default {
     data() {
       return {
-        username: "",
+        userId: "",
       };
     },
     methods: {
-      handleNext() {
-        if (this.username.trim() === "") {
+      async handleNext() {
+        if (this.userId.trim() === "") {
           alert("아이디를 입력해주세요.");
         } else {
-          alert(`입력된 아이디: ${this.username}`);
           // 비밀번호 찾기 로직 추가
-        }
-      },
+          try {
+              const response = await api.get(`/findPwd/${this.userId}`);
+              if (response.status === 200) {
+                alert(`입력하신 아이디는 ${this.userId} 입니다.`);
+                this.$router.push({ 
+                  path: '/find-password/email',
+                  query: {
+                    userId: this.userId,
+                  },
+               });
+              }else{
+                alert("존재하지 않거나 잘못된 아이디입니다. 다시 확인해주세요.")
+              }
+            } catch (error) {
+              console.error("비밀번호 찾기 에러:", error);
+              alert("오류가 발생했습니다. 다시 시도해주세요.");
+            }
+          }
+        },
       goToFindID() {
         alert("아이디 찾기 페이지로 이동합니다.");
-        window.location.href = "findID.html"; // 페이지 경로 수정
+        this.$router.push({ path: '/find-id' }); // 페이지 경로 수정
       },
       goToJoin() {
         alert("회원가입 페이지로 이동합니다.");
-        window.location.href = "joininform.html"; // 페이지 경로 수정
+        this.$router.push({ path: '/agreement' }); // 페이지 경로 수정
       },
     },
   };

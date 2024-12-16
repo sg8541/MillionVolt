@@ -2,7 +2,7 @@
   <div id="wrap">
     <div class="logo">
       <a href="../templates/main.html">
-        <img src="images/logo.png" alt="백만불트 로고" />
+        <img src="../../../assets/images/logo.png" alt="백만불트 로고" />
       </a>
     </div>
 
@@ -15,7 +15,7 @@
           type="text"
           class="input-field"
           placeholder="이름을 입력해주세요."
-          v-model="name"
+          v-model="username"
           required
         />
 
@@ -57,37 +57,69 @@
 </template>
 
 <script>
+import api from '@/axios'
+
 export default {
   data() {
     return {
-      userId: "재헌짱123",
-      name: "",
+      userId: this.$route.query.userId || "",
+      username: "",
       email: "",
       verificationCode: "",
+      sentCode: '',  // 서버에서 받은 인증번호 저장
       isVerified: false,
     };
   },
   computed: {
     canSubmit() {
-      return this.name && this.email && this.verificationCode.length === 6;
+      return this.username && this.email && this.verificationCode.length === 6;
     },
   },
   methods: {
-    sendVerificationCode() {
+    async sendVerificationCode() {
       if (!this.email) {
         alert("이메일을 입력해주세요.");
         return;
       }
-      alert(`인증번호가 ${this.email}로 전송되었습니다.`);
       // 여기에 API 호출 로직 추가
+      try {
+          const response = await api.get(`/email/${this.email}`);
+          if (response.status === 200) {
+            this.sentCode = response.data;  // 서버에서 전송된 인증번호 저장
+            console.log("Sent Code:", this.sentCode);
+            alert(`인증번호가 ${this.email}로 전송되었습니다.`);
+          }
+        } catch (error) {
+          console.error("인증번호 전송 오류:", error);
+          alert("오류가 발생했습니다. 다시 시도해주세요.");
+        }
     },
-    handleSubmit() {
-      if (!this.canSubmit) {
-        alert("모든 필드를 입력해주세요.");
-        return;
+    async handleSubmit() {
+      if (this.verificationCode.toString() !== this.sentCode.toString()) {
+          console.log("verificationCode : " + this.verificationCode);
+          alert("잘못된 인증번호 입니다.");
+          this.verificationCode = '';  // 입력 필드 초기화
+          return;
+        } else if (!this.canSubmit) {
+          alert("모든 필드를 입력해주세요.");
+          return;
       }
-      alert("비밀번호 찾기 요청이 제출되었습니다.");
       // 비밀번호 찾기 API 호출 로직 추가
+      try{
+        const response = await api.get(`/findPwd/${this.username}/${this.email}`);
+        if(response.status == 200){
+          alert("비밀번호 찾기 요청이 제출되었습니다.");
+          this.$router.replace({
+            path: '/new-password',
+            query: {
+              userId: this.userId,
+            },
+          });
+        }
+      }catch(error){
+        console.error("비밀번호 찾기 오류:", error);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+      }
     },
   },
 };

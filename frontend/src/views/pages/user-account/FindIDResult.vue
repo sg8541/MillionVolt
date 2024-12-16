@@ -32,7 +32,7 @@
   </template>
   
   <script>
-  import api from '@/axios'
+
 
   export default {
     data() {
@@ -47,12 +47,12 @@
       goToLogin() {
         alert("로그인 페이지로 이동합니다.");
         // 로그인 페이지 이동 로직
-        this.$router.push({ path: '/login' });
+        this.$router.replace({ path: '/login' });
       },
       findPassword() {
         alert("비밀번호 찾기 페이지로 이동합니다.");
         // 비밀번호 찾기 페이지 이동 로직
-        this.$router.push({ path: '/find-password' });
+        this.$router.replace({ path: '/find-password' });
       },
     },
   };

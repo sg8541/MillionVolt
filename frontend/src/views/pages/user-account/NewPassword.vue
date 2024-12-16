@@ -38,7 +38,7 @@
   export default {
     data() {
       return {
-        userId: "재헌짱123",
+        userId: this.$route.query.userId || "",
         password: "",
         passwordConfirm: "",
       };
