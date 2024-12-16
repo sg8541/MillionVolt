@@ -109,6 +109,11 @@ const router = createRouter({
       neme: 'FindIDResult',
       component : () => import('../views/pages/user-account/FindIDResult.vue'),
     },
+    {
+      path: '/find-password',
+      neme: 'FindPassword',
+      component : () => import('../views/pages/user-account/FindPassword.vue'),
+    },
   ],
 })
 
