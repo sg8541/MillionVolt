@@ -27,50 +27,77 @@ const fetchMyInfo = async () => {
   }
 };
 
+const accountData = ref({
+  username: '',
+  userId: '',
+  email: '',
+  phoneNumber: ''
+});
+
 // 회원 정보 리셋
 const resetForm = () => {
   accountDataLocal.value = { ...info.value };
 };
 
 // 로컬 데이터 복사
-const accountDataLocal = ref(structuredClone(accountData))
 const isModalVisible = ref(false) // 모달 표시 여부
 
 // 모달 상태 데이터
-const nickname = ref('')
-const existingNicknames = reactive(['user1', 'test123', 'admin']) // 닉네임 중복 데이터
+const modalEmail = ref('')
 const statusMessage = ref('')
 const statusClass = ref('')
 
-// 닉네임 중복 확인
-const checkNickname = () => {
-  if (nickname.value.trim() === '') {
-    statusMessage.value = '닉네임을 입력해 주세요.'
-    statusClass.value = 'error'
-  } else if (existingNicknames.includes(nickname.value)) {
-    statusMessage.value = '사용할 수 없는 닉네임입니다.'
-    statusClass.value = 'error'
-  } else {
-    statusMessage.value = '사용할 수 있는 닉네임입니다.'
-    statusClass.value = 'success'
+const checkEmail = async () => {
+  // 이메일 형식 검사 (정규 표현식 사용)
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  if (!emailRegex.test(modalEmail.value.trim())) {
+    statusMessage.value = '이메일 형식이 올바르지 않습니다.';
+    statusClass.value = 'error';
+    return; // 이메일 형식이 잘못되었으면 종료
   }
-}
 
-// 닉네임 변경 확인
+  if (modalEmail.value.trim() === '') {
+    statusMessage.value = '이메일을 입력해 주세요.';
+    statusClass.value = 'error';
+  } else {
+    try {
+      const response = await api.get(`/email-check?email=${modalEmail.value}`);
+      if (response.status === 200) {
+        // 이메일이 사용 가능한 경우
+        statusClass.value = 'success';
+        statusMessage.value = '사용할 수 있는 이메일입니다.';
+      } else {
+        // 이메일이 이미 존재하는 경우
+        statusClass.value = 'error';
+        statusMessage.value = '사용할 수 없는 이메일입니다.';
+      }
+    } catch (error) {
+      // 오류 처리
+      alert('이메일 중복 확인 중 오류가 발생하였습니다.' + error);
+    }
+  }
+};
+// 이메일 변경 확인
 const confirmChange = () => {
+  if (modalEmail.value.trim() === '') {
+    statusMessage.value = '이메일을 입력해 주세요.'
+    statusClass.value = 'error'
+  }
   if (statusClass.value === 'success') {
-    alert(`닉네임이 '${nickname.value}'(으)로 변경되었습니다!`)
+    alert(`변경하실 이메일은 '${modalEmail.value}' 입니다!`)
+    accountDataLocal.value.email = modalEmail.value;
     closeModal()
   } else {
-    alert('닉네임 중복 확인이 필요합니다.')
+    alert('이메일 중복 확인이 필요합니다.')
   }
 }
 
 // 닉네임 변경 취소
 const cancelChange = () => {
-  nickname.value = ''
+  modalEmail.value = ''
   statusMessage.value = ''
   statusClass.value = ''
+  closeModal()
 }
 
 // 모달 열기/닫기
@@ -79,11 +106,6 @@ const openModal = () => {
 }
 const closeModal = () => {
   isModalVisible.value = false
-}
-
-// 정보 초기화
-const resetForm = () => {
-  accountDataLocal.value = structuredClone(accountData)
 }
 
 // 회원 정보 수정
@@ -109,22 +131,6 @@ onMounted(() => {
   fetchMyInfo();
 });
 
-// const changeAvatar = file => {
-//   const fileReader = new FileReader()
-//   const { files } = file.target
-//   if (files && files.length) {
-//     fileReader.readAsDataURL(files[0])
-//     fileReader.onload = () => {
-//       if (typeof fileReader.result === 'string')
-//         accountDataLocal.value.avatarImg = fileReader.result
-//     }
-//   }
-// }
-
-// reset avatar image
-// const resetAvatar = () => {
-//   accountDataLocal.value.avatarImg = accountData.avatarImg
-// }
 </script>
 
 <template>
@@ -138,43 +144,23 @@ onMounted(() => {
             <VRow>
               <!-- 성명 -->
               <VCol md="6" cols="12">
-                <VTextField
-                  v-model="accountDataLocal.username"
-                  :placeholder="info.username"
-                  label="성명"
-                  readonly
-                />
+                <VTextField v-model="accountDataLocal.username" :placeholder="accountDataLocal.username" label="성명"
+                  readonly />
               </VCol>
 
               <!-- ID -->
               <VCol md="6" cols="12">
-                <VTextField
-                  v-model="accountDataLocal.userId"
-                  label="ID"
-                  :placeholder="info.userId"
-                  readonly
-                />
+                <VTextField v-model="accountDataLocal.userId" label="ID" :placeholder="accountDataLocal.userId"
+                  readonly />
               </VCol>
 
               <!-- 👉 Email -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                  <VTextField
-                  v-model="accountDataLocal.email"
-                  label="E-mail"
-                  :placeholder="info.email"
-                  type="email"
-                  outlined
-                >
+              <VCol cols="12" md="6">
+                <VTextField v-model="accountDataLocal.email" label="E-mail" :placeholder="accountDataLocal.email"
+                  type="email" outlined readonly>
                   <template #append-inner>
-                    <VBtn
-                      class="blue-btn"
-                      @click="openModal"
-                      style="margin-right: -8px;"
-                    >
-                      이메일 변경
+                    <VBtn class="blue-btn" @click="openModal" style="margin-right: -8px;">
+                      이메일 중복확인
                     </VBtn>
                   </template>
                 </VTextField>
@@ -182,29 +168,16 @@ onMounted(() => {
 
               <!-- 전화번호 -->
               <VCol md="6" cols="12">
-                <VTextField
-                  v-model="accountDataLocal.phoneNumber"
-                  label="Phone Number"
-                  :placeholder="info.phoneNumber"
-                />
+                <VTextField v-model="accountDataLocal.phoneNumber" label="Phone Number"
+                  :placeholder="accountDataLocal.phoneNumber" />
               </VCol>
 
 
               <!-- 👉 Form Actions -->
-              <VCol
-                cols="12"
-                class="d-flex flex-wrap gap-4"
-              >
-                <VBtn
-                @click.prevent="updateInfo">정보 변경</VBtn>
+              <VCol cols="12" class="d-flex flex-wrap gap-4">
+                <VBtn @click.prevent="updateInfo">정보 변경</VBtn>
 
-                <VBtn
-                  class="gray-btn"
-                  color="secondary"
-                  variant="tonal"
-                  type="reset"
-                  @click.prevent="resetForm"
-                >
+                <VBtn class="gray-btn" color="secondary" variant="tonal" type="reset" @click.prevent="resetForm">
                   다시쓰기
                 </VBtn>
               </VCol>
@@ -214,29 +187,56 @@ onMounted(() => {
       </VCard>
     </VCol>
 
-    <!-- 닉네임 중복 검사 모달 -->
-    <div v-if="isModalVisible" class="modal">
-      <!-- 닫기 버튼 -->
-      <span class="close-btn" @click="closeModal">&times;</span>
-      <h2>닉네임 중복 검사</h2>
-      <label for="nickname">변경할 닉네임</label>
-      <input
-        type="text"
-        id="nickname"
-        v-model="nickname"
-        placeholder="닉네임을 입력하세요"
-      />
-      <button class="blue-btn" @click="checkNickname"><b>중복 확인</b></button>
-      <p v-if="statusMessage" :class="statusClass">{{ statusMessage }}</p>
-      <div class="actions">
-        <button class="blue-btn" @click="confirmChange">변경</button>
-        <button class="gray-btn" @click="cancelChange">취소</button>
+    <!-- 이메일 중복 검사 모달 -->
+    <div v-if="isModalVisible" class="modal-overlay">
+      <div class="modal">
+        <!-- 닫기 버튼 -->
+        <span class="close-btn" @click="closeModal">&times;</span>
+        <h2>이메일 중복 검사</h2>
+        <label for="email">변경할 이메일</label>
+        <input type="email" id="modalEmail" v-model="modalEmail" placeholder="이메일을 입력하세요" />
+        <button class="blue-btn" @click="checkEmail"><b>중복 확인</b></button>
+        <p v-if="statusMessage" :class="statusClass">{{ statusMessage }}</p>
+        <div class="actions">
+          <button class="blue-btn" @click="confirmChange">변경</button>
+          <button class="gray-btn" @click="cancelChange">취소</button>
+        </div>
       </div>
     </div>
   </VRow>
 </template>
 
 <style scoped>
+/* 모달 외부 오버레이 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 배경 어둡게 */
+  z-index: 999;
+  /* 모달보다 낮은 z-index */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 모달 스타일 */
+.modal {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 255, 0.2);
+  padding: 20px;
+  width: 350px;
+  text-align: center;
+  position: relative;
+  z-index: 1000;
+  /* 모달의 z-index */
+}
+
+
 /* 공통 버튼 스타일 */
 button {
   border: none;
@@ -252,6 +252,7 @@ button {
   background-color: blue;
   color: white;
 }
+
 .blue-btn:hover {
   background-color: #003366;
 }
@@ -260,8 +261,10 @@ button {
 /* 회색 버튼 */
 .gray-btn {
   background-color: gray;
-  color: white; /* 글자 컬러를 화이트로 설정 */
+  color: white;
+  /* 글자 컬러를 화이트로 설정 */
 }
+
 .gray-btn:hover {
   background-color: #4f4f4f;
 }
@@ -280,11 +283,13 @@ button {
   transform: translate(-50%, -50%);
   z-index: 1000;
 }
+
 h2 {
   font-size: 18px;
   margin-bottom: 15px;
   text-align: center;
 }
+
 input {
   width: 100%;
   padding: 8px;
@@ -293,25 +298,30 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
 .success {
   color: green;
   margin: 10px 0;
 }
+
 .error {
   color: red;
   margin: 10px 0;
 }
+
 .actions {
   display: flex;
   justify-content: space-around;
   margin-top: 15px;
 }
+
 label {
   display: block;
   text-align: left;
   font-size: 14px;
   margin-bottom: 5px;
 }
+
 .close-btn {
   position: absolute;
   top: 10px;
@@ -321,6 +331,7 @@ label {
   font-weight: bold;
   color: #555;
 }
+
 .close-btn:hover {
   color: red;
 }
