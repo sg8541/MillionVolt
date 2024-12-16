@@ -103,7 +103,12 @@ const router = createRouter({
       path:'/Reservation',
       name: 'Reservation',
       component: () => import('../views/payment/Reservation.vue'),
-    }
+    },
+    {
+      path: '/find-result',
+      neme: 'FindIDResult',
+      component : () => import('../views/pages/user-account/FindIDResult.vue'),
+    },
   ],
 })
 
