@@ -45,7 +45,7 @@ public class UserInfoController {
     }
 
     // 비밀번호 변경
-    @PutMapping("/{id}")
+    @PostMapping("/password/{id}")
     public ResponseEntity<?> userPWUpdate(@PathVariable Integer id, @RequestBody PasswordDTO passwordDTO) {
         boolean success = userService.updatePassword(id, passwordDTO);
         if (success) {
