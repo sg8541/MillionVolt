@@ -34,7 +34,10 @@ public interface ChargingStationService {
 
     ChargingStationDTO getChargingStationWithChargers(Integer stationId);
 
-    List<ChargingStationVO> getStationsByLocation(double latitude, double longitude, int radius);
+    // 사용자 주변의 충전소 가져오기
+    List<ChargingStationVO> getStationsByAddress5km(String address, int radius);
+
+    List<ChargingStationVO> getStationsByAddress(String address);
 
     ChargingStationDTO getStationWithChargers(Integer stationId);
 }
