@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @SpringBootTest
@@ -28,11 +29,11 @@ public class PayPriceTests {
         // 날짜 설정
         payPriceDTO.setCreatedAt(LocalDateTime.now()); // created_at 설정
         payPriceDTO.setUpdatedAt(LocalDateTime.now()); // updated_at 설정
-        payPriceDTO.setChargeStart(LocalDateTime.now()); // charge_start 설정
-        payPriceDTO.setChargeEnd(LocalDateTime.now().plusHours(1)); // charge_end 설정
+        payPriceDTO.setChargeStart(Timestamp.valueOf(LocalDateTime.now())); // charge_start 설정
+        payPriceDTO.setChargeEnd(Timestamp.valueOf(LocalDateTime.now().plusHours(1))); // charge_end 설정
 
         // DB에 데이터 삽입
-        int result = payPriceMapper.insertPayPrice(payPriceDTO);
+        boolean result = payPriceMapper.insertPayPrice(payPriceDTO);
 
         // 결과 출력 (삽입된 행의 수 확인)
         System.out.println(result);  // 1이면 정상적으로 삽입됨
