@@ -3,6 +3,7 @@ package kr.co.milionvolt.ifive.mapper;
 import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationDTO;
 import kr.co.milionvolt.ifive.domain.chargingstation.ChargingStationVO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
+import kr.co.milionvolt.ifive.domain.payment.ChargeStationInfoDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -119,4 +120,6 @@ public interface ChargingStationMapper {
     })
     ChargingStationDTO findStationWithChargers(@Param("stationId") Integer stationId);
 
+    @Select("SELECT name, address, file_path FROM charging_station WHERE station_id = #{stationId}")
+    ChargeStationInfoDTO findStationAddressById(@Param("stationId") Integer stationId);
 }
