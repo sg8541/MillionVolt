@@ -21,7 +21,7 @@ public interface ChargingStatusMapper {
             " JOIN reservation r " +
             " ON u.id=r.user_id " +
             " JOIN charger c " +
-            " ON r.reservation_id = c.charger_id " +
+            " ON r.charger_id = c.charger_id " +
             " JOIN charging_station cs " +
             " ON cs.station_id = c.station_id " +
             " JOIN charge_speed csp " +
