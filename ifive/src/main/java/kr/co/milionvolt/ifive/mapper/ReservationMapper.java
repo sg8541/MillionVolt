@@ -4,6 +4,7 @@ import kr.co.milionvolt.ifive.domain.reservation.ReservationDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 //@Mapper
 //public interface ReservationMapper {
@@ -44,6 +45,34 @@ public interface ReservationMapper {
             " OR  (DATE(start_time) = DATE(#{startTime}) " +
             " AND TIME(start_time) <= TIME(#{startTime}) " +
             " AND TIME(end_time) >= TIME(#{endTime})) " +
-            " AND charger_id = #{chargerId}")
+            " AND charger_id = #{chargerId}" +
+            " AND status = 'confirmed'")
     int checkConflictReservation(ReservationDTO reservationDTO);
+
+//    @Select(" SELECT count(*) " +
+//            " FROM reservation " +
+//            " WHERE (DATE(start_time) = DATE(#{startTime})" +
+//            " AND (TIME(start_time)-15) BETWEEN TIME(#{startTime}) AND TIME(#{endTime}))" +
+//            " OR (DATE(end_time) = DATE(#{startTime})" +
+//            " AND TIME((end_time)+15) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
+//            " OR (DATE(start_time) = DATE(#{startTime})" +
+//            " AND TIME(start_time) <= TIME(#{startTime})" +
+//            " AND TIME(end_time) >= TIME(#{endTime}))" +
+//            " AND chareg_id = #{chargerId}")
+//    int checkConflictReservationPlusFifteen(ReservationDTO reservationDTO);
+
+    @Select(" SELECT count(*) " +
+            " FROM reservation " +
+            " WHERE DATE(start_time) = DATE(#{startTime}) " +
+            " AND charger_id = #{chargerId} " +
+            " AND status = 'confirmed' " +
+            " AND ( " +
+            "     (TIME(#{startTime}) BETWEEN TIME(start_time) AND ADDTIME(TIME(end_time), '00:15:00')) " +
+            "     OR (TIME(#{endTime}) BETWEEN SUBTIME(TIME(start_time), '00:15:00') AND TIME(end_time)) " +
+            "     OR (TIME(start_time) <= TIME(#{startTime}) AND TIME(end_time) >= TIME(#{endTime})) " +
+            "     OR (TIME(#{endTime}) <= SUBTIME(TIME(start_time), '00:15:00')) " +
+            " )")
+    int checkConflictReservationPlusFifteen(ReservationDTO reservationDTO);
+
+
 }
