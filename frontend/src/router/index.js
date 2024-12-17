@@ -3,6 +3,7 @@ import ChargingStatus from '../views/chargingwebsocket/ChargingStatus.vue'
 import PayPrice from '@/views/payment/PayPrice.vue'
 import TestAlarm from '@/views/alarm/TestAlarm.vue'
 import ReservationAlarm from '@/views/alarm/ReservationAlarm.vue'
+import ChargingStationPage from '@/views/main/ChargingStationPage.vue';
 
 import { useAuthStore } from '@/stores/auth'
 
@@ -10,7 +11,13 @@ import ChargerChangeState from '@/views/chargingwebsocket/ChargerChangeState.vue
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/myinfo/dashboard/:id' },
+    { path: '/', redirect: '/main' },
+      // 충전소 메인 페이지
+      {
+          path: '/main',
+          name: 'ChargingStationPage',
+          component: ChargingStationPage,
+      },
     {
       path: '/myinfo/',
       component: () => import('../layouts/default.vue'),
@@ -149,5 +156,4 @@ const router = createRouter({
     }
   })
 
-
-export default router
+export default router;
