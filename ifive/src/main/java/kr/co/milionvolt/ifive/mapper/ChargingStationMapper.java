@@ -108,4 +108,6 @@ public interface ChargingStationMapper {
     })
     ChargingStationDTO findStationWithChargers(@Param("stationId") Integer stationId);
 
+
+
 }
