@@ -45,17 +45,6 @@
         </div>
         <h5 class="minuteAlarm">시간은 5분 단위로 예약이 가능합니다.</h5>
     </div>
-  
-    <!-- 전달받은 충전기 정보 출력 -->
-    <div class="reservation-info-title">충전기 정보</div>
-    <div class="reservation-info">
-      <p><strong>충전소 이름:</strong> {{ stationName }}</p>
-      <p><strong>충전소 주소:</strong> {{ stationAddress }}</p>
-      <p><strong>충전기 ID:</strong> {{ chargerId }}</p>
-      <p><strong>충전기 타입:</strong> {{ chargerType }}</p>
-      <p><strong>충전 속도:</strong> {{ chargerSpeed }}</p>
-    </div>
-  
     <!-- 예약 목록 -->
     <div class="reservation-list-title">예약 목록</div>
     <div class="reservation-list">
@@ -173,9 +162,9 @@ const reservationStartDate = computed(() => {
                 alert(`결제 실패: ${rsp.error_msg}`);
             }
         }
-      }
-    );
-  };
+      )
+    };
+
   
   // 예약 목록 조회
   const printReservationList = async () => {

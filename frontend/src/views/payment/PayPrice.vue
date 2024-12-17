@@ -50,7 +50,7 @@ const amount = ref(0);
 const chargeStart = ref(null);
 const chargeEnd = ref(null);
 const chargingKwh = ref(null);
-const chargerId = red(null);
+const chargerId = ref(null);
 
 
 onMounted(() => {
