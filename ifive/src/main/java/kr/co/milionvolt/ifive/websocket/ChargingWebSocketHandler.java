@@ -138,11 +138,11 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                    "{\"batteryPercent\": %d, \"amount\": %.2f, \"chargingKwh\": %.2f, " +
                            "\"chargerType\": \"%s\", \"name\": \"%s\", \"address\": \"%s\", \"userId\": %s, \"username\": \"%s\", " +
                            "\"modelId\": %d, \"reservationId\": %d, \"stationId\": %d, \"carNumber\": \"%s\",\"pricePerKWh\": %.2f, " +
-                           " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f , \"message\": \"%s\"}",
+                           " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f , \"message\": \"%s\" , \"chargerId\": %d }",
                    batteryPercent, dto.getTotalPay(), chargingKwh,
                    dto.getChargerSpeed(), dto.getName(), dto.getAddress(), dto.getId(),
                    dto.getUsername(), dto.getModelId(), dto.getReservationId(), dto.getStationId(), dto.getCarNumber(),
-                   dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds, dto.getMessage());
+                   dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds, dto.getMessage(),dto.getChargerId());
            session.sendMessage(new TextMessage(status));
        }catch (Exception e){
            e.printStackTrace();
