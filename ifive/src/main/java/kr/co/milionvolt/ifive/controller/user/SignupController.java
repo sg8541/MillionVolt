@@ -14,13 +14,13 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/signup")
+@RequestMapping("/api/v1")
 public class SignupController {
 
     private final SignupService signupService;
 
 
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<?> signup (@RequestBody SignupDTO signupDTO){
         log.info("========================: " + signupDTO.toString());
         try{
@@ -34,8 +34,23 @@ public class SignupController {
             log.info("error : {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 중 문제가 발생하였습니다.");
         }
+    }
+
+    @GetMapping("/email-check")
+    public ResponseEntity<?> checkEmailDuplicate(@RequestParam String email){
+        final int NOT_FIUND = 0;
+        log.info("email : {}", email);
+
+        int result = signupService.checkEmailDuplicate(email);
+        if(result == NOT_FIUND) {
+            return ResponseEntity.status(HttpStatus.OK).body("사용 가능한 이메일입니다.");
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용할 수 없는 이메일입니다.");
+        }
 
     }
+
+
 
 
 

@@ -21,5 +21,10 @@ public interface SignupMapper {
     @Select("select id from user where email = #{email}")
     String findById(String email);
 
-
+    // 이메일 중복 체크
+    @Select("select EXISTS( " +
+            "               select email " +
+            "               from user " +
+            "               where email = #{email}) ")
+    int findByEmail(String email);
 }

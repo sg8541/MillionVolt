@@ -19,7 +19,7 @@ loadFonts()
 
 // Create vue app
 const app = createApp(App);
-const pinia = createPinia(); 
+//const pinia = createPinia(); 
 
 // 전역 속성으로 Axios 설정 (선택 사항)
 app.config.globalProperties.$axios = api
@@ -32,4 +32,4 @@ app.use(router)
 
 // Mount vue app
 app.mount('#app')
-app.use(pinia); 
+//app.use(pinia); 

@@ -5,6 +5,7 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import kr.co.milionvolt.ifive.domain.reservation.ReservationDTO;
+import kr.co.milionvolt.ifive.entity.ReservationRedis;
 import kr.co.milionvolt.ifive.mapper.ReservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     private ReservationMapper reservationMapper;
+
+    @Autowired
+    private ReservationRedisService reservationRedisService;
 
     @Autowired
     public IamportClient iamportClient;
@@ -49,6 +53,16 @@ public class ReservationServiceImpl implements ReservationService {
 
                 reservationMapper.insertReservation(reservationDTO);
                 message =  "예약이 완료되었습니다.";
+                    int num =  reservationMapper.insertReservation(reservationDTO);
+                        if(num != 0){
+                            ReservationRedis reservationRedis = new ReservationRedis();
+                            reservationRedis.setReservationId(reservationDTO.getReservationId());
+                            reservationRedis.setStartTime(reservationDTO.getStartTime());
+                            reservationRedis.setEndTime(reservationDTO.getEndTime());
+                            reservationRedis.setUserId(reservationDTO.getUserId());
+                            reservationRedisService.save(reservationRedis);
+                        }
+                return message;
             }
         } catch (Exception e) {
             System.err.println("reservation error: " + e.getMessage());

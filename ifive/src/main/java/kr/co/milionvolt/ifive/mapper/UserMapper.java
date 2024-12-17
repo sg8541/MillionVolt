@@ -61,24 +61,36 @@ public interface UserMapper {
     boolean updateUserCarBatteryAndChargerSpeed(CarBatteryAndChargerSpeedUpdateDTO updateDTO);
 
     // 유저의 예약 내역 리스트
-    @Select("select reservation_id, start_time, end_time, status, r.created_at, charger_id, c.address " +
+    @Select("select reservation_id, " +
+            "date_format(start_time, '%y.%m.%d. %T ') as start_time, " +
+            "date_format(end_time, ' %T') as end_time, " +
+            "status, " +
+            "date_format(r.created_at,'%y.%m.%d.') as  created_at," +
+            "charger_id, " +
+            "c.name " +
             "from reservation r " +
             "join charging_station c " +
             "using (station_id) " +
             "left join user " +
             "using (user_id) " +
             "where user_id = #{userId} " +
-            "order by r.created_at desc")
+            "order by r.created_at desc ")
     List<UserInfoReservationListVO> findByUserReservationList(@Param("userId") Integer id);
 
     // 유저의 결제 내역 리스트
-    @Select("select payment_id, amount, payment_method, payment_status, p.created_at, " +
-            "       charge_start, charge_end, c.address " +
+    @Select("select payment_id, name, cg.charger_id, format(amount,2) as amount, " +
+            "       payment_method, payment_status, charged_energy, " +
+            "       date_format(p.updated_at, '%y.%m.%d.') as updated_at, " +
+            "       date_format(p.created_at, '%y.%m.%d. %H:%i') as created_at, " +
+            "       date_format(charge_start, '%y.%m.%d. %T ') as charge_start, " +
+            "       date_format(charge_end, ' %T') as charge_end " +
             "from payment p " +
             "join charging_station c " +
             "using (station_id) " +
+            "join charger cg " +
+            "on c.station_id = cg.charger_id " +
             "where user_id = #{userId} " +
-            "order by p.created_at desc")
+            "order by p.created_at desc ")
     List<UserInfoPaymentListVO> findByUserPaymentList(@Param("userId") Integer id);
 
     // 대시보드 유저 + 유저 차 정보 + 차 모델 + 선호 충전 타입

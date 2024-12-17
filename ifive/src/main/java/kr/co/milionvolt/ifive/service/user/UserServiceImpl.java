@@ -39,13 +39,13 @@ public class UserServiceImpl implements UserService {
     public boolean updatePassword(Integer id, PasswordDTO passwordDTO) {
         boolean success = false;
         log.info(passwordDTO.toString());
-        if (findByPassword(id, passwordDTO)) {
+        if(findByPassword(id, passwordDTO)){
             String newPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
             log.info("newPassword: = ", newPassword);
             success = userMapper.updatePW(id, newPassword);
             return success;
             // 패스워드 변경 도중 실패한 상황에 대한 상태처리 추가 필요.
-        } else {
+        }else{
             // 패스워드가 일치하지 않은 경우에 대한 값
             return false;
         }
@@ -65,14 +65,12 @@ public class UserServiceImpl implements UserService {
         UserCarInfoDTO carInfoDTO = userMapper.findByUserCar(id);
         return carInfoDTO;
     }
-
     // 차 번호 + 차 모델 변경
     @Override
     public boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO) {
         boolean success = userMapper.updateUserCarNumberAndCarModel(carNumberDTO);
         return success;
     }
-
     // 차 배터리 + 선호 충전 타입 변경
     @Override
     public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO) {
@@ -126,7 +124,7 @@ public class UserServiceImpl implements UserService {
     //비밀번호 찾기1
     @Override
     public String findPasswordByUserId(String userId) {
-        String email = userMapper.findPasswordByUserId(userId);
+        String  email = userMapper.findPasswordByUserId(userId);
         return email;
     }
 
@@ -134,7 +132,7 @@ public class UserServiceImpl implements UserService {
     //비밀번호 찾기2
     @Override
     public FindFwdDTO findPass(String username, String email) {
-        FindFwdDTO dto = userMapper.findPassword(username, email);
+        FindFwdDTO dto =  userMapper.findPassword(username,email);
         return dto;
     }
 
@@ -153,7 +151,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUserInfo(UpdateUserInfoDTO infoDTO) {
-        try {
+        try{
             boolean result = userMapper.updateUserInfo(infoDTO);
             return result;
         } catch (Exception e) {
@@ -161,8 +159,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
     public int selectUserId(String userId) {
-        int id = userMapper.selectFindId(userId);
+        int id =   userMapper.selectFindId(userId);
         return id;
     }
+
 }

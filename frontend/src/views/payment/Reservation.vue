@@ -45,7 +45,18 @@
         </div>
         <h5 class="minuteAlarm">시간은 5분 단위로 예약이 가능합니다.</h5>
     </div>
-
+  
+    <!-- 전달받은 충전기 정보 출력 -->
+    <div class="reservation-info-title">충전기 정보</div>
+    <div class="reservation-info">
+      <p><strong>충전소 이름:</strong> {{ stationName }}</p>
+      <p><strong>충전소 주소:</strong> {{ stationAddress }}</p>
+      <p><strong>충전기 ID:</strong> {{ chargerId }}</p>
+      <p><strong>충전기 타입:</strong> {{ chargerType }}</p>
+      <p><strong>충전 속도:</strong> {{ chargerSpeed }}</p>
+    </div>
+  
+    <!-- 예약 목록 -->
     <div class="reservation-list-title">예약 목록</div>
     <div class="reservation-list">
             <div v-for="(reservation, index) in reservationList" :key="index">
@@ -54,7 +65,6 @@
                 <br>
             </div>
     </div>
-
     <div class="reservation-button-container">
         <button class="reservation-button" @click="reserve">예약</button>
     </div>
@@ -91,52 +101,49 @@ const reservationList = ref([]);
 const reservationStartDate = computed(() => {
     if (!reservation.value.startDate || !reservation.value.startTime) return null;
     return new Date(`${reservation.value.startDate}T${reservation.value.startTime}`);
-});
-
-const reservationEndDate = computed(() => {
+  });
+  
+  const reservationEndDate = computed(() => {
     if (!reservation.value.endDate || !reservation.value.endTime) return null;
     return new Date(`${reservation.value.endDate}T${reservation.value.endTime}`);
-});
-
-// 날짜와 시간의 유효성 검사
-const isValidDateAndTime = () => {
-    if (!reservationStartDate.value || !reservationEndDate.value) {
-        alert("모든 필드를 입력해주세요.");
-        return false;
-    }
-
-    const now = new Date();
-
-    if (reservationStartDate.value <= now) {
-        alert("예약은 현재 시간 이후로만 가능합니다.");
-        return false;
-    }
-
-    if (reservationStartDate.value >= reservationEndDate.value) {
-        alert("종료 시간은 시작 시간보다 늦어야 합니다.");
-        return false;
-    }
-
-    return true;
-};
-
-// 시간 입력이 5분 단위인지 확인하는 함수
-const validateTime = (field) => {
+  });
+  
+  // 시간 유효성 검사
+  const validateTime = (field) => {
     const time = reservation.value[field];
     const [hours, minutes] = time.split(":").map(Number);
     if (minutes % 5 !== 0) {
-        alert(`${field === 'startTime' ? '시작' : '종료'} 시간은 5분 단위로 입력해야 합니다.`);
-        reservation.value[field] = ""; // 잘못된 입력은 빈 값으로 초기화
+      alert(`${field === "startTime" ? "시작" : "종료"} 시간은 5분 단위로 입력해야 합니다.`);
+      reservation.value[field] = "";
     }
-};
-
-// 예약 요청 함수
-const reserve = async () => {
+  };
+  
+  // 날짜 및 시간 유효성 검사
+  const isValidDateAndTime = () => {
+    if (!reservationStartDate.value || !reservationEndDate.value) {
+      alert("모든 필드를 입력해주세요.");
+      return false;
+    }
+    const now = new Date();
+    if (reservationStartDate.value <= now) {
+      alert("예약은 현재 시간 이후로만 가능합니다.");
+      return false;
+    }
+    if (reservationStartDate.value >= reservationEndDate.value) {
+      alert("종료 시간은 시작 시간보다 늦어야 합니다.");
+      return false;
+    }
+    return true;
+  };
+  
+  // 예약 API 호출
+  const reserve = async () => {
     if (!isValidDateAndTime()) return;
-
+  
     const { IMP } = window;
     IMP.init("imp50578251");
     IMP.request_pay(
+
         {
             pg: "html5_inicis",
             pay_method: "카카오페이",
@@ -166,29 +173,27 @@ const reserve = async () => {
                 alert(`결제 실패: ${rsp.error_msg}`);
             }
         }
+      }
     );
-};
-
-// 예약 리스트 조회 함수
-const printReservationList = async () => {
-    if (!reservation.value.startDate || !reservation.value.endDate) return; // 날짜가 없으면 조회하지 않음
+  };
+  
+  // 예약 목록 조회
+  const printReservationList = async () => {
+    if (!reservation.value.startDate || !reservation.value.endDate) return;
     try {
-        const formattedStartDate = reservation.value.startDate + 'T00:00:00';
-        const formattedEndDate = reservation.value.endDate + 'T23:59:59';
-
-        const response = await axios.get(
-            `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}`
-        );
-
-        reservationList.value = response.data;
-        console.log("예약 리스트:", reservationList.value);
+      const formattedStartDate = reservation.value.startDate + "T00:00:00";
+      const formattedEndDate = reservation.value.endDate + "T23:59:59";
+  
+      const response = await axios.get(
+        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}`
+      );
+  
+      reservationList.value = response.data;
     } catch (error) {
-        alert("해당 날짜의 예약 조회에 실패했습니다.");
-        console.error(error.response?.data || error.message);
+      alert("해당 날짜의 예약 조회에 실패했습니다.");
     }
-};
-</script>
-
+  };
+  </script>
 <style>
 /* .reserve-date-container {
     display: flex;

@@ -1,5 +1,6 @@
 package kr.co.milionvolt.ifive.websocket;
 
+import kr.co.milionvolt.ifive.service.charger.ChargerService;
 import kr.co.milionvolt.ifive.service.charging.ChargingStatusSerivce;
 import kr.co.milionvolt.ifive.service.reservation.ReservationRedisService;
 import kr.co.milionvolt.ifive.service.user.UserService;
@@ -18,10 +19,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     private final ReservationRedisService reservationRedisService;
 
-    public WebSocketConfig(ChargingStatusSerivce chargingStatusSerivce, UserService userService, ReservationRedisService reservationRedisService) {
+    private final ChargerService chargerService;
+
+    public WebSocketConfig(ChargingStatusSerivce chargingStatusSerivce, UserService userService, ReservationRedisService reservationRedisService, ChargerService chargerService) {
         this.chargingStatusSerivce = chargingStatusSerivce;
         this.userService = userService;
         this.reservationRedisService = reservationRedisService;
+        this.chargerService = chargerService;
     }
 
     @Override
@@ -31,6 +35,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
         registry.addHandler(new AlarmWebSocketHandler(userService, reservationRedisService), "/alarm")
                 .setAllowedOrigins("*");
+
+        registry.addHandler(new ChargeStateChangeWebSocketHandler(chargerService), "/chargerstatus")
+                .setAllowedOrigins("*");
+
+
     }
 
 }

@@ -1,15 +1,16 @@
 <template>
     <!-- 이동 버튼 -->
     <button @click="moveToTestAlarm">ChargingStatus 이동</button>
+    <button @click="movereservationAlarm">reservationAlarm 이동</button>
     
     <!-- 알림창 -->
     <div class="alert-box" v-if="store.finishAlarm.message && showAlert">
       {{ store.finishAlarm.message }}
       <button class="close-btn" @click="closeAlert">X</button>
     </div>
-  </template>
+</template>
   
-  <script setup>
+<script setup>
   import { onMounted, ref } from 'vue';
   import { useWebSocketStore } from '@/stores/webSocketChargingStore';
   import { useRouter } from 'vue-router';
@@ -22,6 +23,11 @@
   const moveToTestAlarm = () => {
     router.push({
       name: 'ChargingStatus',
+    });
+  };
+  const movereservationAlarm = () => {
+    router.push({
+      name: 'ReservationAlarm',
     });
   };
   

@@ -4,7 +4,8 @@ import kr.co.milionvolt.ifive.domain.reservation.ReservationDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+
+import org.apache.ibatis.annotations.*;
 
 //@Mapper
 //public interface ReservationMapper {
@@ -25,6 +26,7 @@ public interface ReservationMapper {
         VALUES 
         (#{startTime}, #{endTime}, #{status}, #{createdAt}, #{chargerId}, #{userId}, #{stationId}, #{impUid})
         """)
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "reservationId", before = false, resultType = int.class)
     int insertReservation(ReservationDTO reservationDTO);
 
 //    @Select("SELECT count(*) " +

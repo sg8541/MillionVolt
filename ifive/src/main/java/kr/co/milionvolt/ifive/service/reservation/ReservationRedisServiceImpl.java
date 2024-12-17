@@ -13,16 +13,22 @@ public class ReservationRedisServiceImpl implements ReservationRedisService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-
     @Override
     public List<ReservationRedis> findReservationInfoByUserId(int userId) {
-        List<ReservationRedis> list = (List<ReservationRedis>) reservationRepository.findAll();
+        List<ReservationRedis> list= (List<ReservationRedis>) reservationRepository.findAll();
         List<ReservationRedis> reservationStartTimeList = null;
-        if(userId != 0){
-            reservationStartTimeList = list.stream()
-                        .filter(reservationRedis -> reservationRedis.getUserId()==userId)
+
+            if(userId != 0){
+                reservationStartTimeList = list.stream()
+                        .filter(reservationRedis -> reservationRedis != null && reservationRedis.getUserId() == userId)
                         .toList();
-        }
+            }
+
         return reservationStartTimeList;
+    }
+
+    @Override
+    public void save(ReservationRedis reservationRedis) {
+        reservationRepository.save(reservationRedis);
     }
 }

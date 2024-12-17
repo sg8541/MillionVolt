@@ -6,6 +6,7 @@ import kr.co.milionvolt.ifive.mapper.ChargerMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChargerServiceImpl implements ChargerService {
@@ -24,15 +25,15 @@ public class ChargerServiceImpl implements ChargerService {
 
     // 2. 특정 충전기의 상태 조회
     @Override
-    public ChargerVO getChargerById(Integer chargerId) {
-        return chargerMapper.getChargerById(chargerId);
+    public ChargerVO getChargerById(Integer stationId, Integer chargerId) {
+        return chargerMapper.getChargerById(stationId, chargerId);
     }
 
     // 3. 충전기 상태 변경
     @Override
-    public boolean updateChargerStatus(Integer chargerId, String status) {
-        int updatedRows = chargerMapper.updateChargerStatus(chargerId, status);
-        return updatedRows > 0; // 변경된 행이 있으면 성공
+    public boolean updateChargerStatus(Integer stationId, Integer chargerId, Integer status) {
+        int updatedRows = chargerMapper.updateChargerStatus(stationId, chargerId, status);
+        return updatedRows > 0;
     }
 
     // 4. 특정 충전소의 예약 가능한 충전기 조회
@@ -43,7 +44,15 @@ public class ChargerServiceImpl implements ChargerService {
 
     // 5. 충전기 상태에 따른 필터링
     @Override
-    public List<ChargerVO> getChargersByStatus(String status) {
+    public List<ChargerVO> getChargersByStatus(Integer status) {
         return chargerMapper.getChargersByStatus(status);
     }
+
+    @Override
+    public List<Map<String, Object>> getChargersWithDetails(Integer stationId) {
+        return chargerMapper.findChargersWithDetails(stationId);
+    }
+
+
+
 }
