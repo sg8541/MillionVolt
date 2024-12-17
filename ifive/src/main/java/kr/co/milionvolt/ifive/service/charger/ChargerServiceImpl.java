@@ -29,14 +29,12 @@ public class ChargerServiceImpl implements ChargerService {
         return chargerMapper.getChargerById(stationId, chargerId);
     }
 
-
     // 3. 충전기 상태 변경
     @Override
     public boolean updateChargerStatus(Integer stationId, Integer chargerId, Integer status) {
         int updatedRows = chargerMapper.updateChargerStatus(stationId, chargerId, status);
         return updatedRows > 0;
     }
-
 
     // 4. 특정 충전소의 예약 가능한 충전기 조회
     @Override
