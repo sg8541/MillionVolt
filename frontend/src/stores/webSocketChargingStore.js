@@ -55,7 +55,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
             }
         
         const userId = 'dohun123'; // 사용자 ID 동적으로 바꿀 수 있습니다.
-        const reservationId ='1'; 
+        const reservationId ='6'; 
 
         socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}`);
     
