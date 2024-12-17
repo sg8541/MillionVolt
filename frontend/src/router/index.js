@@ -30,13 +30,13 @@ const router = createRouter({
           meta: { requiresAuth: true, requiresMember: true },
         },
         { 
-          path: 'my-reservation',
+          path: 'my-reservation/:id',
           component: () => import('../pages/my-reservation.vue'),
           props: true,
           meta: { requiresAuth: true, requiresMember: true },
         },
         {
-          path: 'my-payment',
+          path: 'my-payment/:id',
           component: () => import('../pages/my-payment.vue'),
           props: true,
           meta: { requiresAuth: true, requiresMember: true },
@@ -103,7 +103,32 @@ const router = createRouter({
       path:'/Reservation',
       name: 'Reservation',
       component: () => import('../views/payment/Reservation.vue'),
-    }
+    },
+    {
+      path: '/find-result',
+      neme: 'FindIDResult',
+      component : () => import('../views/pages/user-account/FindIDResult.vue'),
+    },
+    {
+      path: '/find-password',
+      neme: 'FindPassword',
+      component : () => import('../views/pages/user-account/FindPassword.vue'),
+    },
+    {
+      path: '/find-password/email',
+      neme: 'FindPWDEmail',
+      component : () => import('../views/pages/user-account/FindPWDEmail.vue'),
+    },
+    {
+      path: '/new-password',
+      neme: 'NewPassword',
+      component : () => import('../views/pages/user-account/NewPassword.vue'),
+    },
+    {
+      path: '/exit',
+      neme: 'ExitUser',
+      component : () => import('../views/pages/user-account/ExitUser.vue'),
+    },
   ],
 })
 
