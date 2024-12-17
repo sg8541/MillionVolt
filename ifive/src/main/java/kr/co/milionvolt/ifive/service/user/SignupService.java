@@ -5,4 +5,6 @@ import kr.co.milionvolt.ifive.domain.user.SignupDTO;
 public interface SignupService {
 
     boolean signup(SignupDTO signupDTO);
+    // 이메일 중복 검사
+    int checkEmailDuplicate(String email);
 }

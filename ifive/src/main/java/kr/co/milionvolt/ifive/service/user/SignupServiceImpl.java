@@ -41,4 +41,11 @@ public class SignupServiceImpl implements SignupService {
             sqlSession.close();
         }
     }
+
+    @Override
+    public int checkEmailDuplicate(String email) {
+        int result = signupMapper.findByEmail(email);
+
+        return result;
+    }
 }

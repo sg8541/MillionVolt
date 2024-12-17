@@ -45,7 +45,7 @@ public class UserInfoController {
     }
 
     // 비밀번호 변경
-    @PutMapping("/{id}")
+    @PostMapping("/password/{id}")
     public ResponseEntity<?> userPWUpdate(@PathVariable Integer id, @RequestBody PasswordDTO passwordDTO) {
         boolean success = userService.updatePassword(id, passwordDTO);
         if (success) {
@@ -67,7 +67,7 @@ public class UserInfoController {
     }
 
     // 내 차 수정(차 번호 + 차 넘버 변경)
-    @PutMapping("/car/{id}")
+    @PostMapping("/car/{id}")
     public ResponseEntity<?> updateUserCarNumberAndCarModel(@PathVariable Integer id, @RequestBody CarNumberAndModelUpdateDTO carNumberDTO) {
         carNumberDTO.setCarId(id);
         boolean success = userService.updateUserCarNumberAndCarModel(carNumberDTO);
@@ -128,6 +128,7 @@ public class UserInfoController {
         dashboardResponseDTO.setPaymentChartList(dashboradChartDTO);
         return ResponseEntity.status(HttpStatus.OK).body(dashboardResponseDTO);
     }
+
 
 
 

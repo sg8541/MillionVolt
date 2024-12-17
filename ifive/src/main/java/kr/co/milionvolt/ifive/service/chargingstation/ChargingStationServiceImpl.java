@@ -7,6 +7,7 @@ import kr.co.milionvolt.ifive.mapper.ChargingStationMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ChargingStationServiceImpl implements ChargingStationService {
@@ -91,8 +92,50 @@ public class ChargingStationServiceImpl implements ChargingStationService {
     }
 
     @Override
-    public List<ChargingStationVO> getStationsByLocation(double latitude, double longitude, int radius) {
-        return chargingStationMapper.findNearbyStations(latitude, longitude, radius);
+    public List<ChargingStationVO> getStationsByAddress(String address) {
+        if (address == null || address.isBlank()) {
+            address = "서울"; // 기본값 설정
+        }
+
+        // 주소 키워드 추출
+        String keyword = extractAddressKeyword(address);
+        System.out.println("주소 키워드로 검색: " + keyword); // 검색 키워드 로그 출력
+
+        List<ChargingStationVO> stations = chargingStationMapper.findStationsByAddress(keyword);
+        if (stations.isEmpty()) {
+            System.out.println("검색 결과가 없습니다: " + keyword);
+        }
+        return stations;
+    }
+
+    @Override
+    public List<ChargingStationVO> getStationsByAddress5km(String address, int radius) {
+        if (address == null || address.isBlank()) {
+            throw new IllegalArgumentException("Address cannot be null or empty");
+        }
+
+        // address를 기반으로 충전소 검색
+        List<ChargingStationVO> stations = chargingStationMapper.findStationsByAddress(address);
+
+        // 5km 내 충전소 필터링 (이 로직은 DB 필터링 또는 거리 계산으로 처리 가능)
+        return stations.stream()
+                .filter(station -> calculateDistance(address, station.getAddress()) <= radius)
+                .collect(Collectors.toList());
+    }
+
+    // 거리 계산 로직 (예: 두 주소 간의 거리 계산)
+    private double calculateDistance(String userAddress, String stationAddress) {
+        // Geocoding 또는 다른 방법으로 주소를 위도/경도로 변환하여 거리 계산 (간단한 예시)
+        return 5.0; // 5km 내인지 확인하는 로직 구현
+    }
+
+    private String extractAddressKeyword(String address) {
+        // 간단히 구와 동만 추출
+        String[] addressParts = address.split(" ");
+        if (addressParts.length >= 3) {
+            return addressParts[1] + " " + addressParts[2]; // 예: "송파구 가락동"
+        }
+        return address.trim();
     }
 
     @Override

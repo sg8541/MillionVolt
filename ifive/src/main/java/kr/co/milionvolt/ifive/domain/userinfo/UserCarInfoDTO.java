@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class UserCarInfoDTO {
     private String carNumber;
-    private String chargerType;
-    private String modelName;
+    private String chargerSpeedId;
+    private String modelId;
     private BigDecimal carBattery;
 }
