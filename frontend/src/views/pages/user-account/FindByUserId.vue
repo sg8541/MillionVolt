@@ -1,11 +1,11 @@
 <template>
+  <div class="wrap">
+    <div class="header">
       <div class="logo">
       <router-link to="/main">
         <img src="images/logo.png" alt="백만볼트 로고">
       </router-link>
     </div>
-  <div class="wrap">
-
     <div class="container">
       <div class="title">아이디 찾기 - 이메일 인증</div>
       <p class="description">본인확인 이메일과 입력한 이메일이 같아야,<br>인증번호를 받을 수 있습니다.</p>
@@ -23,6 +23,7 @@
         <router-link to="/signup">회원가입</router-link>
       </div>
     </div>
+  </div>
   </div>
   </template>
   
@@ -101,16 +102,19 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
   }
   
   .wrap {
-    font-family: 'Arial', sans-serif;
-    /* background-color: white; */
+    margin: 0px;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* height: 100vh; */
-    margin-bottom: 100px;
+    flex-direction: column;
   }
   
   .container {
@@ -121,13 +125,14 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     text-align: center;
+    margin-bottom: 100px;
   }
 
-  .logo {
+  .header{
+    margin-top: 15%;
     text-align: center;
-
   }
-  
+
   .logo img {
     width: 150px;
   }
@@ -216,7 +221,7 @@
   
   .links a {
     text-decoration: none;
-    color: #666;
+    color: #a4a4a4;
   }
   
   .links a:hover {
