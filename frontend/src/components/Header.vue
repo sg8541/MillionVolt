@@ -210,6 +210,7 @@ const moveCharginStatus = () => {
     name: 'ChargingStatus',
     query: {
       reservationId: storeAlarm.alarm.reservationId,
+      stationId:storeAlarm.alarm.stationId
     },
   }).then(() => {
     storeAlarm.clearAlarmMessage();

@@ -51,7 +51,6 @@ public class ReservationServiceImpl implements ReservationService {
                 reservationDTO.setStartTime(koreaStartTime.toLocalDateTime());
                 reservationDTO.setEndTime(koreaEndTime.toLocalDateTime());
 
-                reservationMapper.insertReservation(reservationDTO);
                 message =  "예약이 완료되었습니다.";
                     int num =  reservationMapper.insertReservation(reservationDTO);
                         if(num != 0){
@@ -60,6 +59,7 @@ public class ReservationServiceImpl implements ReservationService {
                             reservationRedis.setStartTime(reservationDTO.getStartTime());
                             reservationRedis.setEndTime(reservationDTO.getEndTime());
                             reservationRedis.setUserId(reservationDTO.getUserId());
+                            reservationRedis.setStationId(reservationDTO.getStationId());
                             reservationRedisService.save(reservationRedis);
                         }
                 return message;

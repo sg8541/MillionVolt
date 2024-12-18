@@ -105,7 +105,9 @@ const disconnectWebSocket = () => {
             chargeStart:formatDateTime(store.startTime),
             chargeEnd:formatDateTime(store.endTime),
             chargingKwh:store.chargingData.chargingKwh,
-            chargerId: store.chargingData.chargerId
+            chargerId: store.chargingData.chargerId,
+            name : store.chargingData.name,
+            address : store.chargingData.address
         }
     alert("충전 종료 - 결제 화면으로 이동합니다.");
 
@@ -119,7 +121,9 @@ const disconnectWebSocket = () => {
             chargeStart:paymentData.value.chargeStart,
             chargeEnd:paymentData.value.chargeEnd,
             chargingKwh:paymentData.value.chargingKwh,
-            chargerId:paymentData.value.chargerId
+            chargerId:paymentData.value.chargerId,
+            name:paymentData.value.name,
+            address:paymentData.value.address
         }
     })
         
@@ -165,7 +169,9 @@ watchEffect(() => {
             chargeStart:formatDateTime(store.startTime),
             chargeEnd:formatDateTime(store.endTime),
             chargingKwh:store.chargingData.chargingKwh,
-            chargerId: store.chargingData.chargerId
+            chargerId: store.chargingData.chargerId,
+            name : store.chargingData.name,
+            address : store.chargingData.address
         }
         alert("충전 종료 - 결제 화면으로 이동합니다.");
 
@@ -179,7 +185,9 @@ watchEffect(() => {
                 chargeStart:paymentData.value.chargeStart,
                 chargeEnd:paymentData.value.chargeEnd,
                 chargingKwh:paymentData.value.chargingKwh,
-                chargerId:paymentData.value.chargerId
+                chargerId:paymentData.value.chargerId,
+                name:paymentData.value.name,
+                address:paymentData.value.address
             }
         })
     }

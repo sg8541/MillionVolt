@@ -59,12 +59,15 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 return;
             }
         
+        const token = localStorage.getItem('user');
+        const parsedToken = JSON.parse(token);
+        const userId = parsedToken.userId;
         const route = useRoute();
-        const userId = 'dohun123'; // 사용자 ID 동적으로 바꿀 수 있습니다.
         const reservationId = route.query.reservationId; 
+        const stationId = route.query.stationId;
 
 
-        socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}`);
+        socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}&stationId=${stationId}`);
     
         socketInstance.value.onopen = () => {
             isConnected.value = true;

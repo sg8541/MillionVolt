@@ -16,11 +16,11 @@ public class ChargingStatusController {
     @Autowired
     private ChargingStatusSerivce chargingStatusSerivce;
 
-    @GetMapping("/charging/{userId}/{reservationId}")
-    public ResponseEntity<ChargingStatusDTO> chargingStaus(@PathVariable String userId,
-                                                           @PathVariable int reservationId ){
-        ChargingStatusDTO dto =  chargingStatusSerivce.chargingStatus(userId,reservationId);
-        ResponseEntity<ChargingStatusDTO> entity = new ResponseEntity<>(dto, HttpStatus.OK);
-        return entity;
-    }
+//    @GetMapping("/charging/{userId}/{reservationId}")
+//    public ResponseEntity<ChargingStatusDTO> chargingStaus(@PathVariable String userId,
+//                                                           @PathVariable int reservationId ){
+//        ChargingStatusDTO dto =  chargingStatusSerivce.chargingStatus(userId,reservationId);
+//        ResponseEntity<ChargingStatusDTO> entity = new ResponseEntity<>(dto, HttpStatus.OK);
+//        return entity;
+//    }
 }

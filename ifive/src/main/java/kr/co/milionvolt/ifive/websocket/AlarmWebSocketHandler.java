@@ -95,10 +95,11 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     System.out.println("예약 내역 확인 : "+ reservationTime);
                     if (reservationTime.isBefore(now.plusMinutes(1)) && reservationTime.isAfter(now.minusMinutes(1))) {
                         String status = String.format(
-                                "{\"reservationId\": \"%d\", \"startTime\": \"%s\", \"message\": \"%s\"}",
+                                "{\"reservationId\": \"%d\", \"startTime\": \"%s\", \"message\": \"%s\" ,\"stationId\": \"%d\"}",
                                 reservation.getReservationId(),
                                 reservationTime,
-                                "예약시간) 충전을 시작해주세요."
+                                "예약시간) 충전을 시작해주세요.",
+                                reservation.getStationId()
                         );
                         System.out.println("예약 발송 : "+reservation);
                         session.sendMessage(new TextMessage(status));
