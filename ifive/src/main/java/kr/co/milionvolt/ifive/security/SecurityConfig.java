@@ -74,7 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/logout/**","/api/v1/id-check","/api/v1/email-check",
                                 "api/v1/charging-stations/**",
                                  "/api/v1/findPwd/**", "/api/v1/resetPwd/**",
-                                "/charging/**", "/alarm/**","/api/v1/email/**",
+                                "/charging/**", "/alarm/**","/api/v1/email/**","/chargerstatus/**",
                                 "/api/v1/payment/**", "/reservationList/**", "/api/v1/reservation/**","/api/v1/payment/printstationinfo/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
 //                        .requestMatchers("/api/v1/myinfo/**").hasRole("MEMBER") // 'member' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요

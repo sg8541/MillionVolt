@@ -56,4 +56,7 @@ export default defineConfig({
       './src/**/*.vue',
     ],
   },
+  define: {
+    global: 'window',
+  },
 })

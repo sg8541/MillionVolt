@@ -37,7 +37,7 @@
           <p><strong>상태:</strong> {{ getStatusText(charger.chargerStatusId) }}</p>
           <p><strong>충전기 타입:</strong> {{ charger.type || "정보 없음" }}</p>
           <p><strong>속도:</strong> {{ getSpeedText(charger.chargerSpeedId) }}</p>
-      
+          
           <!-- 버튼: 상태에 따라 활성화/비활성화 -->
           <button 
             :disabled="charger.chargerStatusId !== 1" 
@@ -53,13 +53,22 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { chargerStateChangeWebSocketStore } from "@/stores/webSocketChargerChangeStore";
 
 
 const store = chargerStateChangeWebSocketStore();
+
+onMounted(()=> {
+    store.connectCharger();
+});
+
+onBeforeUnmount(()=>{
+    store.disconnectWebSocket();
+})
+
 
 const router = useRouter();
 
@@ -190,6 +199,25 @@ watch(
   },
   { immediate: true }
 );
+
+
+// watch(
+//   () => store.chargeState, // 웹소켓에서 받아온 충전기 상태 배열
+//   (newChargeState) => {
+//     if (newChargeState && Array.isArray(newChargeState)) {
+//       // chargers 배열 업데이트
+//       chargers.value = chargers.value.map((charger) => {
+//         const updatedCharger = newChargeState.find(
+//           (state) => state.chargerId === charger.chargerId
+//         );
+//         return updatedCharger
+//           ? { ...charger, chargerStatusId: updatedCharger.chargerStatusId }
+//           : charger;
+//       });
+//     }
+//   },
+//   { deep: true, immediate: true }
+// );
 </script>
 
 <style scoped>
