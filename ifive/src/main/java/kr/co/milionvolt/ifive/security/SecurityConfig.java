@@ -75,7 +75,7 @@ public class SecurityConfig {
                                 "/api/v1/email/**","api/v1/charging-stations/**",
                                  "/api/v1/findPwd/**", "/api/v1/resetPwd/**",
                                 "/charging/**","/api/v1/payment/**", "/reservationList/**",
-                                "/api/v1/reservation/**", "/alarm/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
+                                "/api/v1/reservation/**", "/alarm/**", "/api/v1/payment/printstationinfo/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
 //                        .requestMatchers("/api/v1/myinfo/**").hasRole("MEMBER") // 'member' 역할만 접근 가능
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 )
@@ -84,7 +84,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
     }
 
     // AuthenticationManager 빈 등록

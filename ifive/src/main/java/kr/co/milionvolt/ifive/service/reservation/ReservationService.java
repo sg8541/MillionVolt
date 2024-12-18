@@ -7,5 +7,5 @@ import java.io.IOException;
 import java.sql.Timestamp;
 
 public interface ReservationService {
-    boolean saveReservation(ReservationDTO reservationDTO) throws IamportResponseException, IOException;
+    String saveReservation(ReservationDTO reservationDTO) throws IamportResponseException, IOException;
 }
