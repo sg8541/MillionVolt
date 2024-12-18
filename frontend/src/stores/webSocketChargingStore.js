@@ -58,10 +58,11 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 console.log("이미연결된 웹소켓.");
                 return;
             }
-           
+        
         const route = useRoute();
-        const userId = 'wogjsdl1244'; // 사용자 ID 동적으로 바꿀 수 있습니다.
+        const userId = 'dohun123'; // 사용자 ID 동적으로 바꿀 수 있습니다.
         const reservationId = route.query.reservationId; 
+
 
         socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}`);
     

@@ -15,6 +15,8 @@ public class PayPriceDTO {
     private int paymentId;
     private int userId;
     private int reservationId;
+    private int stationId;
+    private int chargeId;
     private long amount;
     private String paymentMethod;
     private String paymentStatus;

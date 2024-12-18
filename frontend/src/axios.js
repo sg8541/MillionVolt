@@ -5,7 +5,7 @@ import router from './router'
 
 // 중앙집중식 Axios 인스턴스 생성
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL, // .env 파일의 VITE_BACKEND_URL 사용
+  baseURL: import.meta.env.VITE_BACKEND_API_URL, // .env 파일의 VITE_BACKEND_URL 사용
   withCredentials: true, // 쿠키를 포함하도록 설정 (Refresh Token 사용을 위해 필요)
 })
 

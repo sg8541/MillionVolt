@@ -9,10 +9,13 @@ import kr.co.milionvolt.ifive.entity.ReservationRedis;
 import kr.co.milionvolt.ifive.mapper.ReservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -27,14 +30,29 @@ public class ReservationServiceImpl implements ReservationService {
     public IamportClient iamportClient;
 
     @Override
-    public boolean saveReservation(ReservationDTO reservationDTO) throws IamportResponseException, IOException {
+    @Transactional
+    public String saveReservation(ReservationDTO reservationDTO) throws IamportResponseException, IOException {
 
         IamportResponse<Payment> response = iamportClient.paymentByImpUid(reservationDTO.getImpUid());
         Payment payment = response.getResponse();
 
+        String message = "";
         try {
-            if(reservationMapper.checkConflictReservation(reservationDTO) == 0 && payment != null) {
+            if(reservationMapper.checkConflictReservation(reservationDTO) != 0) {
+                message = "이미 예약된 시간이 있습니다. 시간을 확인해주세요";
+            } else if(reservationMapper.checkConflictReservationPlusFifteen(reservationDTO) != 0) {
+                message =  "이미 예약된 시간의 15분 전후는 예약을 할 수 없습니다.";
+            } else if(reservationMapper.checkConflictReservation(reservationDTO) == 0 && reservationMapper.checkConflictReservationPlusFifteen(reservationDTO) == 0 && payment != null) {
                 reservationDTO.setCreatedAt(LocalDateTime.now());
+
+                ZonedDateTime koreaStartTime = reservationDTO.getStartTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+                ZonedDateTime koreaEndTime = reservationDTO.getEndTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+
+                reservationDTO.setStartTime(koreaStartTime.toLocalDateTime());
+                reservationDTO.setEndTime(koreaEndTime.toLocalDateTime());
+
+                reservationMapper.insertReservation(reservationDTO);
+                message =  "예약이 완료되었습니다.";
                     int num =  reservationMapper.insertReservation(reservationDTO);
                         if(num != 0){
                             ReservationRedis reservationRedis = new ReservationRedis();
@@ -44,13 +62,12 @@ public class ReservationServiceImpl implements ReservationService {
                             reservationRedis.setUserId(reservationDTO.getUserId());
                             reservationRedisService.save(reservationRedis);
                         }
-                return num > 0; //num의 값이 없을 경우 ==  0
-            } else {
-                return false;
+                return message;
             }
         } catch (Exception e) {
             System.err.println("reservation error: " + e.getMessage());
-            return false;
+            return e.getMessage();
         }
+        return message;
     }
 }

@@ -1,107 +1,93 @@
 
 <template>
+    <div class="reservation-go-info-title">예약 진행 및 예약 상세 정보</div>
+
+    <div class="reservation-username-title">예약자</div>
+    <div class="reservation-username">
+            
+    </div>
+
+    <div class="reservation-address-title">주소</div>
+    <div class="reservation-address">
+            
+    </div>
+
+    <div class="reservation-chargerType-title">충전기 타입</div>
+    <div class="reservation-chargerType">
+
+    </div>
+
+    <div class="reservation-deposit-title">보증금</div>
+    <div class="reservation-depotsit">
+        5.000원
+    </div>
+
+    <div class="reserve-date-container-title">예약 날짜 및 시간</div>
     <div class="reserve-date-container">
-      <!-- 날짜 입력 -->
-      <div class="date-container">
-        <label for="reservation-start-date">시작 날짜</label>
-        <input
-          type="date"
-          id="reservation-start-date"
-          v-model="reservation.startDate"
-          @change="printReservationList"
-        />
-  
-        <span>-</span>
-  
-        <label for="reservation-end-date">종료 날짜</label>
-        <input
-          type="date"
-          id="reservation-end-date"
-          v-model="reservation.endDate"
-          @change="printReservationList"
-        />
-      </div>
-  
-      <!-- 시간 입력 -->
-      <div class="time-container">
-        <label for="reservation-start-time">시작 시간</label>
-        <input
-          type="time"
-          id="reservation-start-time"
-          v-model="reservation.startTime"
-          :step="300"
-          @blur="validateTime('startTime')"
-        />
-  
-        <span>-</span>
-  
-        <label for="reservation-end-time">종료 시간</label>
-        <input
-          type="time"
-          id="reservation-end-time"
-          v-model="reservation.endTime"
-          :step="300"
-          @blur="validateTime('endTime')"
-        />
-      </div>
+        <div class="date-container">
+            <label for="reservation-start-date">시작 날짜</label>
+            <input type="date" id="reservation-start-date" v-model="reservation.startDate" @change="printReservationList" />
+
+            <span>-</span> <!-- 구분선 -->
+
+            <label for="reservation-end-date">종료 날짜</label>
+            <input type="date" id="reservation-end-date" v-model="reservation.endDate" @change="printReservationList" />
+        </div>
+        
+        <div class="time-container">
+            <label for="reservation-start-time">시작 시간</label>
+            <input type="time" id="reservation-start-time" v-model="reservation.startTime" :step="300" @blur="validateTime('startTime')" />
+
+            <span>-</span> <!-- 구분선 -->
+
+            <label for="reservation-end-time">종료 시간</label>
+            <input type="time" id="reservation-end-time" v-model="reservation.endTime" :step="300" @blur="validateTime('endTime')" />
+        </div>
+        <h5 class="minuteAlarm">시간은 5분 단위로 예약이 가능합니다.</h5>
     </div>
-  
-    <!-- 전달받은 충전기 정보 출력 -->
-    <div class="reservation-info-title">충전기 정보</div>
-    <div class="reservation-info">
-      <p><strong>충전소 이름:</strong> {{ stationName }}</p>
-      <p><strong>충전소 주소:</strong> {{ stationAddress }}</p>
-      <p><strong>충전기 ID:</strong> {{ chargerId }}</p>
-      <p><strong>충전기 타입:</strong> {{ chargerType }}</p>
-      <p><strong>충전 속도:</strong> {{ chargerSpeed }}</p>
-    </div>
-  
     <!-- 예약 목록 -->
     <div class="reservation-list-title">예약 목록</div>
     <div class="reservation-list">
-      <ul>
-        <li v-for="(reservation, index) in reservationList" :key="index">
-          <p>예약 ID: {{ reservation.reservationId }}</p>
-          <p>이용 시간: {{ reservation.startTime }} ~ {{ reservation.endTime }}</p>
-          <p>상태: {{ reservation.status }}</p>
-          <hr />
-          <br />
-        </li>
-      </ul>
+            <div v-for="(reservation, index) in reservationList" :key="index">
+                <p>예약 번호: {{ reservation.reservationId }}</p>
+                <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
+                <br>
+            </div>
     </div>
-  
-    <!-- 예약 버튼 -->
     <div class="reservation-button-container">
-      <button class="reservation-button" @click="reserve">예약</button>
+        <button class="reservation-button" @click="reserve">예약</button>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, computed } from "vue";
-  import { useRoute } from "vue-router";
-  import axios from "axios";
-  
-  // 라우터에서 전달된 데이터 받기
-  const route = useRoute();
-  const stationName = route.query.stationName || "정보 없음";
-  const stationAddress = route.query.stationAddress || "정보 없음";
-  const chargerId = route.query.chargerId || "정보 없음";
-  const chargerType = route.query.chargerType || "정보 없음";
-  const chargerSpeed = route.query.chargerSpeed || "정보 없음";
-  
-  // 예약 정보
-  const reservation = ref({
+</template>
+
+<script setup>
+import { ref, computed } from "vue";
+import axios from "axios";
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+}
+
+// 예약 정보
+const reservation = ref({
     startDate: "",
     endDate: "",
     startTime: "",
     endTime: "",
-    impUid: "",
-  });
-  
-  const reservationList = ref([]);
-  
-  // 날짜 및 시간 계산
-  const reservationStartDate = computed(() => {
+    impUid: "", // 결제 완료 후 설정됨
+    status: "",
+});
+
+const reservationList = ref([]);
+
+// 시작 날짜와 시간, 종료 날짜와 시간을 계산하여 날짜 객체로 반환
+const reservationStartDate = computed(() => {
     if (!reservation.value.startDate || !reservation.value.startTime) return null;
     return new Date(`${reservation.value.startDate}T${reservation.value.startTime}`);
   });
@@ -146,37 +132,39 @@
     const { IMP } = window;
     IMP.init("imp50578251");
     IMP.request_pay(
-      {
-        pg: "html5_inicis",
-        pay_method: "카카오페이",
-        merchant_uid: `order_${Date.now()}`,
-        name: "보증금 결제",
-        amount: 100,
-      },
-      async (rsp) => {
-        if (rsp.success) {
-          reservation.value.impUid = rsp.imp_uid;
-  
-          try {
-            const response = await axios.post(`http://localhost:8081/api/v1/reservation/${rsp.imp_uid}`, {
-              startTime: reservationStartDate.value.toISOString(),
-              endTime: reservationEndDate.value.toISOString(),
-              userId: 1,
-              stationName,
-              stationAddress,
-              chargerId,
-            });
-            alert(response.data.message);
-            window.location.href = "/";
-          } catch (error) {
-            alert(error.response?.data?.message || "예약 처리 중 오류가 발생했습니다.");
-          }
-        } else {
-          alert(`결제 실패: ${rsp.error_msg}`);
+
+        {
+            pg: "html5_inicis",
+            pay_method: "카카오페이",
+            merchant_uid: `order_${Date.now()}`,
+            name: "보증금 결제",
+            amount: 100,
+        },
+        async (rsp) => {
+            if (rsp.success) {
+                reservation.value.impUid = rsp.imp_uid;
+
+                try {
+                    const response = await axios.post(`http://localhost:8081/api/v1/reservation/${reservation.value.impUid}`, {
+                        startTime: reservationStartDate.value.toISOString(),
+                        endTime: reservationEndDate.value.toISOString(),
+                        userId: 1,
+                        stationId: 2,
+                        chargerId: 2,
+                        status: "confirmed",
+                    });
+                    alert(response.data.message);
+                    window.location.href = "/";
+                } catch (error) {
+                    alert(error.response?.data?.message || "예약 처리 중 오류가 발생했습니다.");
+                }
+            } else {
+                alert(`결제 실패: ${rsp.error_msg}`);
+            }
         }
-      }
-    );
-  };
+      )
+    };
+
   
   // 예약 목록 조회
   const printReservationList = async () => {
@@ -208,6 +196,14 @@
     text-align: center;
 } */
 
+.reservation-go-info-title {
+  font-size: 30px; /* 원하는 폰트 크기 */
+  font-weight: bold; /* 폰트 두께 */
+  color: #333; /* 텍스트 색상 */
+  margin: 20px auto 5px;
+  white-space: nowrap;
+}
+
 /* 날짜 입력 필드 */
 .date-container {
     display: flex;
@@ -219,10 +215,8 @@
     border-radius: 10px; /* 둥근 모서리 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
     padding: 15px; /* 내부 여백 */
-    margin: 20px 0; /* 위아래 여백 */
-    margin-left: 183px;
-    width: 62%; /* 너비 80% */
-    max-width: 800px; /* 최대 너비 제한 */
+    margin: 20px auto; /* 위아래 여백 */
+    width: 600px; /* 너비 80% */
     box-sizing: border-box;
 }
 
@@ -236,10 +230,8 @@
     border-radius: 10px; /* 둥근 모서리 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
     padding: 15px; /* 내부 여백 */
-    margin: 20px 0; /* 위아래 여백 */
-    margin-left: 183px;
-    width: 62%; /* 너비 80% */
-    max-width: 800px; /* 최대 너비 제한 */
+    margin: 20px auto; /* 위아래 여백 */
+    width: 600px;
     box-sizing: border-box;
 }
 
@@ -271,15 +263,24 @@
     outline: none;
 }
 
-.reservation-info {
+.reservation-address, .reservation-username {
   background-color: #ffffff; /* 컨테이너 배경색 */
   border-radius: 10px; /* 모서리를 둥글게 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
   padding: 20px; /* 내부 여백 */
   margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
   border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 80%; /* 넓이를 화면의 80%로 설정 */
-  max-width: 600px; /* 최대 넓이 제한 */
+  width: 600px; /* 넓이를 화면의 80%로 설정 */
+}
+
+.reservation-chargerType, .reservation-depotsit {
+  background-color: #ffffff; /* 컨테이너 배경색 */
+  border-radius: 10px; /* 모서리를 둥글게 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+  padding: 20px; /* 내부 여백 */
+  margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
+  border: 1px solid #ccc; /* 얇은 테두리 */
+  width: 600px; /* 넓이를 화면의 80%로 설정 */
 }
 
 .reservation-list {
@@ -289,17 +290,20 @@
   padding: 20px; /* 내부 여백 */
   margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
   border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 80%; /* 넓이를 화면의 80%로 설정 */
-  max-width: 600px; /* 최대 넓이 제한 */
+  width: 600px; /* 넓이를 화면의 80%로 설정 */
 }
 
-.reservation-info-title, .reservation-list-title, .reservation-date-time-title{
+.reservation-info-title, .reservation-list-title, .reservation-date-time-title,
+.reserve-date-container-title, .reservation-address-title, .reservation-chargerType-title,
+.reservation-deposit-title, .reservation-username-title{
   font-size: 24px; /* 원하는 폰트 크기 */
   font-weight: bold; /* 폰트 두께 */
   color: #333; /* 텍스트 색상 */
-  padding-left: 185px;
+  padding-left: 190px;
   margin-bottom: 5px; /* 아래쪽 마진 추가 */
   margin-top: 20px;
+  margin-left: calc(15vw + 0px);
+  white-space: nowrap;
 }
 
 .reservation-button {
@@ -321,6 +325,13 @@
 /* 버튼에 마우스를 올렸을 때 색상 변경 */
 .reservation-button:hover, .reservation-list-button:hover {
   background-color: #333; /* 어두운 회색 */
+}
+
+.minuteAlarm {
+    color: rgb(238, 110, 110);
+    margin-left: calc(28vw + 0px);
+    margin-bottom: 30px;
+    white-space: nowrap;   
 }
 </style>
 

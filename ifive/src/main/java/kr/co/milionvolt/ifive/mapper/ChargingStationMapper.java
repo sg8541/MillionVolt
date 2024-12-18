@@ -10,21 +10,30 @@ import java.util.List;
 @Mapper
 public interface ChargingStationMapper {
 
-    // db 중복 확인
+    // 1. 특정 충전소 이름과 주소로 중복 확인
     @Select("SELECT * FROM charging_station WHERE name = #{name} AND address = #{address}")
     ChargingStationDTO findStationByNameAndAddress(@Param("name") String name, @Param("address") String address);
 
-    @Select("SELECT * FROM charging_station WHERE chargerSpeedId = #{chargerSpeedId}")
-    List<ChargingStationVO> findStationsByChargeSpeed(@Param("chargerSpeedId") Integer chargerSpeedId,
-                                                      @Param("address") String address);
-
-    // 1. 모든 충전소 조회 (페이징 지원)
+    // 2. 특정 충전 속도를 가진 충전소 조회
     @Select("""
-            SELECT station_id, name, address, total_charger, available_charger, charger_speed_id, 
-                   price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
-            FROM charging_station
-            LIMIT #{offset}, #{size}
-            """)
+        SELECT station_id, name, address, total_charger, available_charger, charger_speed_id,
+               price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
+        FROM charging_station
+        WHERE charger_speed_id = #{chargerSpeedId}
+        LIMIT #{offset}, #{size}
+""")
+    List<ChargingStationVO> findStationsByChargeSpeed(@Param("chargerSpeedId") Integer chargerSpeedId,
+                                                      @Param("offset") int offset,
+                                                      @Param("size") int size);
+
+
+    // 3. 모든 충전소 페이징 조회
+    @Select("""
+        SELECT station_id, name, address, total_charger, available_charger, charger_speed_id,
+               price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
+        FROM charging_station
+        LIMIT #{offset}, #{size}
+    """)
     List<ChargingStationVO> getAllChargingStations(@Param("offset") int offset, @Param("size") int size);
 
     // 2. 특정 충전소 조회 (모달창 데이터 제공)
@@ -63,6 +72,7 @@ public interface ChargingStationMapper {
             """)
     List<ChargingStationVO> getSidebarStations(@Param("address") String address);
 
+    // 7. 특정 충전소에 속한 충전기 목록 조회
     @Select("""
             SELECT *
             FROM charger
@@ -77,11 +87,11 @@ public interface ChargingStationMapper {
 """)
     ChargingStationDTO findStationById(@Param("stationId") Integer stationId);
 
-
+    // 9. 주변 충전소 조회 (주소 키워드 기반)
     @Select("SELECT * FROM charging_station WHERE address LIKE CONCAT('%', #{address}, '%')")
     List<ChargingStationVO> findStationsByAddress(@Param("address") String address);
 
-
+    // 8. 특정 충전소와 충전기 정보를 함께 조회
     @Select("""
     SELECT 
         cs.station_id AS stationId, cs.name AS stationName, cs.address AS stationAddress, cs.total_charger AS totalCharger,
@@ -107,5 +117,19 @@ public interface ChargingStationMapper {
                     many = @Many(select = "findChargersByStationId"))
     })
     ChargingStationDTO findStationWithChargers(@Param("stationId") Integer stationId);
+
+
+    // 10. 검색어와 주소 기반으로 페이징된 충전소 목록 조회
+    @Select("""
+    SELECT station_id, name, address, total_charger, available_charger, charger_speed_id, 
+           price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
+    FROM charging_station
+    WHERE address LIKE CONCAT('%', #{address}, '%') OR name LIKE CONCAT('%', #{query}, '%')
+    LIMIT #{offset}, #{size}
+""")
+    List<ChargingStationVO> getStationsWithPaging(@Param("address") String address,
+                                                  @Param("query") String query,
+                                                  @Param("offset") int offset,
+                                                  @Param("size") int size);
 
 }
