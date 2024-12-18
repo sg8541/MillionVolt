@@ -147,24 +147,37 @@ public class ChargingStationController {
     @PutMapping("/chargers/{chargerId}/status")
     public ResponseEntity<?> updateChargerStatus(
             @PathVariable Integer chargerId,
-            @RequestBody Map<String, String> payload) {
+            @RequestBody Map<String, Object> payload) {
         try {
-            String statusStr = payload.get("status"); // "available", "in_use", "maintenance"
-            Integer stationId = payload.get("stationId") != null ? Integer.parseInt(payload.get("stationId")) : null;
+            // 1. Payload에서 값 추출
+            Object statusObj = payload.get("status");
+            Integer stationId = payload.get("stationId") != null ? Integer.parseInt(payload.get("stationId").toString()) : null;
 
             if (stationId == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("stationId는 필수입니다.");
             }
 
-            // 문자열 상태를 ID 값으로 변환
-            Integer statusId = switch (statusStr.toLowerCase()) {
-                case "available" -> 1;
-                case "in_use" -> 2;
-                case "maintenance" -> 3;
-                default -> throw new IllegalArgumentException("Invalid status value: " + statusStr);
-            };
+            // 2. 상태 값 처리
+            Integer statusId;
+            if (statusObj instanceof String) {
+                String statusStr = statusObj.toString().toLowerCase();
+                statusId = switch (statusStr) {
+                    case "available" -> 1;
+                    case "in_use" -> 2;
+                    case "maintenance" -> 3;
+                    default -> throw new IllegalArgumentException("Invalid status value: " + statusStr);
+                };
+            } else if (statusObj instanceof Integer) {
+                // 숫자로 들어온 경우
+                statusId = (Integer) statusObj;
+                if (statusId < 1 || statusId > 3) {
+                    throw new IllegalArgumentException("Invalid numeric status value: " + statusId);
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid status value: " + statusObj);
+            }
 
-            // 서비스 호출
+            // 3. 서비스 호출 및 결과 반환
             boolean isUpdated = chargerServiceImpl.updateChargerStatus(stationId, chargerId, statusId);
             if (isUpdated) {
                 return ResponseEntity.ok("충전기 상태가 성공적으로 업데이트되었습니다.");
