@@ -114,7 +114,7 @@ const updateChargerStatus = async (chargerId) => {
       `http://localhost:8081/api/v1/charging-stations/chargers/${chargerId}/status`,
       {
         stationId: props.stationId, // props에서 stationId 가져오기
-        status: 2, // "in_use" 대신 정수 2 사용
+        status: 2, // "in_use" 대신 정수 2 전달
       }
     );
 
@@ -128,6 +128,7 @@ const updateChargerStatus = async (chargerId) => {
     alert("충전기 상태 업데이트에 실패했습니다.");
   }
 };
+
 
 // 충전 시작 함수: 충전 예약 페이지로 이동
 const startCharging = async (chargerId, chargerType, chargerSpeed) => {

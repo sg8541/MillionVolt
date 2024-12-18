@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,74 +96,35 @@ public class ChargingStationController {
         }
     }
 
-
-
-    // 1. 통합된 충전소 검색 및 필터링 API (검색 + 필터링 + 페이징 처리)
+    // 통합된 충전소 검색 및 필터링 API (검색 + 필터링 + 페이징 처리)
     @GetMapping("/sidebar")
-    public ResponseEntity<List<ChargingStationVO>> getFilteredStations(
+    public ResponseEntity<Map<String, Object>> getFilteredStations(
             @RequestParam(required = false) String query, // 검색어 (옵션)
-            @RequestParam(required = false) Integer chargerSpeedId, // 충전 속도 필터링 (옵션)
-            @RequestParam(defaultValue = "1") int page, // 현재 페이지 (기본값: 1)
-            @RequestParam(defaultValue = "5") int size // 페이지당 데이터 수 (기본값: 5)
-    ) {
-        // 결과 데이터 초기화
-        List<ChargingStationVO> stations;
-
-        // 검색 및 필터링 처리
-        if (query != null && !query.isBlank()) {
-            // 검색어가 주어진 경우: 검색어 기반 충전소 조회
-            System.out.println("검색어로 충전소 조회: query=" + query + ", page=" + page + ", size=" + size);
-            stations = chargingStationService.searchChargingStations(query, page, size);
-        } else if (chargerSpeedId != null) {
-            // 충전 속도로 필터링
-            System.out.println("충전 속도로 필터링: chargerSpeedId=" + chargerSpeedId);
-            stations = chargingStationService.filterByChargeSpeed(chargerSpeedId, null);
-        } else {
-            // 전체 충전소 조회
-            System.out.println("전체 충전소 조회 (페이징 포함): page=" + page + ", size=" + size);
-            stations = chargingStationService.getAllChargingStations(page, size);
-        }
-
-        // 결과 로그
-        if (stations.isEmpty()) {
-            System.out.println("조건에 맞는 충전소 데이터가 없습니다.");
-        } else {
-            System.out.println("조회된 충전소 데이터 개수: " + stations.size());
-        }
-
-        return ResponseEntity.ok(stations);
-    }
-
-    // 2. 기존 검색 엔드포인트 수정 (뷰와 연동용 - HTML 반환)
-    @GetMapping("/search")
-    public String searchStations(
-            @RequestParam String query, // 검색어
-            @RequestParam(defaultValue = "1") int page, // 현재 페이지
-            @RequestParam(defaultValue = "5") int size, // 페이지당 데이터 수
-            Model model
-    ) {
-        // 검색 결과 가져오기
-        List<ChargingStationVO> searchResults = chargingStationService.searchChargingStations(query, page, size);
-
-        // 모델에 데이터 추가
-        model.addAttribute("chargingStations", searchResults);
-        model.addAttribute("query", query);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", (int) Math.ceil((double) searchResults.size() / size));
-
-        return "main"; // 렌더링할 뷰 이름
-    }
-
-    // 3. 기존 페이징 처리된 검색 결과 API
-    @GetMapping("/search-paginated")
-    @ResponseBody
-    public ResponseEntity<List<ChargingStationVO>> getPaginatedSearchResults(
-            @RequestParam String query, // 검색어
+            @RequestParam(required = false) Integer chargerSpeedId, // 충전 속도 필터링
             @RequestParam(defaultValue = "1") int page, // 현재 페이지
             @RequestParam(defaultValue = "5") int size // 페이지당 데이터 수
     ) {
-        List<ChargingStationVO> paginatedResults = chargingStationService.searchChargingStations(query, page, size);
-        return ResponseEntity.ok(paginatedResults);
+        List<ChargingStationVO> stations;
+        int totalCount;
+
+        if (query != null && !query.isBlank()) {
+            // 검색 조건이 있을 경우
+            stations = chargingStationService.searchChargingStations(query, page, size);
+            totalCount = stations.size(); // 필요시 별도 count 쿼리를 호출 가능
+        } else if (chargerSpeedId != null) {
+            // 충전 속도 필터링
+            stations = chargingStationService.filterByChargeSpeed(chargerSpeedId, page, size);
+            totalCount = stations.size();
+        } else {
+            // 전체 데이터 조회
+            stations = chargingStationService.getAllChargingStations(page, size);
+            totalCount = stations.size();
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("stations", stations);
+        response.put("totalCount", totalCount);
+        return ResponseEntity.ok(response);
     }
 
     // 9. 카카오 지도 상 마커 표시 데이터

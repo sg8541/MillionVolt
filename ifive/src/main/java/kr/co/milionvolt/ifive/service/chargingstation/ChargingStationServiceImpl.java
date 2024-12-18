@@ -17,6 +17,8 @@ public class ChargingStationServiceImpl implements ChargingStationService {
     public ChargingStationServiceImpl(ChargingStationMapper chargingStationMapper) {
         this.chargingStationMapper = chargingStationMapper;
     }
+
+    // 충전소 DB 저장
     @Override
     public void saveStationsToDb(List<ChargingStationDTO> stations) {
         for (ChargingStationDTO dto : stations) {
@@ -47,22 +49,26 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         );
     }
 
+    // 모든 충전소 조회 (페이징)
     @Override
     public List<ChargingStationVO> getAllChargingStations(int page, int size) {
         int offset = (page - 1) * size;
         return chargingStationMapper.getAllChargingStations(offset, size);
     }
 
+    // 주변 충전소 조회 (주소 기반)
     @Override
     public List<ChargingStationVO> getNearbyStations(String address, Integer charger_speed_id) {
         return chargingStationMapper.getSidebarStations(address); // address 기반으로 조회
     }
 
+    // 충전소 및 충전기 정보 반환
     @Override
     public ChargingStationVO getChargingStationById(Integer stationId) {
         return chargingStationMapper.getChargingStationById(stationId);
     }
 
+    // 충전소 검색 (이름 또는 주소 기반)
     @Override
     public List<ChargingStationVO> searchChargingStations(String query, int page, int size) {
         int offset = (page - 1) * size;
@@ -74,11 +80,14 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         return chargingStationMapper.getSidebarStations(address);
     }
 
+    // 충전 속도 필터링
     @Override
-    public List<ChargingStationVO> filterByChargeSpeed(Integer chargerSpeedId, String address) {
-        return chargingStationMapper.findStationsByChargeSpeed(chargerSpeedId, address);
+    public List<ChargingStationVO> filterByChargeSpeed(Integer chargerSpeedId, int page, int size) {
+        int offset = (page - 1) * size;
+        return chargingStationMapper.findStationsByChargeSpeed(chargerSpeedId, offset, size);
     }
 
+    // 특정 충전소 상세 조회
     @Override
     public ChargingStationDTO getChargingStationWithChargers(Integer stationId) {
         // 충전소 정보 조회
@@ -91,6 +100,7 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         return station;
     }
 
+    // 주소 기반 충전소 조회
     @Override
     public List<ChargingStationVO> getStationsByAddress(String address) {
         if (address == null || address.isBlank()) {
@@ -108,6 +118,7 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         return stations;
     }
 
+    // 5km 내 충전소 조회 (단순 거리 계산 예제)
     @Override
     public List<ChargingStationVO> getStationsByAddress5km(String address, int radius) {
         if (address == null || address.isBlank()) {
@@ -142,5 +153,14 @@ public class ChargingStationServiceImpl implements ChargingStationService {
     public ChargingStationDTO getStationWithChargers(Integer stationId) {
         return chargingStationMapper.findStationWithChargers(stationId);
     }
+
+    // 페이징 + 주소 기반 검색
+    @Override
+    public List<ChargingStationVO> getStationsWithPaging(String address, String query, int page, int size) {
+        int offset = (page - 1) * size;
+        return chargingStationMapper.getStationsWithPaging(address, query, offset, size);
+    }
+
+
 
 }
