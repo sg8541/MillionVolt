@@ -73,6 +73,7 @@ const chargerType = ref(null);
 const chargerSpeed = ref(null);
 const stationName = ref(null);
 const stationAddress = ref(null);
+const stationId = ref(null);
 
 onMounted(() => {
     chargerId.value = route.query.chargerId;
@@ -81,7 +82,9 @@ onMounted(() => {
     stationId.value = route.query.stationId;
     stationName.value = route.query.stationName;
     stationAddress.value = route.query.stationAddress;
+    console.log('stationId:', stationId.value);
 })
+
 
 function formatDate(timestamp) {
     const date = new Date(timestamp);
@@ -169,7 +172,8 @@ const reserve = async () => {
                         endTime: reservationEndDate.value.toISOString(),
                         stationId: stationId,
                         chargerId: chargerId,
-                        status: "confirmed",
+                        status: 'confirmed',
+
                     });
                     alert(response.data.message);
                     window.location.href = "/";
@@ -201,7 +205,7 @@ const reserve = async () => {
         const formattedEndDate = reservation.value.endDate + "T23:59:59";
   
         const response = await axios.get(
-        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}`
+        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}/${stationId}/${chargerId}`
     );
   
     reservationList.value = response.data;
