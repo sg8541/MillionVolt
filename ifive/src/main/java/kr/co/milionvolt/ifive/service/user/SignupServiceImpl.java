@@ -44,8 +44,15 @@ public class SignupServiceImpl implements SignupService {
 
     @Override
     public int checkEmailDuplicate(String email) {
-        int result = signupMapper.findByEmail(email);
-
+        int result = signupMapper.exeistsEmail(email);
         return result;
     }
+
+    @Override
+    public int checkIdDuplicate(String id) {
+        int result = signupMapper.exeistsId(id);
+        return result;
+    }
+
+
 }

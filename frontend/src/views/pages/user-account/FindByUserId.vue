@@ -37,6 +37,8 @@
         email: '',
         verificationCode: '',
         sentCode: '',  // 서버에서 받은 인증번호 저장
+        idCheck: false,
+        emailCheck: false,
       };
     },
     computed: {
