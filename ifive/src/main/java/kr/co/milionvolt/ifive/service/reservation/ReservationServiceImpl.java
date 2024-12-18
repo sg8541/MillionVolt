@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -51,7 +50,6 @@ public class ReservationServiceImpl implements ReservationService {
                 reservationDTO.setStartTime(koreaStartTime.toLocalDateTime());
                 reservationDTO.setEndTime(koreaEndTime.toLocalDateTime());
 
-                reservationMapper.insertReservation(reservationDTO);
                 message =  "예약이 완료되었습니다.";
                     int num =  reservationMapper.insertReservation(reservationDTO);
                         if(num != 0){

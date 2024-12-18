@@ -37,7 +37,6 @@ public interface ReservationMapper {
 //            " AND charger_id = #{chargerId} ")
 //    int checkConflictReservation(ReservationDTO reservationDTO);
 
-//
     @Select(" SELECT count(*) " +
             " FROM reservation " +
             " WHERE (DATE(start_time) = DATE(#{startTime}) " +
