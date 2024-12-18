@@ -68,7 +68,7 @@ const router = useRouter();
 
 const moveToTestAlarm = () => {
     router.push({
-        name:'TestAlarm'
+        name:'ChargingStationPage'
     }); 
 };
 
@@ -105,11 +105,12 @@ const disconnectWebSocket = () => {
             chargeStart:formatDateTime(store.startTime),
             chargeEnd:formatDateTime(store.endTime),
             chargingKwh:store.chargingData.chargingKwh,
+            chargerId: store.chargingData.chargerId
         }
     alert("충전 종료 - 결제 화면으로 이동합니다.");
 
     router.push({
-        name: PayPrice,
+        name: 'PayPrice',
         query : {
             userId:paymentData.value.userId,
             stationId:paymentData.value.stationId,
@@ -118,6 +119,7 @@ const disconnectWebSocket = () => {
             chargeStart:paymentData.value.chargeStart,
             chargeEnd:paymentData.value.chargeEnd,
             chargingKwh:paymentData.value.chargingKwh,
+            chargerId:paymentData.value.chargerId
         }
     })
         
@@ -163,11 +165,12 @@ watchEffect(() => {
             chargeStart:formatDateTime(store.startTime),
             chargeEnd:formatDateTime(store.endTime),
             chargingKwh:store.chargingData.chargingKwh,
+            chargerId: store.chargingData.chargerId
         }
         alert("충전 종료 - 결제 화면으로 이동합니다.");
 
         router.push({
-            name: PayPrice,
+            name: 'PayPrice',
             query : {
                 userId:paymentData.value.userId,
                 stationId:paymentData.value.stationId,
@@ -176,6 +179,7 @@ watchEffect(() => {
                 chargeStart:paymentData.value.chargeStart,
                 chargeEnd:paymentData.value.chargeEnd,
                 chargingKwh:paymentData.value.chargingKwh,
+                chargerId:paymentData.value.chargerId
             }
         })
     }

@@ -70,6 +70,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 String query = session.getUri().getQuery();
                 String userId = getParameterFromQuery(query, "userId");
                 int reservationId = Integer.parseInt(getParameterFromQuery(query, "reservationId"));
+                System.out.println(reservationId);
                 ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, reservationId);
                 chargingStatusSerivce.chargingStatusInuse(dto.getChargerId(),dto.getStationId()); // 충전상태로 변환
                 double totalBattery = dto.getModelBattery();

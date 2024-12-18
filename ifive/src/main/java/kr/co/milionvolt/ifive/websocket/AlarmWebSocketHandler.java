@@ -98,8 +98,9 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                                 "{\"reservationId\": \"%d\", \"startTime\": \"%s\", \"message\": \"%s\"}",
                                 reservation.getReservationId(),
                                 reservationTime,
-                                "예약시간입니다! 충전을 시작해주세요."
+                                "예약시간) 충전을 시작해주세요."
                         );
+                        System.out.println("예약 발송 : "+reservation);
                         session.sendMessage(new TextMessage(status));
                     }
                     if(reservationEndTime.isBefore(now.plusMinutes(1))&& reservationEndTime.isAfter(now.minusMinutes(1))){
@@ -111,7 +112,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                             System.out.println("예약 종료시간."+reservationEndTime);
                            LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId());
                             int resNum =  reservation.getReservationId();
-                            penaltiySendAlarm(session, closeReservationTime, resNum);
+                            penaltiySendAlarm(session, closeReservationTime, resNum, reservationEndTime);
                         }
                     }
                  }
@@ -122,7 +123,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
          }
 
 
-    private void penaltiySendAlarm(WebSocketSession session, LocalDateTime closeReservationTime, int resNum){
+    private void penaltiySendAlarm(WebSocketSession session, LocalDateTime closeReservationTime, int resNum, LocalDateTime reservationEndTime){
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
             scheduler.scheduleAtFixedRate(()-> {
@@ -132,41 +133,50 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         scheduler.shutdown();
                         return;
                     }
-                    System.out.println("5분마다 동작. ");
+                    num += 1;
+                    repeatNum.put("repeat",num);
+                    System.out.println("벌금테이블 동작.");
                     LocalDateTime now = LocalDateTime.now();
-                    if(now.isBefore(closeReservationTime)){
-                        System.out.println("제일 가까운 예약 내역."+closeReservationTime);
+                    if(now.isBefore(closeReservationTime)) {
+                        System.out.println("제일 가까운 예약 내역." + closeReservationTime);
 
-                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}" ,closeReservationTime ,"출차해주세요.");
+                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "출차해주세요. 예약시간으로부터 15분 후 보증금 환수 예정.");
+                        //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
+                        session.sendMessage(new TextMessage(status));
+
+                    } else if (reservationEndTime.isAfter(reservationEndTime.plusMinutes(15))) {
+                        System.out.println("보증금 환수.");
+                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "뒷차 예약시간 부터 1분당 100원 벌금");
                         //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
                         session.sendMessage(new TextMessage(status));
                     } else {
-                        num += 1;
-                        repeatNum.put("repeat",num);
                         PenaltyCheckVO vo = penaltyService.penaltyCheckVo(resNum);
                         if(vo == null){
-                            penaltyAmount = 5000;
+                            penaltyAmount = 100;
                             System.out.println("벌금 부여 시작");
                             PenaltieDTO dto = new PenaltieDTO();
                             dto.setPenaltyAmount(BigDecimal.valueOf(penaltyAmount));
                             dto.setReservationId(resNum); // 보증금 환수.
                             penaltyService.insertPenalty(dto);
-                        }else{
+                        } else {
                             if(num == 1){
-                                penaltyAmount = 5000 + vo.getPenaltyAmount();
+                                penaltyAmount = 100 + vo.getPenaltyAmount();
                                 amount.put("amount",penaltyAmount);
                             }else{
-                                penaltyAmount += 5000;
+                                penaltyAmount += 100;
                                 amount.put("amount",penaltyAmount);
                             }
                             penaltyService.updatePenalty(penaltyAmount, resNum);
                         }
-                        String status = String.format("{\"reservationId\": \"%d\"}",resNum);
-                        session.sendMessage(new TextMessage(status));
+
+                        if(num % 5 == 1) {
+                            String status = String.format("{\"reservationId\": \"%d\"}", resNum);
+                            session.sendMessage(new TextMessage(status));
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-            },0,1,TimeUnit.MINUTES); // 5분마다 실행.
+            },0,1,TimeUnit.MINUTES); // 1분마다 실행.
         }
     }

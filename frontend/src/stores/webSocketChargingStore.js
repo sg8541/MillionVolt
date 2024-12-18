@@ -18,10 +18,12 @@ export const useWebSocketStore = defineStore('websocket', () => {
             estimatedTimeSeconds: '',
             userId:'',
             stationId:'',
+            chargerId:'',
             
         });
     const finishAlarm = ref({
         message:'',
+        
     })
 
     const elapsedTime = ref(0); // 경과 시간 (초 단위)
@@ -93,6 +95,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 chargingData.value.userId = data.userId; // 유저 아이디(PK)
                 chargingData.value.reservationId = data.reservationId; // 예약번호
                 chargingData.value.stationId = data.stationId; // 충전소 pK
+                chargingData.value.chargerId = data.chargerId;// 충전기 pk
             }
         };
         
