@@ -1,5 +1,4 @@
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png'
 import api from '@/axios';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router'

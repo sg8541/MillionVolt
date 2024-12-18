@@ -47,7 +47,21 @@ public class SignupController {
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용할 수 없는 이메일입니다.");
         }
-
+    }
+    
+    // 아이디 중복 검사
+    @GetMapping("/id-check")
+    public ResponseEntity<?> checkIdDuplicate(@RequestParam("user_id") String userId){
+        final int NOT_FIUND = 0;
+        
+        log.info("중복 검사 id : {}", userId);
+        int result = signupService.checkIdDuplicate(userId);
+        if(result == NOT_FIUND) {
+            return ResponseEntity.status(HttpStatus.OK).body("사용 가능한 아이디입니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용할 수 없는 아이디입니다.");
+        }
+        
     }
 
 
