@@ -18,7 +18,7 @@ public interface ChargingStationService {
     void insertChargingStation(ChargingStationDTO station);
 
     // 검색 및 필터링 결과
-    List<ChargingStationVO> filterByChargeSpeed(Integer chargerSpeedId, String address);
+    List<ChargingStationVO> filterByChargeSpeed(Integer chargerSpeedId, int page, int size);
 
     // 충전소 검색
     List<ChargingStationVO> searchChargingStations(String query, int page, int size);
@@ -40,4 +40,7 @@ public interface ChargingStationService {
     List<ChargingStationVO> getStationsByAddress(String address);
 
     ChargingStationDTO getStationWithChargers(Integer stationId);
+
+    List<ChargingStationVO> getStationsWithPaging(String address, String query, int page, int size);
+
 }
