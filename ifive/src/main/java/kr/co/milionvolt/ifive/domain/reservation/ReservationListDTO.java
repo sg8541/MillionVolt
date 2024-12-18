@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 public class ReservationListDTO {
     private int reservationId;
     private String status;
+    private int stationId;
+    private int chargerId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 }

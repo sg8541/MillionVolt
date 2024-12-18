@@ -55,10 +55,12 @@ public class ReservationListController {
     @Autowired
     private ReservationListServiceImpl reservationListServiceImpl;
 
-    @GetMapping("/reservationList/{startTime}/{endTime}")
+    @GetMapping("/reservationList/{startTime}/{endTime}/{stationId}/{chargerId}")
     public List<ReservationListDTO> listReservations(
             @PathVariable String startTime,
-            @PathVariable String  endTime) {
+            @PathVariable String  endTime,
+            @PathVariable int stationId,
+            @PathVariable int chargerId) {
 
         System.out.println("Start Time: " + startTime);
         System.out.println("End Time: " + endTime);
@@ -66,7 +68,7 @@ public class ReservationListController {
         LocalDateTime startDateTime = LocalDateTime.parse(startTime);
         LocalDateTime endDateTime = LocalDateTime.parse(endTime);
 
-        return reservationListServiceImpl.printReservationList(startDateTime, endDateTime);
+        return reservationListServiceImpl.printReservationList(startDateTime, endDateTime, stationId, chargerId);
     }
 }
 

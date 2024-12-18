@@ -29,8 +29,12 @@ public interface ReservationListMapper {
             " WHERE ((DATE(start_time) BETWEEN DATE(#{startTime}) AND DATE(#{endTime})) " +
             " OR (DATE(end_time) BETWEEN DATE(#{startTime}) AND DATE(#{endTime})) " +
             " OR (DATE(start_time) <= DATE(#{startTime}) AND DATE(end_time) >= DATE(#{endTime}))) " +
-            " AND status = 'confirmed'")
+            " AND status = 'confirmed'" +
+            " AND stationId = #{stationId}" +
+            " AND chargerId = #{chargerId}")
     List<ReservationListDTO> selectReservationList(
             @Param("startTime") LocalDateTime startTime,
-            @Param("endTime") LocalDateTime endTime);
+            @Param("endTime") LocalDateTime endTime,
+            @Param("stationId") int stationId,
+            @Param("chargerId") int chargerId);
 }
