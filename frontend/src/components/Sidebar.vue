@@ -7,8 +7,9 @@
         v-model="searchQuery"
         placeholder="충전소 이름 또는 지역 검색"
         class="search-input"
+        @keyup.enter="fetchStations(1)"
       />
-      <button @click="fetchStations">검색</button>
+      <button @click="fetchStations(1)">검색</button>
     </div>
 
     <!-- 필터링 버튼 -->
@@ -31,21 +32,25 @@
     </div>
     <ul v-if="stations.length > 0">
       <li
-        v-for="station in paginatedStations"
+        v-for="station in stations"
         :key="station.stationId"
         class="station-item"
+        @click="openModal(station.stationId)"
       >
         <p class="font-bold">{{ station.name }}</p>
         <p>주소: {{ station.address }}</p>
-        <p>사용 가능한 충전기: {{ station.availableCharger || 0 }} / {{ station.totalCharger || 0 }}</p>
-        <p>충전 속도: {{ station.chargeSpeed || '정보 없음' }}</p>
-        <p>충전 요금: {{ station.pricePerKWh || '정보 없음' }}</p>
+        <p>
+          사용 가능한 충전기: {{ station.availableCharger || 0 }} /
+          {{ station.totalCharger || 0 }}
+        </p>
+        <p>충전 속도: {{ station.chargeSpeed || "정보 없음" }}</p>
+        <p>충전 요금: {{ station.pricePerKWh || "정보 없음" }}</p>
       </li>
     </ul>
     <p v-else>조건에 맞는 충전소가 없습니다.</p>
 
     <!-- 페이징 -->
-    <div class="pagination" v-if="stations.length > itemsPerPage">
+    <div class="pagination" v-if="totalPages > 1">
       <button
         v-for="page in totalPages"
         :key="page"
@@ -55,67 +60,66 @@
         {{ page }}
       </button>
     </div>
+
+    <!-- 모달 컴포넌트 -->
+    <Modal
+      v-if="isModalVisible"
+      :stationId="selectedStationId"
+      :isVisible="isModalVisible"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
+import Modal from "@/components/Modal.vue";
 
 const stations = ref([]); // 충전소 데이터
 const loading = ref(false);
 const searchQuery = ref(""); // 검색어
 const selectedFilter = ref(null); // 선택된 필터
-const error = ref(null);
-
-const itemsPerPage = 5; // 페이지당 표시할 충전소 수
+const itemsPerPage = 5; // 페이지당 데이터 수
 const currentPage = ref(1); // 현재 페이지
+const totalItems = ref(0); // 전체 아이템 수
+const isModalVisible = ref(false); // 모달 표시 여부
+const selectedStationId = ref(null); // 선택된 충전소 ID
 
 // 필터 옵션
 const filterOptions = [
   { id: null, name: "전체 보기" },
-  { id: 1, name: "완속 충전" },
-  { id: 2, name: "급속 충전" },
+  { id: 1, name: "7kW" },
+  { id: 2, name: "50kW" },
+  { id: 3, name: "100kW" },
+  { id: 4, name: "200kW" },
+  { id: 5, name: "300kW 이상" },
 ];
-
-// 현재 페이지에 표시할 데이터 계산
-const paginatedStations = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return stations.value.slice(start, end);
-});
 
 // 총 페이지 수 계산
 const totalPages = computed(() => {
-  return Math.ceil(stations.value.length / itemsPerPage);
+  return totalItems.value > 0 ? Math.ceil(totalItems.value / itemsPerPage) : 0;
 });
 
-// API 호출 함수
-const fetchStations = async () => {
+// 충전소 데이터 불러오기
+const fetchStations = async (page) => {
+  currentPage.value = page; // 현재 페이지 업데이트
   loading.value = true;
-  error.value = null;
-
   try {
-    // API 요청
     const response = await fetch(
       `http://localhost:8081/api/v1/charging-stations/sidebar?query=${encodeURIComponent(
         searchQuery.value
-      )}${selectedFilter.value !== null ? `&chargerSpeedId=${selectedFilter.value}` : ""}&page=${currentPage.value}&size=${itemsPerPage}`
+      )}&chargerSpeedId=${selectedFilter.value || ""}&page=${currentPage.value}&size=${itemsPerPage}`
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP 에러: ${response.status}`);
-    }
+    if (!response.ok) throw new Error("충전소 데이터를 불러오는데 실패했습니다.");
 
     const data = await response.json();
-    stations.value = data;
-    console.log("API 응답 데이터:", data);
+    stations.value = data.stations || [];
+    totalItems.value = data.totalCount || 0;
 
-    if (stations.value.length === 0) {
-      console.warn("조건에 맞는 충전소 데이터가 없습니다.");
-    }
-  } catch (err) {
-    console.error("충전소 데이터를 불러오는 중 오류:", err);
-    error.value = "충전소 데이터를 불러오는 중 문제가 발생했습니다.";
+    console.log("Received totalCount:", totalItems.value);
+  } catch (error) {
+    console.error("Error fetching stations:", error);
   } finally {
     loading.value = false;
   }
@@ -123,19 +127,31 @@ const fetchStations = async () => {
 
 // 필터 적용
 const applyFilter = (filterId) => {
-  selectedFilter.value = filterId; // 필터 업데이트
-  currentPage.value = 1; // 페이지 초기화
-  fetchStations(); // API 호출
+  selectedFilter.value = filterId;
+  fetchStations(1); // 필터 적용 시 페이지를 1로 초기화
 };
 
 // 페이지 변경
 const changePage = (page) => {
-  currentPage.value = page;
-  fetchStations(); // API 호출
+  if (page !== currentPage.value) {
+    fetchStations(page);
+  }
+};
+
+// 모달 열기
+const openModal = (stationId) => {
+  selectedStationId.value = stationId;
+  isModalVisible.value = true;
+};
+
+// 모달 닫기
+const closeModal = () => {
+  isModalVisible.value = false;
+  selectedStationId.value = null;
 };
 
 // 초기 데이터 로드
-fetchStations();
+fetchStations(1);
 </script>
 
 <style scoped>
@@ -145,12 +161,10 @@ fetchStations();
   background-color: #f9f9f9;
   overflow-y: auto;
   padding: 20px;
-  border-left: 1px solid #ddd;
 }
 
 .search-bar {
   display: flex;
-  align-items: center;
   gap: 10px;
 }
 
@@ -163,15 +177,21 @@ fetchStations();
 
 .filter-options {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap; /* 버튼이 여러 줄로 내려갈 수 있도록 설정 */
+  gap: 10px; /* 버튼 사이의 간격 */
+  justify-content: space-between; /* 버튼을 균등하게 분포 */
 }
 
 .filter-button {
+  flex: 1 1 calc(20% - 10px); /* 각 버튼의 너비를 20%로 설정 (5개 버튼 기준) */
+  min-width: 100px; /* 버튼 최소 너비 */
   padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #fff;
+  text-align: center; /* 텍스트 중앙 정렬 */
   cursor: pointer;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
 }
 
 .filter-button.active {
@@ -181,12 +201,17 @@ fetchStations();
 }
 
 .station-item {
-  margin-bottom: 15px;
   padding: 10px;
-  background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.station-item:hover {
+  background: #f0f0f0;
 }
 
 .pagination {
@@ -206,12 +231,5 @@ fetchStations();
 .pagination button.active {
   background-color: #007bff;
   color: #fff;
-  border-color: #007bff;
-}
-
-.loading {
-  text-align: center;
-  font-size: 14px;
-  color: #555;
 }
 </style>
