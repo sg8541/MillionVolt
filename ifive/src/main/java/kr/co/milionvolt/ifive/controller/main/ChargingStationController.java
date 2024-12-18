@@ -51,7 +51,7 @@ public class ChargingStationController {
         return "main"; // main.html
     }
 
-    // 3. 충전소 기본 정보 반환
+    // 2. 충전소 기본 정보 반환
     @GetMapping("/station/{stationId}")
     public ResponseEntity<ChargingStationDTO> getStationDetails(@PathVariable Integer stationId) {
         try {
@@ -73,7 +73,7 @@ public class ChargingStationController {
         }
     }
 
-    // 4. 충전소와 연결된 충전기 상태 정보 반환
+    // 3. 충전소와 연결된 충전기 상태 정보 반환
     @GetMapping("/station/{stationId}/chargers")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getChargersByStationId(@PathVariable Integer stationId) {
@@ -96,7 +96,7 @@ public class ChargingStationController {
         }
     }
 
-    // 통합된 충전소 검색 및 필터링 API (검색 + 필터링 + 페이징 처리)
+    // 4. 통합된 충전소 검색 및 필터링 API (검색 + 필터링 + 페이징 처리)
     @GetMapping("/sidebar")
     public ResponseEntity<Map<String, Object>> getFilteredStations(
             @RequestParam(required = false) String query, // 검색어 (옵션)
@@ -127,7 +127,7 @@ public class ChargingStationController {
         return ResponseEntity.ok(response);
     }
 
-    // 9. 카카오 지도 상 마커 표시 데이터
+    // 5. 카카오 지도 상 마커 표시 데이터
     @GetMapping("/markers")
     public ResponseEntity<List<ChargingStationVO>> getMarkersByAddress(
             @RequestParam(required = false) String address
@@ -143,7 +143,7 @@ public class ChargingStationController {
         return ResponseEntity.ok(markers);
     }
 
-    // 충전기 상태 변경 API
+    // 6. 충전기 상태 변경 API
     @PutMapping("/chargers/{chargerId}/status")
     public ResponseEntity<?> updateChargerStatus(
             @PathVariable Integer chargerId,
