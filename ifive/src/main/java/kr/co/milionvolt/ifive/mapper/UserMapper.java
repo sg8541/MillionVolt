@@ -39,7 +39,7 @@ public interface UserMapper {
     String findByPassword(Integer id);
 
     // 유저의 자동차 정보 조회
-    @Select("select car_number, car_battery, charger_speed, model_name " +
+    @Select("select car_number, car_battery, charger_speed_id, model_id " +
             "from user_car " +
             "join charge_speed " +
             "using (charger_speed_id) " +

@@ -1,9 +1,10 @@
 <template>
-        <div class="header">
-      <a href="../templates/main.html">
-        <img src="images/logo.png" alt="백 만 볼트 로고" class="logo"></a>
-    </div>
-    <div class="wrap">
+  <div class="header">
+    <router-link to="/main" class="logo-link">
+      <img src="images/logo.png" alt="백 만 볼트 로고" class="logo">
+    </router-link>
+  </div>
+  <div class="wrap">
 
     <div class="container">
 
@@ -19,7 +20,7 @@
           <div class="form-row">
             <label for="id">아이디<span class="star">*</span></label>
             <input v-model="form.user_id" type="text" id="user_id" placeholder="아이디를 입력해주세요" required />
-            <button type="button" class="verify-btn" @click="checkDuplicate('user_id')">중복확인</button>
+            <button type="button" class="verify-btn" @click="checkIdDuplicate('user_id')">중복확인</button>
           </div>
           <div class="form-row">
             <label for="password">비밀번호<span class="star">*</span></label>
@@ -28,11 +29,12 @@
           <small>비밀번호는 8자리 이상, 영문 숫자가 포함되어야 합니다.</small>
           <div class="form-row">
             <label for="confirm-password">비밀번호 재확인<span class="star">*</span></label>
-            <input v-model="form.confirm_password" type="password" id="confirm-password" placeholder="비밀번호를 다시 입력해주세요" required />
+            <input v-model="form.confirm_password" type="password" id="confirm-password" placeholder="비밀번호를 다시 입력해주세요"
+              required />
           </div>
-          <span class="pwd-check" v-if="passwordMismatch">비밀번호 불일치 여부</span>
+          <span class="pwd-check" v-if="passwordMismatch">비밀번호가 일치하지 않습니다.</span>
         </div>
-  
+
         <div class="section">
           <div class="h2-div">
             <h2>상세 정보 입력</h2>
@@ -40,12 +42,14 @@
           <div class="form-row">
             <label for="email">이메일<span class="star">*</span></label>
             <input v-model="form.email" type="email" id="email" placeholder="이메일을 입력해주세요" required />
-            <button type="button" class="verify-btn" @click="checkDuplicate('email')">중복확인</button>
+            <button type="button" class="verify-btn" @click="checkEmailDuplicate('email')">중복확인</button>
           </div>
           <div class="form-row">
             <label for="phone">전화번호<span class="star">*</span></label>
-            <input v-model="form.phone_number" type="tel" id="phone" placeholder="전화번호를 입력해주세요" required />
+            <input v-model="form.phone_number" type="tel" id="phone" placeholder="전화번호를 입력해주세요"
+              @input="formatPhoneNumber" required />
           </div>
+          <span v-if="showPhoneError" class="pwd-check">유효하지 않은 전화번호입니다.</span>
           <div class="form-row">
             <label for="car">차종<span class="star">*</span></label>
             <select v-model="form.modal_id" id="car" required>
@@ -56,7 +60,8 @@
             <label>선호 충전기 타입</label>
             <select v-model="form.charger_speed_id" id="charging" required>
               <option value="">선택안함</option>
-              <option v-for="charger in chargers" :value="charger.value" :key="charger.value">{{ charger.text }}</option>
+              <option v-for="charger in chargers" :value="charger.value" :key="charger.value">{{ charger.text }}
+              </option>
             </select>
           </div>
           <div class="form-row">
@@ -69,225 +74,331 @@
         </div>
       </form>
     </div>
-</div>
-  </template>
-  
-  <script>
-  import api from '../../../axios' // Axios 인스턴스 import
+  </div>
+</template>
+
+<script>
+import api from '../../../axios' // Axios 인스턴스 import
 
 
-  export default {
-    data() {
-      return {
-        form: {
-          username: '',
-          user_id: '',
-          password: '',
-          confirm_password: '',
-          email: '',
-          phone_number: '',
-          modal_id: '',
-          charge_speed_id: 4,
-          car_number: '',
-        },
-        cars: [
-          { value: 1, text: 'EV6' },
-          { value: 2, text: 'EV9' },
-          { value: 3, text: 'IONIQ6' },
-          { value: 4, text: 'IONIQ5' },
-          { value: 5, text: 'Tesla Model S' },
-          { value: 6, text: 'Tesla Model X' },
-          { value: 7, text: 'Taycan' },
-          { value: 8, text: 'Mercedes-Benz EQC' },
-        ],
-        chargers: [
-          { value: 1, text: '7kw' },
-          { value: 2, text: '50kw' },
-          { value: 3, text: '100kw' },
-          { value: 4, text: '200kw' },
-          { value: 5, text: '300kw 이상' },
-        ],
-      };
-    },
-    computed: {
-      passwordMismatch() {
-        return this.form.password && this.form.confirm_password && this.form.password !== this.form.confirm_password;
+export default {
+  data() {
+    return {
+      idCheck: false,
+      emailCheck: false,
+      form: {
+        username: '',
+        user_id: '',
+        password: '',
+        confirm_password: '',
+        email: '',
+        phone_number: '',
+        modal_id: '',
+        charge_speed_id: 4,
+        car_number: '',
       },
+      cars: [
+        { value: 1, text: 'EV6' },
+        { value: 2, text: 'EV9' },
+        { value: 3, text: 'IONIQ6' },
+        { value: 4, text: 'IONIQ5' },
+        { value: 5, text: 'Tesla Model S' },
+        { value: 6, text: 'Tesla Model X' },
+        { value: 7, text: 'Taycan' },
+        { value: 8, text: 'Mercedes-Benz EQC' },
+      ],
+      chargers: [
+        { value: 1, text: '7kw' },
+        { value: 2, text: '50kw' },
+        { value: 3, text: '100kw' },
+        { value: 4, text: '200kw' },
+        { value: 5, text: '300kw 이상' },
+      ],
+    };
+  },
+
+  computed: {
+    // 비밀번호 확인 메세지
+    passwordMismatch() {
+      return this.form.password && this.form.confirm_password && this.form.password !== this.form.confirm_password;
     },
-    methods: {
-      async submitForm() {
-        try{
-          const response = await api.post('http://localhost:8081/api/v1/signup', {
-            username: this.form.username,
-            userId: this.form.user_id,
-            email: this.form.email,
-            phoneNumber: this.form.phone_number,
-            password: this.form.password,
-            modelId: this.form.modal_id,
-            chargerSpeedId: this.form.charger_speed_id,
-            carNumber: this.form.car_number
-          }) 
-          if(response.status == 200){
-            alert('가입 신청이 완료되었습니다!');
-            console.log(this.form);
-            window.location.href = '/login';
-          }
-        } catch(error){
-           alert(error) 
+    // 전화번호 확인 메세지
+    showPhoneError() {
+      return this.form.phone_number && !this.isValidPhoneNumber();
+    },
+  },
+  methods: {
+    // 비밀번호 패턴 검증(숫자+영어 8자리 이상)
+    passwordValidation(password) {
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      return passwordRegex.test(password);
+    },
+    // 전화번호 패턴 검증 + 자동 하이픈 생성
+    formatPhoneNumber(event) {
+      let value = event.target.value.replace(/[^0-9]/g, ''); // 숫자만 남김
+
+      if (value.length <= 7) {
+        // 123-4567
+        this.form.phone_number = value.replace(/^(\d{3})(\d{4})$/, `$1-$2`);
+      } else if (value.length <= 9) {
+        // 02-123-4567
+        this.form.phone_number = value.replace(/^(\d{2})(\d{3})(\d{4})$/, `$1-$2-$3`);
+      } else if (value.length <= 10) {
+        // 055-132-4567 (10자리)
+        this.form.phone_number = value.replace(/^(\d{3})(\d{3})(\d{4})$/, `$1-$2-$3`);
+      } else if (value.length === 11) {
+        // 010-1234-5678 (11자리)
+        this.form.phone_number = value.replace(/^(\d{3})(\d{4})(\d{4})$/, `$1-$2-$3`);
+      }
+    },
+    // 전화번호 유효성 검사 정규식
+    isValidPhoneNumber() {
+      const phoneRegex = /^(01[016789]|02|0[3-9][0-9])-\d{3,4}-\d{4}$/;
+      return phoneRegex.test(this.form.phone_number);
+    },
+
+    // 자동차 번호 검증(12가4567 또는 123가4567)
+    validateCarNumber(carNumber) {
+      const trimmedCarNumber = carNumber.replace(/\s+/g, ''); // 공백 제거
+      const carNumberRegex = /^(\d{2}|\d{3})[가-힣]\d{4}$/;
+      return carNumberRegex.test(trimmedCarNumber);
+    },
+    // 가입 form 제출
+    async submitForm() {
+      if (this.passwordMismatch) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+      if (!this.passwordValidation(this.form.password)) {
+        alert("비밀번호는 8자리 이상, 영문과 숫자를 포함해야 합니다.");
+        return;
+      }
+      if (!this.idCheck) {
+        alert("아이디 중복 검사는 필수입니다.");
+        return;
+      }
+      if (!this.emailCheck) {
+        alert("이메일 중복 확인은 필수입니다.");
+        return;
+      }
+      if (this.showPhoneError) {
+        alert("유효하지 않은 전화번호입니다. 예: 02-3456-7890 또는 010-1234-5678");
+        return;
+      }
+      if (!this.validateCarNumber(this.form.car_number)) {
+        alert("유효하지 않은 차량번호입니다. 예: 123가4567 또는 12가4567");
+        return;
+      }
+      try {
+        const response = await api.post('/signup', {
+          username: this.form.username,
+          userId: this.form.user_id,
+          email: this.form.email,
+          phoneNumber: this.form.phone_number,
+          password: this.form.password,
+          modelId: this.form.modal_id,
+          chargerSpeedId: this.form.charger_speed_id,
+          carNumber: this.form.car_number
+        })
+        if (response.status == 200) {
+          alert('가입 신청이 완료되었습니다!');
+          console.log(this.form);
+          window.location.href = '/login';
         }
-      },
-
-      checkDuplicate(field) {
-        alert(`${field} 중복 확인 요청됨.`);
-      },
-      // submitForm() {
-      //   alert('가입 신청이 완료되었습니다!');
-      //   console.log(this.form);
-      // },
+      } catch (error) {
+        alert(error)
+      }
     },
-  };
-  </script>
+    // 아이디 중복 검사
+    async checkIdDuplicate(field) {
+      const userId = this.form.user_id;  // user_id 값 가져오기
+      console.log(userId);
+      try {
+        const response = await api.get(`/id-check?user_id=${userId}`);
+        if (response.status === 200) {
+          alert("사용할 수 있는 아이디입니다.")
+          this.idCheck = true;
+        }
+      } catch (error) {
+        if (error.response.status == 400) {
+          alert("사용할 수 없는 아이디입니다.")
+          this.idCheck = false;
+        } else {
+          alert("중복 검사 중 오류가 발생하였습니다." + error)
+        }
+      }
+    },
+    // 이메일 중복 체크
+    async checkEmailDuplicate(field) {
+      const email = this.form.email;  // user_id 값 가져오기
+      console.log(email);
+      try {
+        const response = await api.get(`/email-check?email=${email}`);
+        if (response.status === 200) {
+          alert("사용할 수 있는 이메일입니다.")
+          this.emailCheck = true;
+        }
+      } catch (error) {
+        if (error.response.status == 400) {
+          alert("사용할 수 없는 이메일입니다.")
+          this.emailCheck = false;
+        } else {
+          alert("중복 검사 중 오류가 발생하였습니다." + error)
+        }
+      }
+    },
+  },
+};
+</script>
 <style scoped>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .wrap {
-    font-family: Arial, sans-serif;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    /* align-items: center; */
-    /* height: 100vh; */
-    margin:0 auto 100px auto;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  /* height: 100vh; */
+  margin: 0 auto 100px auto;
 }
 
 
 .container {
-    width: 600px;
-    height : 850px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 30px;
+  width: 600px;
+  height: 850px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
 }
 
 .header {
-    text-align: center;
-    /* margin-bottom: 30px; */
+  text-align: center;
+  /* margin-bottom: 30px; */
 }
 
-.wrap .header .logo{
+.wrap .header .logo {
   text-align: center;
   position: absolute;
 }
 
 
 .logo {
-    /* top: 5px;
+  /* top: 5px;
     left: 5px; */
-    width: 150px;
+  width: 150px;
 }
 
 h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .section {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .form-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .form-row label {
-    width: 120px;
-    font-size: 14px;
-    margin-right: 10px;
-    text-align: left;
+  width: 120px;
+  font-size: 14px;
+  margin-right: 10px;
+  text-align: left;
 }
 
-select, .form-row input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+select,
+.form-row input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 .verify-btn {
-    background-color: #a5a5a5;
-    color: white;
-    padding: 8px 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
+  background-color: #a5a5a5;
+  color: white;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
 .verify-btn:hover {
-    background-color: #7e7e7e;
+  background-color: #7e7e7e;
 }
 
 
 .submit-container {
-    text-align: center;
+  text-align: center;
 }
 
 .submit-btn {
-    background-color: #0b0b0b;
-    color: white;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
+  background-color: #0b0b0b;
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
 }
 
 .submit-btn:hover {
-    background-color: #3c3c3c;
+  background-color: #3c3c3c;
 }
 
-small, .pwd-check {
-display: block;
-font-size: 12px;
-color: gray;
-margin-top: 3px;
-margin-bottom : 10px;
-margin-left : 135px;
+small,
+.pwd-check {
+  display: block;
+  font-size: 12px;
+  color: gray;
+  margin-top: 3px;
+  margin-bottom: 10px;
+  margin-left: 135px;
 }
 
 .pwd-check {
-    color: red;
+  color: red;
 }
-.star{
-   color : blue;
+
+.star {
+  color: blue;
 }
-.h2-div{
+
+.h2-div {
   border-bottom: 3px solid #3c3c3c;
-  margin-bottom : 20px;
+  margin-bottom: 20px;
 }
 
 
 select:focus {
-    border-color: #007BFF; /* 포커스 시 테두리 색상 변경 */
-    outline: none; /* 기본 포커스 테두리 제거 */
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); /* 포커스 시 그림자 효과 */
+  border-color: #007BFF;
+  /* 포커스 시 테두리 색상 변경 */
+  outline: none;
+  /* 기본 포커스 테두리 제거 */
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  /* 포커스 시 그림자 효과 */
 }
 
 select option {
-    padding: 10px; /* 옵션 내부 여백 */
+  padding: 10px;
+  /* 옵션 내부 여백 */
 }
 
-input{
-   outline: none;
+input {
+  outline: none;
 }
 </style>
