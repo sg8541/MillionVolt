@@ -132,4 +132,20 @@ public interface ChargingStationMapper {
                                                   @Param("offset") int offset,
                                                   @Param("size") int size);
 
+    // 전체 충전소 개수 조회
+    @Select("SELECT COUNT(*) FROM charging_station")
+    int countAllChargingStations();
+
+    // 특정 충전 속도 필터링 개수 조회
+    @Select("SELECT COUNT(*) FROM charging_station WHERE charger_speed_id = #{chargerSpeedId}")
+    int countStationsByChargeSpeed(@Param("chargerSpeedId") Integer chargerSpeedId);
+
+    // 검색 결과 개수 조회
+    @Select("""
+    SELECT COUNT(*)
+    FROM charging_station
+    WHERE name LIKE CONCAT('%', #{query}, '%') OR address LIKE CONCAT('%', #{query}, '%')
+""")
+    int countSearchResults(@Param("query") String query);
+
 }

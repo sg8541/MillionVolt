@@ -99,33 +99,35 @@ public class ChargingStationController {
     // 4. 통합된 충전소 검색 및 필터링 API (검색 + 필터링 + 페이징 처리)
     @GetMapping("/sidebar")
     public ResponseEntity<Map<String, Object>> getFilteredStations(
-            @RequestParam(required = false) String query, // 검색어 (옵션)
-            @RequestParam(required = false) Integer chargerSpeedId, // 충전 속도 필터링
-            @RequestParam(defaultValue = "1") int page, // 현재 페이지
-            @RequestParam(defaultValue = "5") int size // 페이지당 데이터 수
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) Integer chargerSpeedId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size
     ) {
         List<ChargingStationVO> stations;
         int totalCount;
 
         if (query != null && !query.isBlank()) {
-            // 검색 조건이 있을 경우
+            // 검색어 적용
             stations = chargingStationService.searchChargingStations(query, page, size);
-            totalCount = stations.size(); // 필요시 별도 count 쿼리를 호출 가능
+            totalCount = chargingStationService.countSearchResults(query); // 검색 결과 총 개수
         } else if (chargerSpeedId != null) {
             // 충전 속도 필터링
             stations = chargingStationService.filterByChargeSpeed(chargerSpeedId, page, size);
-            totalCount = stations.size();
+            totalCount = chargingStationService.countStationsByChargeSpeed(chargerSpeedId); // 필터링 총 개수
         } else {
-            // 전체 데이터 조회
+            // 전체 조회
             stations = chargingStationService.getAllChargingStations(page, size);
-            totalCount = stations.size();
+            totalCount = chargingStationService.countAllChargingStations(); // 전체 충전소 총 개수
         }
 
+        // 응답 데이터 구성
         Map<String, Object> response = new HashMap<>();
         response.put("stations", stations);
         response.put("totalCount", totalCount);
         return ResponseEntity.ok(response);
     }
+
 
     // 5. 카카오 지도 상 마커 표시 데이터
     @GetMapping("/markers")
@@ -150,34 +152,33 @@ public class ChargingStationController {
             @RequestBody Map<String, Object> payload) {
         try {
             // 1. Payload에서 값 추출
-            Object statusObj = payload.get("status");
             Integer stationId = payload.get("stationId") != null ? Integer.parseInt(payload.get("stationId").toString()) : null;
+            Object statusObj = payload.get("status");
 
+            // 2. stationId 검증
             if (stationId == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("stationId는 필수입니다.");
             }
 
-            // 2. 상태 값 처리
+            // 3. 상태 값 처리
             Integer statusId;
             if (statusObj instanceof String) {
-                String statusStr = statusObj.toString().toLowerCase();
-                statusId = switch (statusStr) {
+                statusId = switch (statusObj.toString().toLowerCase()) {
                     case "available" -> 1;
                     case "in_use" -> 2;
                     case "maintenance" -> 3;
-                    default -> throw new IllegalArgumentException("Invalid status value: " + statusStr);
+                    default -> throw new IllegalArgumentException("Invalid status value: " + statusObj);
                 };
             } else if (statusObj instanceof Integer) {
-                // 숫자로 들어온 경우
                 statusId = (Integer) statusObj;
                 if (statusId < 1 || statusId > 3) {
-                    throw new IllegalArgumentException("Invalid numeric status value: " + statusId);
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid numeric status value: " + statusId);
                 }
             } else {
-                throw new IllegalArgumentException("Invalid status value: " + statusObj);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status value format.");
             }
 
-            // 3. 서비스 호출 및 결과 반환
+            // 4. 서비스 호출
             boolean isUpdated = chargerServiceImpl.updateChargerStatus(stationId, chargerId, statusId);
             if (isUpdated) {
                 return ResponseEntity.ok("충전기 상태가 성공적으로 업데이트되었습니다.");
@@ -189,5 +190,7 @@ public class ChargingStationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("충전기 상태 변경 중 오류가 발생했습니다.");
         }
     }
+
+
 
 }

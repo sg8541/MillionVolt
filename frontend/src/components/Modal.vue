@@ -14,7 +14,7 @@
         <p>{{ stationInfo.address || "정보 없음" }}</p>
         <p>
           사용 가능한 충전기: 
-          {{ stationInfo.availableCharger || 0 }} / {{ stationInfo.totalCharger || 0 }}
+          {{ availableChargersCount }} / {{ chargers.length || 0 }}
         </p>
       </div>
 
@@ -81,6 +81,11 @@ const closeModal = () => {
   emit("close");
 };
 
+// 사용 가능한 충전기 수 계산
+const availableChargersCount = computed(() => {
+  return chargers.value.filter((charger) => charger.chargerStatusId === 1).length;
+});
+
 // API 호출 함수
 const fetchStationDetails = async (id) => {
   try {
@@ -101,6 +106,7 @@ const fetchChargers = async (id) => {
     );
     if (!response.ok) throw new Error("충전기 정보를 불러오는 데 실패했습니다.");
     chargers.value = await response.json();
+    console.log("충전기 데이터:", chargers.value); // 데이터 확인
   } catch (error) {
     console.error("Error fetching chargers:", error);
     chargers.value = [];
@@ -129,12 +135,11 @@ const updateChargerStatus = async (chargerId) => {
   }
 };
 
-
 // 충전 시작 함수: 충전 예약 페이지로 이동
 const startCharging = async (chargerId, chargerType, chargerSpeed) => {
   try {
     // 상태 업데이트 완료 후 페이지 이동
-    await updateChargerStatus(chargerId);
+    //await updateChargerStatus(chargerId);
 
     router.push({
       path: "/Reservation",
@@ -142,6 +147,7 @@ const startCharging = async (chargerId, chargerType, chargerSpeed) => {
         chargerId,
         chargerType,
         chargerSpeed,
+        stationId: props.stationId,
         stationName: stationInfo.value.name || "정보 없음",
         stationAddress: stationInfo.value.address || "정보 없음",
       },

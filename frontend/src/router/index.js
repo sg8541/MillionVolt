@@ -105,6 +105,12 @@ const router = createRouter({
       ],
     },
     {
+      path: "/Reservation/:station_id",
+      name: "Reservation",
+      component: () => import("../views/payment/Reservation.vue"),
+      props: true, // route params를 props로 전달
+    },
+    {
       path: "/Reservation",
       name: "Reservation",
       component: () => import("../views/payment/Reservation.vue"),
