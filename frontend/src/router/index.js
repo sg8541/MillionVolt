@@ -6,6 +6,7 @@ import ReservationAlarm from "@/views/alarm/ReservationAlarm.vue";
 import ChargingStationPage from "@/views/main/ChargingStationPage.vue";
 import { useAuthStore } from "@/stores/auth";
 import ChargerChangeState from "@/views/chargingwebsocket/ChargerChangeState.vue";
+import StompClient from "@/components/StompClient.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -139,6 +140,11 @@ const router = createRouter({
       path: "/exit",
       name: "ExitUser",
       component: () => import("../views/pages/user-account/ExitUser.vue"),
+    },
+    {
+      path:"/client",
+      name:'StompClient',
+      component:StompClient
     },
   ],
 });

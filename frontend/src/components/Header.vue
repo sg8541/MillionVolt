@@ -109,8 +109,10 @@ store.finishAlarm = store.finishAlarm || { message: null };
 
   onMounted(() => {
     isAlertBoxVisible.value = false;
-    store.connectWebSocket();
-    storeAlarm.connectAlarmWebSocket()
+    if(isLoggedIn.value == true){
+      store.connectWebSocket();
+      storeAlarm.connectAlarmWebSocket()
+    }
     console.log("온마운트");
   });
 
@@ -177,13 +179,18 @@ watch(
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
-const id = user.value.id;
+//const id = user.value.id;
 
-console.log("=====" + user.value.id);
+//console.log("=====" + user.value.id);
 // 로그인 상태 관리
-const isLoggedIn = ref(true);
+const isLoggedIn = ref(false);
 
-
+const token = localStorage.getItem('user');
+if(token){
+  isLoggedIn.value = true;
+}else{
+  isLoggedIn.value = false;
+}
 
 // 페이지 새로고침
 const reloadPage = () => {

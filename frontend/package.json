@@ -30,6 +30,8 @@
     "roboto-fontface": "^0.10.0",
     "router": "^1.3.8",
     "sass": "^1.59.3",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "unplugin-vue-define-options": "^1.3.5",
     "vue": "^3.3.4",
     "vue-chartjs": "^5.2.0",
