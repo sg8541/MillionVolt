@@ -16,5 +16,6 @@ public class PenaltieDTO {
   private BigDecimal penaltyAmount;
   private String reason;
   private java.sql.Timestamp createdAt;
+  private Integer reservationId;
 
 }
