@@ -96,7 +96,14 @@ const chargerSpeed = ref(null);
 const stationName = ref(null);
 const stationAddress = ref(null);
 const stationId = ref(null);
+const username = ref('')
 const depositAmount = ref(100);
+
+
+
+const token = localStorage.getItem('user');
+const parsedToken = JSON.parse(token);
+        const userId = parsedToken.id;
 
 onMounted(() => {
     chargerId.value = route.query.chargerId;
@@ -105,6 +112,7 @@ onMounted(() => {
     stationId.value = route.query.stationId;
     stationName.value = route.query.stationName;
     stationAddress.value = route.query.stationAddress;
+    printReserverName();
 })
 
 
@@ -193,6 +201,7 @@ const reserve = async () => {
                     const response = await axios.post(`http://localhost:8081/api/v1/reservation/${reservation.value.impUid}`, {
                         startTime: reservationStartDate.value.toISOString(),
                         endTime: reservationEndDate.value.toISOString(),
+                        userId: userId,
                         stationId: stationId.value,
                         chargerId: chargerId.value,
                         status: 'confirmed',
@@ -236,6 +245,15 @@ const printReservationList = async () => {
         alert("해당 날짜의 예약 조회에 실패했습니다.");
     }
 };
+
+    //예약자 이름 조회
+    const printReserverName = async () => {
+        const usernameResponse = await axios.get(
+            `http://localhost:8081/api/v1/reservation/${userId}`
+        );
+        username.value = usernameResponse.data.username;
+        console.log(username.value);
+    };
 </script>
 <style>
 .wrap {
