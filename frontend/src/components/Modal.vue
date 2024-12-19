@@ -143,6 +143,7 @@ const startCharging = async (chargerId, chargerType, chargerSpeed) => {
     router.push({
       path: "/Reservation",
       query: {
+        stationId:props.stationId,
         chargerId,
         chargerType,
         chargerSpeed,

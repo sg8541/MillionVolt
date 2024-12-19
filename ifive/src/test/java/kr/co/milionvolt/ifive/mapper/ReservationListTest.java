@@ -16,7 +16,7 @@ public class ReservationListTest {
     public void test() {
         ReservationListDTO reservationListDTO = new ReservationListDTO();
 
-        List<ReservationListDTO> dtoList = reservationListMapper.selectReservationList(reservationListDTO.getStartTime(), reservationListDTO.getEndTime());
+        List<ReservationListDTO> dtoList = reservationListMapper.selectReservationList(reservationListDTO.getStartTime(), reservationListDTO.getEndTime(), reservationListDTO.getStationId(), reservationListDTO.getReservationId());
         System.out.println("성공" + dtoList);
     }
 }

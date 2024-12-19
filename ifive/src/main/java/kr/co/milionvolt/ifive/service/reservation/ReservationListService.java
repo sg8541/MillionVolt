@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReservationListService {
-    List<ReservationListDTO> printReservationList(LocalDateTime startTime, LocalDateTime endTime);
+    List<ReservationListDTO> printReservationList(LocalDateTime startTime, LocalDateTime endTime, int stationId, int chargerId);
 }
