@@ -64,6 +64,8 @@ public class ReservationListController {
 
         System.out.println("Start Time: " + startTime);
         System.out.println("End Time: " + endTime);
+        System.out.println("Station ID: " + stationId);
+        System.out.println("Charger ID: " + chargerId);
 
         LocalDateTime startDateTime = LocalDateTime.parse(startTime);
         LocalDateTime endDateTime = LocalDateTime.parse(endTime);
