@@ -249,7 +249,7 @@ const printReservationList = async () => {
 .container {
     width: 650px;
     background-color: #fff;
-    border: 1px solid #666;
+    border: 1px solid #969696;
     padding: 30px 24px 28px 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
