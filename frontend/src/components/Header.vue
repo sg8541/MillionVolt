@@ -9,19 +9,19 @@
     <nav class="navigation">
       <template v-if="isLoggedIn">
         <a href="#" class="nav-item">결제 및 예약</a>
-        <!-- <RouterLink :to="`/myinfo/dashboard/${id}`">
+        <RouterLink :to="`/myinfo/dashboard/${id}`">
           <button type="button" class="nav-item">마이페이지</button>
-      </RouterLink> -->
-      <RouterLink to="/logout">
-        <a href="#" class="nav-item" @click="logout">로그아웃</a>
+        </RouterLink>
+        <RouterLink to="/main">
+          <a href="#" class="nav-item" @click.prevent="handleLogout">로그아웃</a>
         </RouterLink>
       </template>
       <template v-else>
         <RouterLink to="/login">
-        <a href="#" class="nav-item">로그인</a>
-      </RouterLink>
+          <a href="#" class="nav-item">로그인</a>
+        </RouterLink>
         <RouterLink to="/agreement">
-        <a href="#" class="nav-item">회원가입</a>
+          <a href="#" class="nav-item">회원가입</a>
         </RouterLink>
       </template>
     </nav>
@@ -42,18 +42,15 @@
           <div v-if="store.chargingData.chargerType" class="speed-indicator">
             <label><strong>충전 속도: {{ store.chargingData.chargerType }}</strong></label>
             <div class="speed-bar">
-              <div
-                class="speed-progress"
-                :style="{
-                  width: getSpeedPercentage(currentBatteryPercent) + '%',
-                  backgroundColor: getSpeedColor(currentBatteryPercent),
-                }"
-              ></div>
+              <div class="speed-progress" :style="{
+                width: getSpeedPercentage(currentBatteryPercent) + '%',
+                backgroundColor: getSpeedColor(currentBatteryPercent),
+              }"></div>
             </div>
             <div>
-            {{ currentBatteryPercent }}%
+              {{ currentBatteryPercent }}%
             </div>
-            <div v-if="currentBatteryPercent<100" @click="movePaymentPrice">
+            <div v-if="currentBatteryPercent < 100" @click="movePaymentPrice">
               <label><strong>충전정보 보기</strong></label>
             </div>
             <div v-else @click="movePaymentPrice">
@@ -64,22 +61,22 @@
 
         <div v-if="storeAlarm.alarm.message" class="alert-content">
           <p>{{ storeAlarm.alarm.message }}</p>
-          <div v-if="storeAlarm.alarm.message !='새로운 알람이 없습니다.'" class="speed-indicator">
+          <div v-if="storeAlarm.alarm.message != '새로운 알람이 없습니다.'" class="speed-indicator">
             <label @click="showModal"><strong>충전하러가기</strong></label>
           </div>
         </div>
       </div>
 
     </div>
-    <div v-if="isModalVisible" class ="alert-modal" @click.self="hideModal">
-        <div class="modal-content">
-            
-            <img class="modal-image" src="/images/charger-info.png">
-            <h2>충전을 시작하시겠습니까?</h2>
-            <p>주의! 충전기를 꽂아 둔 상태여야 합니다. </p>
-            <button @click="moveCharginStatus" class="modal-click">충전시작</button>
-            <button @click="hideModal" class="modal-btn">취소</button>
-        </div>
+    <div v-if="isModalVisible" class="alert-modal" @click.self="hideModal">
+      <div class="modal-content">
+
+        <img class="modal-image" src="/images/charger-info.png">
+        <h2>충전을 시작하시겠습니까?</h2>
+        <p>주의! 충전기를 꽂아 둔 상태여야 합니다. </p>
+        <button @click="moveCharginStatus" class="modal-click">충전시작</button>
+        <button @click="hideModal" class="modal-btn">취소</button>
+      </div>
     </div>
 
   </header>
@@ -88,13 +85,13 @@
 <script setup>
 
 import { useAuthStore } from '@/stores/auth';
-import { onMounted, ref , watch, computed } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useWebSocketStore } from '@/stores/webSocketChargingStore';
 import { useAlarmWebSocketStore } from '@/stores/webSocketAlarmStore';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const isAlertBoxVisible = ref(false);  
+const isAlertBoxVisible = ref(false);
 
 const store = useWebSocketStore();
 const storeAlarm = useAlarmWebSocketStore();
@@ -107,14 +104,14 @@ storeAlarm.alarm = { message: "새로운 알람이 없습니다." };
 storeAlarm.alarm = storeAlarm.alarm || { message: null };
 store.finishAlarm = store.finishAlarm || { message: null };
 
-  onMounted(() => {
-    isAlertBoxVisible.value = false;
-    if(isLoggedIn.value == true){
-      store.connectWebSocket();
-      storeAlarm.connectAlarmWebSocket()
-    }
-    console.log("온마운트");
-  });
+onMounted(() => {
+  isAlertBoxVisible.value = false;
+  if (isLoggedIn.value == true) {
+    store.connectWebSocket();
+    storeAlarm.connectAlarmWebSocket()
+  }
+  console.log("온마운트");
+});
 
 //   watch(
 //   () => store.chargingData.chargerType, // 감지할 값
@@ -136,7 +133,7 @@ watch(
     console.log("새로운 알림 메시지:", newValue);
     if (newValue && newValue !== "새로운 알람이 없습니다." && newValue !== null) {
       isAlertBoxVisible.value = true; // 알림 창 표시
-    }else{
+    } else {
       isAlertBoxVisible.value = false;
     }
   }
@@ -153,14 +150,14 @@ watch(
 );
 
 
-  // 알림창 토글
+// 알림창 토글
 const toggleAlertBox = () => {
   isAlertBoxVisible.value = !isAlertBoxVisible.value;
 };
 
 
 
-const currentBatteryPercent = ref(0); 
+const currentBatteryPercent = ref(0);
 
 watch(
   () => store.chargingData.batteryPercent,
@@ -168,8 +165,8 @@ watch(
     console.log("업데이트된 배터리 퍼센트:", newValue);
     currentBatteryPercent.value = newValue || 0; // 값이 없을 경우 0으로 처리
     store.finishAlarm.message = "충전 중인 상태입니다.";
-    if(currentBatteryPercent.value == 100){
-      store.finishAlarm.message="충전 완료";
+    if (currentBatteryPercent.value == 100) {
+      store.finishAlarm.message = "충전 완료";
       isAlertBoxVisible.value = true;
     }
   },
@@ -178,17 +175,22 @@ watch(
 
 
 const authStore = useAuthStore();
-const user = computed(() => authStore.user);
-//const id = user.value.id;
+const user = computed(() => authStore.user || {});
+const id = user.value.id || '';
 
 //console.log("=====" + user.value.id);
 // 로그인 상태 관리
 const isLoggedIn = ref(false);
+if (id == null || '') {
+  isLoggedIn.value = false;
+} else {
+  isLoggedIn.value = true;
+}
 
 const token = localStorage.getItem('user');
-if(token){
+if (token) {
   isLoggedIn.value = true;
-}else{
+} else {
   isLoggedIn.value = false;
 }
 
@@ -199,11 +201,10 @@ const reloadPage = () => {
 };
 
 // 로그아웃 함수
-const logout = () => {
-  console.log("로그아웃 실행");
-  isLoggedIn.value = false;
-  
-};
+// const logout = () => {
+
+
+// };
 
 // 충전 속도에 따른 퍼센트 반환
 const getSpeedPercentage = (batteryPercent) => Math.min(batteryPercent, 100);
@@ -212,16 +213,16 @@ const getSpeedPercentage = (batteryPercent) => Math.min(batteryPercent, 100);
 const getSpeedColor = (percent) => {
   if (percent < 20) return "#f44336"; // 빨간색
   if (percent < 50) return "#ff9800"; // 노란색
-  if (percent < 80) return "#ffeb3b" ; // 주황색
-  return "#4caf50" ; // 녹색
+  if (percent < 80) return "#ffeb3b"; // 주황색
+  return "#4caf50"; // 녹색
 };
 
 const showModal = () => {
-    isModalVisible.value = true;
+  isModalVisible.value = true;
 }
 
 const hideModal = () => {
-    isModalVisible.value = false;
+  isModalVisible.value = false;
 };
 
 const moveCharginStatus = () => {
@@ -229,23 +230,34 @@ const moveCharginStatus = () => {
     name: 'ChargingStatus',
     query: {
       reservationId: storeAlarm.alarm.reservationId,
-      stationId:storeAlarm.alarm.stationId
+      stationId: storeAlarm.alarm.stationId
     },
   }).then(() => {
     storeAlarm.clearAlarmMessage();
     window.location.reload(); // 페이지 새로고침 -> 웹소켓이 연결되어있으므로 리로딩.
     // 웹소켓 세션 종료니 다시 연결함.(다른곳에선 쓰이면 안됨.)
-    
+
   });
-  
+
 };
 
 const movePaymentPrice = () => {
   router.push({
-    name:'ChargingStatus'
+    name: 'ChargingStatus'
   })
 }
 
+const handleLogout = async () => {
+      try {
+        await authStore.logout()
+        showUserMenu.value = false
+        console.log("로그아웃 실행");
+        isLoggedIn.value = false;
+        router.push('/main') // 로그아웃 후 홈으로 이동
+      } catch (error) {
+        console.error('로그아웃 실패:', error)
+      }
+    }
 
 
 </script>
@@ -355,6 +367,7 @@ const movePaymentPrice = () => {
     transform: translateY(-10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -362,28 +375,29 @@ const movePaymentPrice = () => {
 }
 
 
-.alert-modal{
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1001;
+.alert-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
 }
 
-.modal-content{
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    text-align: center;
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
+
 .modal-btn {
   margin-top: 15px;
   padding: 8px 36px;
@@ -394,13 +408,16 @@ const movePaymentPrice = () => {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 .modal-btn:hover {
   background-color: #555;
 }
-.modal-image{
-    width: 50%;
+
+.modal-image {
+  width: 50%;
 }
-.modal-click{
+
+.modal-click {
   margin-top: 15px;
   margin-right: 20px;
   padding: 5px 16px;
@@ -412,6 +429,7 @@ const movePaymentPrice = () => {
   transition: background-color 0.3s ease;
 
 }
+
 .modal-click:hover {
   background-color: #e6e6e6;
 }

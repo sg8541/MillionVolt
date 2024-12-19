@@ -17,6 +17,7 @@ const router = createRouter({
       path: "/main",
       name: "ChargingStationPage",
       component: ChargingStationPage,
+      
     },
     {
       path: "/myinfo/",
@@ -160,7 +161,7 @@ router.beforeEach((to, from, next) => {
       authStore.user.role !== "MEMBER"
     ) {
       // 유저 확인 후 대시보드로 이동
-      next({ path: `/myinfo/dashboard/${authStore.user.id || 1}` });
+      next({ name: "ChargingStationPage" });
     } else {
       next();
     }
