@@ -43,4 +43,13 @@ public interface ChargingStationService {
 
     List<ChargingStationVO> getStationsWithPaging(String address, String query, int page, int size);
 
+    // 전체 충전소 개수 조회
+    int countAllChargingStations();
+
+    // 특정 충전 속도 필터링 개수 조회
+    int countStationsByChargeSpeed(Integer chargerSpeedId);
+
+    // 검색 결과 개수 조회
+    int countSearchResults(String query);
+
 }

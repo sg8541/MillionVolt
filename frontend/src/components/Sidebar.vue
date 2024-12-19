@@ -40,7 +40,7 @@
         <p class="font-bold">{{ station.name }}</p>
         <p>주소: {{ station.address }}</p>
         <p>
-          사용 가능한 충전기: {{ station.availableCharger || 0 }} /
+          사용 가능한 충전기: {{ station.availableChargerCount || 0 }} / 
           {{ station.totalCharger || 0 }}
         </p>
         <p>충전 속도: {{ station.chargeSpeed || "정보 없음" }}</p>
@@ -50,16 +50,42 @@
     <p v-else>조건에 맞는 충전소가 없습니다.</p>
 
     <!-- 페이징 -->
-    <div class="pagination" v-if="totalPages > 1">
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        :class="{ active: currentPage === page }"
-        @click="changePage(page)"
-      >
-        {{ page }}
-      </button>
-    </div>
+    <div class="pagination">
+  <button 
+    v-if="currentPage > 1" 
+    @click="changePage(1)"
+  >
+    « 처음
+  </button>
+  <button 
+    v-if="currentPage > 1" 
+    @click="changePage(currentPage - 1)"
+  >
+    ‹ 이전
+  </button>
+
+  <button 
+    v-for="page in visiblePages" 
+    :key="page" 
+    :class="{ active: currentPage === page }" 
+    @click="changePage(page)"
+  >
+    {{ page }}
+  </button>
+
+  <button 
+    v-if="currentPage < totalPages" 
+    @click="changePage(currentPage + 1)"
+  >
+    다음 ›
+  </button>
+  <button 
+    v-if="currentPage < totalPages" 
+    @click="changePage(totalPages)"
+  >
+    마지막 »
+  </button>
+</div>
 
     <!-- 모달 컴포넌트 -->
     <Modal
@@ -100,10 +126,16 @@ const totalPages = computed(() => {
   return totalItems.value > 0 ? Math.ceil(totalItems.value / itemsPerPage) : 0;
 });
 
+// 사용 가능한 충전기 개수 계산
+const calculateAvailableChargers = (chargers) => {
+  return chargers.filter((charger) => charger.chargerStatusId === 1).length;
+};
+
 // 충전소 데이터 불러오기
 const fetchStations = async (page) => {
-  currentPage.value = page; // 현재 페이지 업데이트
+  currentPage.value = page; // 현재 페이지 설정
   loading.value = true;
+
   try {
     const response = await fetch(
       `http://localhost:8081/api/v1/charging-stations/sidebar?query=${encodeURIComponent(
@@ -113,15 +145,25 @@ const fetchStations = async (page) => {
 
     if (!response.ok) throw new Error("충전소 데이터를 불러오는데 실패했습니다.");
 
-    const data = await response.json();
-    stations.value = data.stations || [];
-    totalItems.value = data.totalCount || 0;
+    const data = await response.json(); // API 응답 데이터
 
-    console.log("Received totalCount:", totalItems.value);
+    // 데이터 업데이트
+    stations.value = data.stations.map((station) => {
+      // 충전기 데이터가 없는 경우 빈 배열로 처리
+      const chargers = station.chargers || [];
+      return {
+        ...station,
+        availableChargerCount: calculateAvailableChargers(chargers),
+      };
+    });
+    totalItems.value = data.totalCount;
+
+    console.log("Stations Updated:", stations.value);
+    console.log("Total Items Updated:", totalItems.value);
   } catch (error) {
     console.error("Error fetching stations:", error);
   } finally {
-    loading.value = false;
+    loading.value = false; // 로딩 상태 해제
   }
 };
 
@@ -130,6 +172,22 @@ const applyFilter = (filterId) => {
   selectedFilter.value = filterId;
   fetchStations(1); // 필터 적용 시 페이지를 1로 초기화
 };
+
+// 페이징 버튼 범위 계산
+const visiblePages = computed(() => {
+  const total = totalPages.value; // 총 페이지 수
+  const current = currentPage.value; // 현재 페이지
+  const range = 2; // 현재 페이지 기준 양옆으로 표시할 버튼 수
+
+  const start = Math.max(current - range, 1); // 시작 페이지
+  const end = Math.min(current + range, total); // 끝 페이지
+
+  const pages = [];
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  return pages;
+});
 
 // 페이지 변경
 const changePage = (page) => {
@@ -213,23 +271,31 @@ fetchStations(1);
 .station-item:hover {
   background: #f0f0f0;
 }
-
 .pagination {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 5px;
   margin-top: 10px;
 }
 
 .pagination button {
-  margin: 0 5px;
   padding: 5px 10px;
   border: 1px solid #ddd;
   background-color: #fff;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .pagination button.active {
   background-color: #007bff;
   color: #fff;
+  font-weight: bold;
+  cursor: not-allowed;
 }
+
+.pagination button:hover:not(.active) {
+  background-color: #e6e6e6;
+}
+
 </style>

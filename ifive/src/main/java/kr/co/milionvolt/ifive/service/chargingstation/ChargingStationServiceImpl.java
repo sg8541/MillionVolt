@@ -161,6 +161,23 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         return chargingStationMapper.getStationsWithPaging(address, query, offset, size);
     }
 
+    // 전체 충전소 개수 조회
+    @Override
+    public int countAllChargingStations() {
+        return chargingStationMapper.countAllChargingStations();
+    }
+
+    // 특정 충전 속도 필터링 개수 조회
+    @Override
+    public int countStationsByChargeSpeed(Integer chargerSpeedId) {
+        return chargingStationMapper.countStationsByChargeSpeed(chargerSpeedId);
+    }
+
+    // 검색 결과 개수 조회
+    @Override
+    public int countSearchResults(String query) {
+        return chargingStationMapper.countSearchResults(query);
+    }
 
 
 }

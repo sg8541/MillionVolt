@@ -3,12 +3,10 @@
   <header id="header" class="flex items-center justify-between">
     <!-- 로고 -->
     <div class="logo" @click="reloadPage">
-      <img src="/src/assets/images/logo/logo-yellow-white.png" alt="로고" style="width:100%;">
     </div>
 
     <!-- 네비게이션 메뉴 -->
     <nav class="navigation">
-      <a href="#" class="nav-item">이용방법</a>
       <template v-if="isLoggedIn">
         <a href="#" class="nav-item">결제 및 예약</a>
         <RouterLink :to="`/myinfo/dashboard/${id}`">
@@ -259,18 +257,20 @@ const movePaymentPrice = () => {
 }
 
 .logo {
+  left: 50%;
+  position: absolute;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
 .logo img {
-  height: 60px;
   margin-right: 10px;
 }
 
 .navigation {
   display: flex;
+  margin-left: auto;
   gap: 15px;
 }
 
@@ -286,13 +286,14 @@ const movePaymentPrice = () => {
 
 /* 알림창 스타일 */
 .alert-container {
-  position: relative;
+  position: absolute;
+  left: 20px;
 }
 
 .alert-box {
   position: absolute;
   top: 40px;
-  right: 0;
+  left: 0;
   width: 250px;
   background-color: #fff;
   border: 1px solid #ddd;

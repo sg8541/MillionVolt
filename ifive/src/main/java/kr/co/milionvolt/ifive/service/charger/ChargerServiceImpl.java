@@ -53,6 +53,4 @@ public class ChargerServiceImpl implements ChargerService {
         return chargerMapper.findChargersWithDetails(stationId);
     }
 
-
-
 }
