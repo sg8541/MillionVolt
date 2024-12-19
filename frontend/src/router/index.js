@@ -75,7 +75,7 @@ const router = createRouter({
       component: ChargingStatus,
     },
     {
-      path: "/payPrice",
+      path: "/payprice",
       name: "PayPrice",
       component: PayPrice,
     },

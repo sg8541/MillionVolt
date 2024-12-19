@@ -22,6 +22,7 @@ import { useRouter } from "vue-router";
 import Modal from "@/components/Modal.vue";
 
 const router = useRouter(); // Router 객체 생성
+
 const map = ref(null);
 const markers = ref([]); // 충전소 마커 리스트
 const geocoder = ref(null);
@@ -96,11 +97,12 @@ const loadMarkers = async () => {
             map: map.value,
             title: `${station.name} (${station.availableCharger || 0}/${station.totalCharger || 0})`,
           });
-
+          
           // 마커 클릭 이벤트
           kakao.maps.event.addListener(marker, "click", () => {
             console.log(`마커 클릭됨: ${station.name}`);
             router.push({ name: "Reservation", params: { station_id: station.stationId } }); // 예약 페이지로 이동
+
           });
 
           markers.value.push(marker);
