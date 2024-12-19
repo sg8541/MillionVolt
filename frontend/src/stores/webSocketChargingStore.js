@@ -18,10 +18,12 @@ export const useWebSocketStore = defineStore('websocket', () => {
             estimatedTimeSeconds: '',
             userId:'',
             stationId:'',
+            chargerId:'',
             
         });
     const finishAlarm = ref({
         message:'',
+        
     })
 
     const elapsedTime = ref(0); // 경과 시간 (초 단위)
@@ -57,12 +59,15 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 return;
             }
         
+        const token = localStorage.getItem('user');
+        const parsedToken = JSON.parse(token);
+        const userId = parsedToken.userId;
         const route = useRoute();
-        const userId = 'dohun123'; // 사용자 ID 동적으로 바꿀 수 있습니다.
         const reservationId = route.query.reservationId; 
+        const stationId = route.query.stationId;
 
 
-        socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}`);
+        socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}&stationId=${stationId}`);
     
         socketInstance.value.onopen = () => {
             isConnected.value = true;
@@ -94,6 +99,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 chargingData.value.userId = data.userId; // 유저 아이디(PK)
                 chargingData.value.reservationId = data.reservationId; // 예약번호
                 chargingData.value.stationId = data.stationId; // 충전소 pK
+                chargingData.value.chargerId = data.chargerId;// 충전기 pk
             }
         };
         
