@@ -1,11 +1,11 @@
 <template>
+  <div class="wrap">
+    <div class="header">
       <div class="logo">
       <router-link to="/main">
         <img src="images/logo.png" alt="백만볼트 로고">
       </router-link>
     </div>
-  <div class="wrap">
-
     <div class="container">
       <div class="title">아이디 찾기 - 이메일 인증</div>
       <p class="description">본인확인 이메일과 입력한 이메일이 같아야,<br>인증번호를 받을 수 있습니다.</p>
@@ -23,6 +23,7 @@
         <router-link to="/signup">회원가입</router-link>
       </div>
     </div>
+  </div>
   </div>
   </template>
   
@@ -103,33 +104,38 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
   }
   
   .wrap {
-    font-family: 'Arial', sans-serif;
-    /* background-color: white; */
+    margin: 0px;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* height: 100vh; */
-    margin-bottom: 100px;
+    flex-direction: column;
   }
   
   .container {
-    width: 600px;
+    width: 500px;
     height: 600px;
     background-color: #fff;
     padding: 20px;
-    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #C9D6DE;
     border-radius: 8px;
     text-align: center;
+    margin-bottom: 100px;
   }
 
-  .logo {
+  .header{
+    margin-top: 15%;
     text-align: center;
-
   }
-  
+
   .logo img {
     width: 150px;
   }
@@ -139,6 +145,7 @@
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 30px;
+    color: #52616a;
   }
   
   .description {
@@ -158,13 +165,17 @@
     width: 100%;
     height: 60px;
     padding: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid #C9D6DE;
     border-radius: 4px;
     font-size: 14px;
     margin-bottom: 10px;
     outline: none;
   }
   
+  .input-field:focus {
+    border: 2px solid #52616A;
+  }
+
   .email-row {
     display: flex;
     gap: 10px;
@@ -177,31 +188,34 @@
   .verify-button {
     padding: 12px;
     height: 46px;
-    border: 1px solid #595959;
+    /* border: 1px solid #595959; */
     border-radius: 4px;
-    font-size: 12px;
-    background-color: #ededed;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #e0e0e0;
     cursor: pointer;
     margin-top: 10px;
+    color:#fff;
   }
   
   .verify-button:hover {
-    background-color: #e0e0e0;
+    background-color: #C9D6DE;
+    /* color:#fff; */
   }
   
   .submit-button {
     padding: 12px;
-    background-color: #0b0b0b;
+    background-color: #C3C3C3;
     border: none;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 16px;
     color: #fff;
     cursor: pointer;
     height: 65px;
   }
   
   .submit-button:hover {
-    background-color: #464646;
+    background-color: #52616A;
   }
   
   .submit-button:disabled {
@@ -212,17 +226,17 @@
     margin-top: 30px;
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
   }
   
   .links a {
     text-decoration: none;
-    color: #666;
+    color: #a4a4a4;
   }
   
   .links a:hover {
-    text-decoration: underline;
+    color:#52616A;
   }
   </style>
   
