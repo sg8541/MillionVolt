@@ -56,7 +56,8 @@ $divider-gap: 0.75rem;
     .nav-group.active:not(.nav-group .nav-group) > :first-child {
       &::after {
         position: absolute;
-        background-color: rgb(var(--v-global-theme-primary));
+        // background-color: rgb(var(--v-global-theme-primary));
+        background-color:  #F0F5F9;
         block-size: 2.625rem;
         border-end-start-radius: 0.375rem;
         border-start-start-radius: 0.375rem;

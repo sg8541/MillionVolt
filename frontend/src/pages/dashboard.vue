@@ -41,16 +41,16 @@ onMounted(()=>{
     </VCol>
 
     <!-- 👉 Total Revenue -->
-    <VCol
+    <!-- <VCol
       cols="12"
       md="12"
       order="2"
       order-md="1"
-    >
+    > -->
       <!-- info.totalRevenue가 있을 때만 AnalyticsTotalRevenue 렌더링 -->
       <!-- <AnalyticsTotalRevenue  /> -->
-      <AnalyticsTotalRevenue v-if="info" :payment-chart-list="info.paymentChartList" />
-    </VCol>
+      <!-- <AnalyticsTotalRevenue v-if="info" :payment-chart-list="info.paymentChartList" />
+    </VCol> -->
 
     <!-- 👉 ReservationTable -->
     <VCol
