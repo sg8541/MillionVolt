@@ -71,8 +71,8 @@ public class SecurityConfig {
                 // 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/uploads/**").permitAll() // 이미지 파일에 대한 접근 허용
-                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/logout/**","/api/v1/id-check","/api/v1/email-check",
-                                "api/v1/charging-stations/**",
+                        .requestMatchers("/api/v1/login/**", "/api/v1/signup/**", "/api/v1/findId/**","/api/v1/logout/**",
+                                "/api/v1/email/**","api/v1/charging-stations/**",
                                  "/api/v1/findPwd/**", "/api/v1/resetPwd/**",
                                 "/charging/**", "/alarm/**","/api/v1/email/**",
                                 "/api/v1/payment/**", "/reservationList/**", "/api/v1/reservation/**","/api/v1/payment/printstationinfo/**").permitAll() // 로그인 및 회원가입 엔드포인트는 누구나 접근 가능
