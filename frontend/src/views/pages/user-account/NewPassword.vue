@@ -1,9 +1,12 @@
 <template>
-    <div id="app">
+    <div class="wrap">
       <!-- 로고 -->
-      <a href="../templates/main.html">
-        <img src="images/logo.png" alt="Logo" class="logo" />
-      </a>
+      <div class="header">
+      <div class="logo">
+        <router-link to="/main">
+          <img src="images/logo.png" alt="백만볼트 로고">
+        </router-link>
+      </div>
   
       <div class="login-container">
         <h2>새로운 비밀번호 입력</h2>
@@ -30,6 +33,7 @@
   
           <button type="submit" class="login-button">비밀번호 변경</button>
         </form>
+        </div>
       </div>
     </div>
   </template>
@@ -92,7 +96,7 @@
   
   <style scoped>
   /* 전체 페이지 스타일 */
-  body {
+  .wrap {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
@@ -105,12 +109,14 @@
   }
   
   /* 로고 스타일 */
-  .logo {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 150px; /* 로고 크기 조절 */
-  }
+  .header {
+  margin-top: 5%;
+  text-align: center;
+}
+
+.logo img {
+  width: 150px;
+}
   
   /* 로그인 컨테이너 스타일 */
   .login-container {
@@ -126,6 +132,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 100px;
   }
   
   /* 제목 스타일 */

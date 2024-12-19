@@ -1,25 +1,26 @@
-
 <template>
     <div class="reservation-go-info-title">예약 진행 및 예약 상세 정보</div>
 
     <div class="reservation-username-title">예약자</div>
     <div class="reservation-username">
-            
+        
     </div>
 
     <div class="reservation-address-title">주소</div>
     <div class="reservation-address">
-            
+        <string>{{stationAddress}} &nbsp; {{stationName}}</string>            
     </div>
 
     <div class="reservation-chargerType-title">충전기 타입</div>
     <div class="reservation-chargerType">
-
+        <string>{{chargerType}}</string>
+        <br>
+        <string>{{chargerSpeed}}</string>
     </div>
 
     <div class="reservation-deposit-title">보증금</div>
     <div class="reservation-depotsit">
-        5.000원
+        <string>{{depositAmount}}원</string>
     </div>
 
     <div class="reserve-date-container-title">예약 날짜 및 시간</div>
@@ -48,11 +49,14 @@
     <!-- 예약 목록 -->
     <div class="reservation-list-title">예약 목록</div>
     <div class="reservation-list">
-            <div v-for="(reservation, index) in reservationList" :key="index">
-                <p>예약 번호: {{ reservation.reservationId }}</p>
-                <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
-                <br>
-            </div>
+        <div v-if="reservationList.length === 0">
+            <p>해당 날짜에 예약된 항목이 없습니다.</p>
+        </div>
+        <div v-else v-for="(reservation, index) in reservationList" :key="index">
+            <p>예약 번호: {{ reservation.reservationId }}</p>
+            <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
+            <br />
+        </div>
     </div>
     <div class="reservation-button-container">
         <button class="reservation-button" @click="reserve">예약</button>
@@ -60,18 +64,40 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import { ref, computed } from "vue";
 import axios from "axios";
+import { useRoute } from "vue-router";
+const route = useRoute();
 
+const chargerId = ref(null);
+const chargerType = ref(null);
+const chargerSpeed = ref(null);
+const stationName = ref(null);
+const stationAddress = ref(null);
+const stationId = ref(null);
+const depositAmount = ref(100);
+
+onMounted(() => {
+    chargerId.value = route.query.chargerId;
+    chargerType.value = route.query.chargerType;
+    chargerSpeed.value = route.query.chargerSpeed;
+    stationId.value = route.query.stationId;
+    stationName.value = route.query.stationName;
+    stationAddress.value = route.query.stationAddress;
+})
+
+
+//날짜 시간 형식 변경
 function formatDate(timestamp) {
-  const date = new Date(timestamp);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
 
-  return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+    return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
 }
 
 // 예약 정보
@@ -80,7 +106,7 @@ const reservation = ref({
     endDate: "",
     startTime: "",
     endTime: "",
-    impUid: "", // 결제 완료 후 설정됨
+    impUid: "",
     status: "",
 });
 
@@ -90,55 +116,54 @@ const reservationList = ref([]);
 const reservationStartDate = computed(() => {
     if (!reservation.value.startDate || !reservation.value.startTime) return null;
     return new Date(`${reservation.value.startDate}T${reservation.value.startTime}`);
-  });
-  
-  const reservationEndDate = computed(() => {
+});
+
+const reservationEndDate = computed(() => {
     if (!reservation.value.endDate || !reservation.value.endTime) return null;
     return new Date(`${reservation.value.endDate}T${reservation.value.endTime}`);
-  });
-  
+});
+
   // 시간 유효성 검사
-  const validateTime = (field) => {
+const validateTime = (field) => {
     const time = reservation.value[field];
     const [hours, minutes] = time.split(":").map(Number);
     if (minutes % 5 !== 0) {
-      alert(`${field === "startTime" ? "시작" : "종료"} 시간은 5분 단위로 입력해야 합니다.`);
-      reservation.value[field] = "";
+    alert(`${field === "startTime" ? "시작" : "종료"} 시간은 5분 단위로 입력해야 합니다.`);
+    reservation.value[field] = "";
     }
-  };
-  
+};
+
   // 날짜 및 시간 유효성 검사
-  const isValidDateAndTime = () => {
+const isValidDateAndTime = () => {
     if (!reservationStartDate.value || !reservationEndDate.value) {
-      alert("모든 필드를 입력해주세요.");
-      return false;
+    alert("모든 필드를 입력해주세요.");
+    return false;
     }
     const now = new Date();
     if (reservationStartDate.value <= now) {
-      alert("예약은 현재 시간 이후로만 가능합니다.");
-      return false;
+        alert("예약은 현재 시간 이후로만 가능합니다.");
+        return false;
     }
     if (reservationStartDate.value >= reservationEndDate.value) {
-      alert("종료 시간은 시작 시간보다 늦어야 합니다.");
-      return false;
+        alert("종료 시간은 시작 시간보다 늦어야 합니다.");
+        return false;
     }
     return true;
-  };
-  
+};
+
   // 예약 API 호출
-  const reserve = async () => {
+const reserve = async () => {
     if (!isValidDateAndTime()) return;
-  
+
     const { IMP } = window;
     IMP.init("imp50578251");
     IMP.request_pay(
-
         {
             pg: "html5_inicis",
             pay_method: "카카오페이",
             merchant_uid: `order_${Date.now()}`,
             name: "보증금 결제",
-            amount: 100,
+            amount: depositAmount.value,
         },
         async (rsp) => {
             if (rsp.success) {
@@ -148,41 +173,50 @@ const reservationStartDate = computed(() => {
                     const response = await axios.post(`http://localhost:8081/api/v1/reservation/${reservation.value.impUid}`, {
                         startTime: reservationStartDate.value.toISOString(),
                         endTime: reservationEndDate.value.toISOString(),
-                        userId: 1,
-                        stationId: 2,
-                        chargerId: 2,
-                        status: "confirmed",
+                        stationId: stationId.value,
+                        chargerId: chargerId.value,
+                        status: 'confirmed',
+
                     });
                     alert(response.data.message);
                     window.location.href = "/";
                 } catch (error) {
-                    alert(error.response?.data?.message || "예약 처리 중 오류가 발생했습니다.");
+                    // alert(error.response?.data?.message || "예약 처리 중 오류가 발생했습니다.");
+                    if (error.response?.status === 409) {
+                        // 예약 충돌 관련 오류 처리
+                        alert(error.response.data.message);
+                    } else if (error.response?.status === 500) {
+                        // 서버 내부 오류 처리
+                        alert("서버에서 오류가 발생했습니다. 다시 시도해주세요.");
+                    } else {
+                        alert("알 수 없는 오류가 발생했습니다.");
+                    }
                 }
             } else {
                 alert(`결제 실패: ${rsp.error_msg}`);
             }
         }
-      )
+        )
     };
 
-  
+
   // 예약 목록 조회
-  const printReservationList = async () => {
-    if (!reservation.value.startDate || !reservation.value.endDate) return;
-    try {
-      const formattedStartDate = reservation.value.startDate + "T00:00:00";
-      const formattedEndDate = reservation.value.endDate + "T23:59:59";
+    const printReservationList = async () => {
+        if (!reservation.value.startDate || !reservation.value.endDate) return;
+        try {
+        const formattedStartDate = reservation.value.startDate + "T00:00:00";
+        const formattedEndDate = reservation.value.endDate + "T23:59:59";
   
-      const response = await axios.get(
-        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}`
-      );
+        const response = await axios.get(
+        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}/${stationId.value}/${chargerId.value}`
+    );
   
-      reservationList.value = response.data;
+    reservationList.value = response.data;
     } catch (error) {
-      alert("해당 날짜의 예약 조회에 실패했습니다.");
+        alert("해당 날짜의 예약 조회에 실패했습니다.");
     }
-  };
-  </script>
+};
+</script>
 <style>
 /* .reserve-date-container {
     display: flex;
@@ -197,11 +231,11 @@ const reservationStartDate = computed(() => {
 } */
 
 .reservation-go-info-title {
-  font-size: 30px; /* 원하는 폰트 크기 */
-  font-weight: bold; /* 폰트 두께 */
-  color: #333; /* 텍스트 색상 */
-  margin: 20px auto 5px;
-  white-space: nowrap;
+    font-size: 30px; 
+    font-weight: bold; 
+    color: #333; 
+    margin: 20px auto 5px;
+    white-space: nowrap;
 }
 
 /* 날짜 입력 필드 */
@@ -209,14 +243,14 @@ const reservationStartDate = computed(() => {
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-content: center; /* 가운데 정렬 */
-    background-color: #f9f9f9; /* 밝은 회색 배경 */
-    border: 1px solid #ddd; /* 얇은 테두리 */
-    border-radius: 10px; /* 둥근 모서리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
-    padding: 15px; /* 내부 여백 */
-    margin: 20px auto; /* 위아래 여백 */
-    width: 600px; /* 너비 80% */
+    justify-content: center; 
+    background-color: #f9f9f9;
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 20px auto;
+    width: 600px;
     box-sizing: border-box;
 }
 
@@ -224,13 +258,13 @@ const reservationStartDate = computed(() => {
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-content: center; /* 가운데 정렬 */
-    background-color: #f9f9f9; /* 밝은 회색 배경 */
-    border: 1px solid #ddd; /* 얇은 테두리 */
-    border-radius: 10px; /* 둥근 모서리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
-    padding: 15px; /* 내부 여백 */
-    margin: 20px auto; /* 위아래 여백 */
+    justify-content: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px; 
+    margin: 20px auto;
     width: 600px;
     box-sizing: border-box;
 }
@@ -280,7 +314,7 @@ const reservationStartDate = computed(() => {
   padding: 20px; /* 내부 여백 */
   margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
   border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 600px; /* 넓이를 화면의 80%로 설정 */
+  width: 600px; 
 }
 
 .reservation-list {
@@ -290,7 +324,8 @@ const reservationStartDate = computed(() => {
   padding: 20px; /* 내부 여백 */
   margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
   border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 600px; /* 넓이를 화면의 80%로 설정 */
+  width: 600px; 
+  overflow-y: auto; /* 스크롤 설정 */
 }
 
 .reservation-info-title, .reservation-list-title, .reservation-date-time-title,
@@ -322,9 +357,9 @@ const reservationStartDate = computed(() => {
   text-align: center;
 }
 
-/* 버튼에 마우스를 올렸을 때 색상 변경 */
+
 .reservation-button:hover, .reservation-list-button:hover {
-  background-color: #333; /* 어두운 회색 */
+  background-color: #333;
 }
 
 .minuteAlarm {

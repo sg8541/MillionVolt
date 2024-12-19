@@ -3,20 +3,26 @@
   <header id="header" class="flex items-center justify-between">
     <!-- 로고 -->
     <div class="logo" @click="reloadPage">
-      <img src="/public/images/logo2.png" alt="로고" style="width: 100px;">
     </div>
 
     <!-- 네비게이션 메뉴 -->
     <nav class="navigation">
-      <a href="#" class="nav-item">이용방법</a>
       <template v-if="isLoggedIn">
         <a href="#" class="nav-item">결제 및 예약</a>
-        <a href="#" class="nav-item">마이페이지</a>
+        <RouterLink :to="`/myinfo/dashboard/${id}`">
+          <button type="button" class="nav-item">마이페이지</button>
+      </RouterLink>
+      <RouterLink to="/logout">
         <a href="#" class="nav-item" @click="logout">로그아웃</a>
+        </RouterLink>
       </template>
       <template v-else>
+        <RouterLink to="/login">
         <a href="#" class="nav-item">로그인</a>
+      </RouterLink>
+        <RouterLink to="/agreement">
         <a href="#" class="nav-item">회원가입</a>
+        </RouterLink>
       </template>
     </nav>
 
@@ -80,6 +86,8 @@
 </template>
 
 <script setup>
+
+import { useAuthStore } from '@/stores/auth';
 import { onMounted, ref , watch, computed } from "vue";
 import { useWebSocketStore } from '@/stores/webSocketChargingStore';
 import { useAlarmWebSocketStore } from '@/stores/webSocketAlarmStore';
@@ -169,6 +177,11 @@ watch(
 );
 
 
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+const id = user.value.id;
+
+console.log("=====" + user.value.id);
 // 로그인 상태 관리
 const isLoggedIn = ref(false);
 
@@ -188,6 +201,7 @@ const reloadPage = () => {
 const logout = () => {
   console.log("로그아웃 실행");
   isLoggedIn.value = false;
+  
 };
 
 
@@ -241,7 +255,7 @@ const movePaymentPrice = () => {
 <style scoped>
 /* 헤더 스타일 */
 #header {
-  background-color: #333;
+  background-color: #1E2022;
   color: #000;
   display: flex;
   justify-content: space-between;
@@ -250,18 +264,20 @@ const movePaymentPrice = () => {
 }
 
 .logo {
+  left: 50%;
+  position: absolute;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
 .logo img {
-  height: 40px;
   margin-right: 10px;
 }
 
 .navigation {
   display: flex;
+  margin-left: auto;
   gap: 15px;
 }
 
@@ -277,13 +293,14 @@ const movePaymentPrice = () => {
 
 /* 알림창 스타일 */
 .alert-container {
-  position: relative;
+  position: absolute;
+  left: 20px;
 }
 
 .alert-box {
   position: absolute;
   top: 40px;
-  right: 0;
+  left: 0;
   width: 250px;
   background-color: #fff;
   border: 1px solid #ddd;

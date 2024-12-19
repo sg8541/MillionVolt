@@ -18,7 +18,10 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import Modal from "@/components/Modal.vue";
+
+const router = useRouter(); // Router 객체 생성
 
 const map = ref(null);
 const markers = ref([]); // 충전소 마커 리스트
@@ -94,11 +97,12 @@ const loadMarkers = async () => {
             map: map.value,
             title: `${station.name} (${station.availableCharger || 0}/${station.totalCharger || 0})`,
           });
-
+          
           // 마커 클릭 이벤트
           kakao.maps.event.addListener(marker, "click", () => {
             console.log(`마커 클릭됨: ${station.name}`);
-            openModal(station.stationId); // 클릭한 충전소 ID로 모달 열기
+            router.push({ name: "Reservation", params: { station_id: station.stationId } }); // 예약 페이지로 이동
+
           });
 
           markers.value.push(marker);
@@ -126,7 +130,7 @@ const initializeMap = () => {
   // 지도 설정
   map.value = new kakao.maps.Map(container, {
     center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본 서울 중심 좌표
-    level: 4,
+    level: 5,
   });
 
   geocoder.value = new kakao.maps.services.Geocoder();
@@ -146,6 +150,10 @@ const initializeMap = () => {
           position: coords,
           map: map.value,
           title: "현재 위치",
+          image: new kakao.maps.MarkerImage(
+            "/images/user-location-icon.png", // 사용자 위치 아이콘 경로
+            new kakao.maps.Size(32, 32)
+          ),
         });
 
         console.log("사용자 위치:", coords);

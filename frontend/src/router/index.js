@@ -76,7 +76,7 @@ const router = createRouter({
       component: ChargingStatus,
     },
     {
-      path: "/payPrice",
+      path: "/payprice",
       name: "PayPrice",
       component: PayPrice,
     },
@@ -104,6 +104,12 @@ const router = createRouter({
           component: () => import("../pages/[...all].vue"),
         },
       ],
+    },
+    {
+      path: "/Reservation/:station_id",
+      name: "Reservation",
+      component: () => import("../views/payment/Reservation.vue"),
+      props: true, // route params를 props로 전달
     },
     {
       path: "/Reservation",
