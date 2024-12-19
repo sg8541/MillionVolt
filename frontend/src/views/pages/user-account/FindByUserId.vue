@@ -114,7 +114,6 @@
     background-color: white;
     height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
   }
@@ -128,11 +127,10 @@
     border: 1px solid #C9D6DE;
     border-radius: 8px;
     text-align: center;
-    margin-bottom: 100px;
+    margin-bottom: 10%;
   }
 
   .header{
-    margin-top: 15%;
     text-align: center;
   }
 
@@ -188,19 +186,16 @@
   .verify-button {
     padding: 12px;
     height: 55px;
-    /* border: 1px solid #595959; */
     border-radius: 4px;
     font-size: 14px;
-    font-weight: 600;
-    background-color: #e0e0e0;
+    background-color: #C3C3C3;
     cursor: pointer;
     margin-top: 2px;
     color: #fff;
 }
   
   .verify-button:hover {
-    background-color: #52616a;
-    /* color:#fff; */
+    background-color: #52616A;
   }
   
   .submit-button {
@@ -212,6 +207,7 @@
     color: #fff;
     cursor: pointer;
     height: 65px;
+    margin-top:15px;
   }
   
   .submit-button:hover {

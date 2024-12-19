@@ -83,98 +83,98 @@ export default {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   height: 100vh;
   margin: 0;
   background-color: white;
 }
 
 .container {
-  width: 600px;
-  height: 500px;
+  width: 500px;
   background-color: #fff;
-  /* padding: 40px; */
-  border: 1px solid #ddd;
+  border: 1px solid #c9d6de;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   text-align: center;
-  border: 1px solid #ddd;
-  margin-bottom: 100px;
+  margin-bottom: 10%;
   align-content: center;
 
 }
 
+.container .content{
+  padding: 30px 24px 30px 24px;
+}
+
 .content {
   margin: 0 auto;
-  padding: 50px 60px 50px 60px;
-  width: 500px;
 }
 
 h2 {
   font-size: 28px;
-  font-weight: bold;
   margin-top: 10px;
-  margin-bottom: 50px;
-  color: #666;
+  margin-bottom: 48px;
+  color: #52616a;
 }
 
 .description {
-  font-size: 18px;
+  font-size: 16px;
   color: #666;
   line-height: 1.5;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .input-box {
-  width: 80%;
+  width: 100%;
   padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #c9d6de;
   border-radius: 5px;
-  margin-bottom: 30px;
-  height: 38px;
+  margin-bottom: 24px;
+  height: 60px;
+}
+
+.input-box:focus {
+  border: 2px solid #c9d6de;
 }
 
 .next-btn {
-  width: 84%;
+  width: 100%;
   padding: 12px;
-  background-color: #2c2c2c;
+  background-color: #52616a;
   font-size: 16px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  height: 60px;
+  height: 65px;
   color: white;
-  font-size: 24px;
-  font-weight: bold;
 }
 
 .next-btn:hover {
-  background-color: #4a4a4a;
+  background-color: #1E2022;
 }
 
 .footer-links {
-  margin-top: 30px;
+  margin-top: 22px;
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
 }
 
 .footer-links a {
-  color: #a4a4a4;
+  color: #666;
   font-size: 14px;
-  padding: 0 40px;
+  /* padding: 0 40px; */
   /* margin: 0 100px; */
   text-decoration: none;
 }
 
 .footer-links a:hover {
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  color:#1E2022;
 }
 
 .header {
-  margin-top: 15%;
   text-align: center;
 }
 

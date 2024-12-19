@@ -72,7 +72,7 @@ export default {
 /* 로그인 컨테이너 스타일 */
 .login-container {
   width: 500px;
-  height: 500px;
+  height: 450px;
   background-color: white;
   padding: 40px;
   border-radius: 8px;
