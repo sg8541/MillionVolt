@@ -179,9 +179,9 @@ watch(
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
-const id = user.value.id;
+//const id = user.value.id;
 
-console.log("=====" + user.value.id);
+//console.log("=====" + user.value.id);
 // 로그인 상태 관리
 const isLoggedIn = ref(false);
 
