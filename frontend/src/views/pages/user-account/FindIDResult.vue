@@ -1,12 +1,12 @@
 <template>
-    <div id="wrap">
+    <div class="wrap">
+      <div class="header">
+      <div class="logo">
+        <router-link to="/main">
+          <img src="images/logo.png" alt="백만볼트 로고">
+        </router-link>
+      </div>
       <div class="container">
-        <div class="logo">
-          <a href="../templates/main.html">
-            <img src="images/logo.png" alt="백만불트 로고" />
-          </a>
-        </div>
-  
         <div class="title">아이디 찾기 - 이메일 인증</div>
         <p class="description">고객님 정보와 일치하는 목록입니다.</p>
   
@@ -28,6 +28,7 @@
           </button>
         </div>
       </div>
+    </div>
     </div>
   </template>
   
@@ -73,28 +74,33 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
   }
   
   .container {
-    width: 600px;
-    height: 600px;
+    width: 500px;
+    height: 500px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px;
+    padding: 80px 30px 80px 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin-bottom: 10%;
+
   }
   
-  .logo img {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 150px;
-  }
+  .header {
+  margin-top: 10%;
+  text-align: center;
+}
+
+.logo img {
+  width: 150px;
+}
   
   .title {
     font-size: 28px;
@@ -111,8 +117,9 @@
     text-align: left;
     padding-left: 10px;
     width: 90%;
-    margin-top: 80px;
+    /* margin-top: 80px; */
     margin-bottom: 5px;
+    text-align: center;
   }
   
   .info-box {

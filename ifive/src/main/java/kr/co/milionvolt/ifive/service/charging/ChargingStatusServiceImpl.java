@@ -14,10 +14,11 @@ public class ChargingStatusServiceImpl implements ChargingStatusSerivce{
     private ChargingStatusMapper chargingStatusMapper;
 
     @Override
-    public ChargingStatusDTO chargingStatus(String userId, int reservationId) {
-        ChargingStatusDTO dto =  chargingStatusMapper.chargingStatus(userId,reservationId);
+    public ChargingStatusDTO chargingStatus(String userId, int reservationId, int stationId) {
+        ChargingStatusDTO dto =  chargingStatusMapper.chargingStatus(userId,reservationId,stationId);
         return dto;
     }
+
 
     @Override
     public void chargingUpdate(int carId, double carBattery) {

@@ -3,7 +3,7 @@
   <header id="header" class="flex items-center justify-between">
     <!-- 로고 -->
     <div class="logo" @click="reloadPage">
-      <img src="/public/images/logo2.png" alt="로고" style="width: 100px;">
+      <img src="/src/assets/images/logo/logo-yellow-white.png" alt="로고" style="width:100%;">
     </div>
 
     <!-- 네비게이션 메뉴 -->
@@ -11,58 +11,181 @@
       <a href="#" class="nav-item">이용방법</a>
       <template v-if="isLoggedIn">
         <a href="#" class="nav-item">결제 및 예약</a>
-        <a href="#" class="nav-item">마이페이지</a>
+        <RouterLink :to="`/myinfo/dashboard/${id}`">
+          <button type="button" class="nav-item">마이페이지</button>
+      </RouterLink>
+      <RouterLink to="/logout">
         <a href="#" class="nav-item" @click="logout">로그아웃</a>
+        </RouterLink>
       </template>
       <template v-else>
+        <RouterLink to="/login">
         <a href="#" class="nav-item">로그인</a>
+      </RouterLink>
+        <RouterLink to="/agreement">
         <a href="#" class="nav-item">회원가입</a>
+        </RouterLink>
       </template>
     </nav>
 
     <!-- 알림 아이콘 -->
     <div class="relative alert-container">
       <span class="icon cursor-pointer" @click="toggleAlertBox">🔔</span>
+
       <!-- 알림창 -->
       <div v-if="isAlertBoxVisible" class="alert-box">
         <div class="alert-header">
           <span>📢 알림</span>
           <button class="close-btn" @click="toggleAlertBox">X</button>
         </div>
-        <div class="alert-content">
-          <p>{{ alertMessage || "새로운 알림이 없습니다." }}</p>
-          <div v-if="currentSpeed" class="speed-indicator">
-            <label><strong>충전 속도: {{ currentSpeed }}</strong></label>
+
+        <div v-if="store.chargingData.chargerType" class="alert-content">
+          <p>{{ store.finishAlarm.message }}</p>
+          <div v-if="store.chargingData.chargerType" class="speed-indicator">
+            <label><strong>충전 속도: {{ store.chargingData.chargerType }}</strong></label>
             <div class="speed-bar">
               <div
                 class="speed-progress"
                 :style="{
-                  width: getSpeedPercentage(currentSpeed) + '%',
-                  backgroundColor: getSpeedColor(currentSpeed),
+                  width: getSpeedPercentage(currentBatteryPercent) + '%',
+                  backgroundColor: getSpeedColor(currentBatteryPercent),
                 }"
               ></div>
             </div>
+            <div>
+            {{ currentBatteryPercent }}%
+            </div>
+            <div v-if="currentBatteryPercent<100" @click="movePaymentPrice">
+              <label><strong>충전정보 보기</strong></label>
+            </div>
+            <div v-else @click="movePaymentPrice">
+              <label><strong>결제하러가기</strong></label>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="storeAlarm.alarm.message" class="alert-content">
+          <p>{{ storeAlarm.alarm.message }}</p>
+          <div v-if="storeAlarm.alarm.message !='새로운 알람이 없습니다.'" class="speed-indicator">
+            <label @click="showModal"><strong>충전하러가기</strong></label>
           </div>
         </div>
       </div>
+
     </div>
+    <div v-if="isModalVisible" class ="alert-modal" @click.self="hideModal">
+        <div class="modal-content">
+            
+            <img class="modal-image" src="/images/charger-info.png">
+            <h2>충전을 시작하시겠습니까?</h2>
+            <p>주의! 충전기를 꽂아 둔 상태여야 합니다. </p>
+            <button @click="moveCharginStatus" class="modal-click">충전시작</button>
+            <button @click="hideModal" class="modal-btn">취소</button>
+        </div>
+    </div>
+
   </header>
 </template>
 
 <script setup>
-import { ref } from "vue";
 
+import { useAuthStore } from '@/stores/auth';
+import { onMounted, ref , watch, computed } from "vue";
+import { useWebSocketStore } from '@/stores/webSocketChargingStore';
+import { useAlarmWebSocketStore } from '@/stores/webSocketAlarmStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const isAlertBoxVisible = ref(false);  
+
+const store = useWebSocketStore();
+const storeAlarm = useAlarmWebSocketStore();
+
+const isModalVisible = ref(false);
+
+
+storeAlarm.alarm = { message: "새로운 알람이 없습니다." };
+
+storeAlarm.alarm = storeAlarm.alarm || { message: null };
+store.finishAlarm = store.finishAlarm || { message: null };
+
+  onMounted(() => {
+    isAlertBoxVisible.value = false;
+    store.connectWebSocket();
+    storeAlarm.connectAlarmWebSocket()
+    console.log("온마운트");
+  });
+
+//   watch(
+//   () => store.chargingData.chargerType, // 감지할 값
+//   (newValue) => {
+//     console.log("변경된 chargerType 값:", newValue);
+//     if (newValue) {
+//       store.finishAlarm.message = "충전중";
+//     } else {
+//       store.finishAlarm.message = null;
+//     }
+//     console.log("store.finishAlarm.message:", store.finishAlarm.message);
+//     isAlertBoxVisible.value = true
+//   }
+// );
+
+watch(
+  () => storeAlarm.alarm.message,
+  (newValue) => {
+    console.log("새로운 알림 메시지:", newValue);
+    if (newValue && newValue !== "새로운 알람이 없습니다." && newValue !== null) {
+      isAlertBoxVisible.value = true; // 알림 창 표시
+    }else{
+      isAlertBoxVisible.value = false;
+    }
+  }
+);
+
+watch(
+  () => store.finishAlarm.message,
+  (newValue) => {
+    console.log("새로운 알림 메시지:", newValue);
+    if (newValue && newValue !== "새로운 알람이 없습니다.") {
+      isAlertBoxVisible.value = true; // 알림 창 표시
+    }
+  }
+);
+
+
+  // 알림창 토글
+const toggleAlertBox = () => {
+  isAlertBoxVisible.value = !isAlertBoxVisible.value;
+};
+
+
+
+const currentBatteryPercent = ref(0); 
+
+watch(
+  () => store.chargingData.batteryPercent,
+  (newValue) => {
+    console.log("업데이트된 배터리 퍼센트:", newValue);
+    currentBatteryPercent.value = newValue || 0; // 값이 없을 경우 0으로 처리
+    store.finishAlarm.message = "충전 중인 상태입니다.";
+    if(currentBatteryPercent.value == 100){
+      store.finishAlarm.message="충전 완료";
+      isAlertBoxVisible.value = true;
+    }
+  },
+  { immediate: true } // 처음 마운트 시에도 실행
+);
+
+
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+const id = user.value.id;
+
+console.log("=====" + user.value.id);
 // 로그인 상태 관리
 const isLoggedIn = ref(true);
 
-// 알림창 상태
-const isAlertBoxVisible = ref(false);
 
-// 알림 메시지 예시
-const alertMessage = ref("충전기 1번이 충전을 시작합니다.");
-
-// 충전 속도 예시
-const currentSpeed = ref("100kW");
 
 // 페이지 새로고침
 const reloadPage = () => {
@@ -73,54 +196,61 @@ const reloadPage = () => {
 const logout = () => {
   console.log("로그아웃 실행");
   isLoggedIn.value = false;
+  
 };
 
-// 알림창 토글
-const toggleAlertBox = () => {
-  isAlertBoxVisible.value = !isAlertBoxVisible.value;
-};
+
 
 // 충전 속도에 따른 퍼센트 반환
-const getSpeedPercentage = (speed) => {
-  switch (speed) {
-    case "7kW":
-      return 20;
-    case "50kW":
-      return 40;
-    case "100kW":
-      return 60;
-    case "200kW":
-      return 80;
-    case "300kW 이상":
-      return 100;
-    default:
-      return 0;
-  }
-};
+const getSpeedPercentage = (batteryPercent) => Math.min(batteryPercent, 100);
+
 
 // 충전 속도에 따른 색상 반환
-const getSpeedColor = (speed) => {
-  switch (speed) {
-    case "7kW":
-      return "#4caf50";
-    case "50kW":
-      return "#ffeb3b";
-    case "100kW":
-      return "#ff9800";
-    case "200kW":
-      return "#f44336";
-    case "300kW 이상":
-      return "#9c27b0";
-    default:
-      return "#ddd";
-  }
+const getSpeedColor = (percent) => {
+  if (percent < 20) return "#f44336"; // 빨간색
+  if (percent < 50) return "#ff9800"; // 노란색
+  if (percent < 80) return "#ffeb3b" ; // 주황색
+  return "#4caf50" ; // 녹색
 };
+
+const showModal = () => {
+    isModalVisible.value = true;
+}
+
+const hideModal = () => {
+    isModalVisible.value = false;
+};
+
+const moveCharginStatus = () => {
+  router.push({
+    name: 'ChargingStatus',
+    query: {
+      reservationId: storeAlarm.alarm.reservationId,
+      stationId:storeAlarm.alarm.stationId
+    },
+  }).then(() => {
+    storeAlarm.clearAlarmMessage();
+    window.location.reload(); // 페이지 새로고침 -> 웹소켓이 연결되어있으므로 리로딩.
+    // 웹소켓 세션 종료니 다시 연결함.(다른곳에선 쓰이면 안됨.)
+    
+  });
+  
+};
+
+const movePaymentPrice = () => {
+  router.push({
+    name:'ChargingStatus'
+  })
+}
+
+
+
 </script>
 
 <style scoped>
 /* 헤더 스타일 */
 #header {
-  background-color: #333;
+  background-color: #1E2022;
   color: #000;
   display: flex;
   justify-content: space-between;
@@ -135,7 +265,7 @@ const getSpeedColor = (speed) => {
 }
 
 .logo img {
-  height: 40px;
+  height: 60px;
   margin-right: 10px;
 }
 
@@ -223,5 +353,60 @@ const getSpeedColor = (speed) => {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+
+.alert-modal{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+.modal-btn {
+  margin-top: 15px;
+  padding: 8px 36px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modal-btn:hover {
+  background-color: #555;
+}
+.modal-image{
+    width: 50%;
+}
+.modal-click{
+  margin-top: 15px;
+  margin-right: 20px;
+  padding: 5px 16px;
+  background-color: #fff;
+  color: #333;
+  border: 3px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+.modal-click:hover {
+  background-color: #e6e6e6;
 }
 </style>

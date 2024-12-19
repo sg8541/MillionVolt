@@ -13,7 +13,7 @@ export const chargerStateChangeWebSocketStore = defineStore('chargeWebsocket',()
 
         
         socketCharger.value.onopen = () => {
-            const station_id = 1;
+            const station_id = 2;
             socketCharger.value.send(station_id);
         }
         

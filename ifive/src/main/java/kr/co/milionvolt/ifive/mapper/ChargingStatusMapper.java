@@ -27,8 +27,9 @@ public interface ChargingStatusMapper {
             " JOIN charge_speed csp " +
             " ON c.charger_speed_id = csp.charger_speed_id " +
             " WHERE u.user_id = #{userId} " +
-            " AND r.reservation_id = #{reservationId}")
-    public ChargingStatusDTO chargingStatus(String userId, int reservationId);
+            " AND r.reservation_id = #{reservationId} " +
+            " AND cs.station_id = #{stationId}")
+    public ChargingStatusDTO chargingStatus(String userId, int reservationId,int stationId);
 
     @Update( "UPDATE user_car SET  car_battery =#{carBattery} WHERE car_id=#{carId}")
     public void chargingUpdate(int carId, double carBattery);

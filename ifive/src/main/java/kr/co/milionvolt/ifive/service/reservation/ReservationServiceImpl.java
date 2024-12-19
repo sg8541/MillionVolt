@@ -58,6 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
                             reservationRedis.setStartTime(reservationDTO.getStartTime());
                             reservationRedis.setEndTime(reservationDTO.getEndTime());
                             reservationRedis.setUserId(reservationDTO.getUserId());
+                            reservationRedis.setStationId(reservationDTO.getStationId());
                             reservationRedisService.save(reservationRedis);
                         }
                 return message;

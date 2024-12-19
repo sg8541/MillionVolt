@@ -27,6 +27,7 @@ public class ReservationRedis implements Serializable {
     private LocalDateTime endTime;
 
     private int userId;
+    private int stationId;
 
     @TimeToLive
     private Long ttl;

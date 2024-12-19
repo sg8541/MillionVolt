@@ -8,6 +8,7 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         message: '',
         reservationId: '',
         startTime: '',
+        stationId:''
     });
 
     const isConnected = ref(false);
@@ -24,9 +25,11 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
 
         // 웹소켓 연결 성공 시
         socketAlarm.value.onopen = () => {
-        const userId = 'wogjsdl1244'; // 실제 사용자는 토큰을 디코딩해서 전달
-        socketAlarm.value.send(userId);
-        isConnected.value = true;
+            const token = localStorage.getItem('user');
+            const parsedToken = JSON.parse(token);
+            const userId = parsedToken.userId;
+            socketAlarm.value.send(userId);
+            isConnected.value = true;
         };
 
         // 메시지 수신 처리
@@ -35,6 +38,9 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         alarm.value.message = data.message;
         alarm.value.reservationId = data.reservationId;
         alarm.value.startTime = data.startTime;
+        alarm.value.stationId= data.stationId;
+
+        console.log(alarm.value.message);
         };
 
         // 에러 처리

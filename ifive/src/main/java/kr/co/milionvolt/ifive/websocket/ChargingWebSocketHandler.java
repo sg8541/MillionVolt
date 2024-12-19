@@ -34,6 +34,8 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String query = session.getUri().getQuery();
         String userId = getParameterFromQuery(query, "userId"); // userId 추출
+        System.out.println(userId);
+
         if (userId != null) {
             sessions.put(userId, session);
             System.out.println("웹소켓 연결됨. userId: " + userId);
@@ -70,7 +72,9 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 String query = session.getUri().getQuery();
                 String userId = getParameterFromQuery(query, "userId");
                 int reservationId = Integer.parseInt(getParameterFromQuery(query, "reservationId"));
-                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, reservationId);
+                int stationId = Integer.parseInt(getParameterFromQuery(query, "stationId"));
+                System.out.println(reservationId);
+                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, reservationId,stationId);
                 chargingStatusSerivce.chargingStatusInuse(dto.getChargerId(),dto.getStationId()); // 충전상태로 변환
                 double totalBattery = dto.getModelBattery();
                 double currentBattery = dto.getCarBattery(); // 현재 배터리 상태
@@ -138,11 +142,11 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                    "{\"batteryPercent\": %d, \"amount\": %.2f, \"chargingKwh\": %.2f, " +
                            "\"chargerType\": \"%s\", \"name\": \"%s\", \"address\": \"%s\", \"userId\": %s, \"username\": \"%s\", " +
                            "\"modelId\": %d, \"reservationId\": %d, \"stationId\": %d, \"carNumber\": \"%s\",\"pricePerKWh\": %.2f, " +
-                           " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f , \"message\": \"%s\"}",
+                           " \"expectAmount\": %.2f , \"estimatedTimeSeconds\": %.2f , \"message\": \"%s\" , \"chargerId\": %d }",
                    batteryPercent, dto.getTotalPay(), chargingKwh,
                    dto.getChargerSpeed(), dto.getName(), dto.getAddress(), dto.getId(),
                    dto.getUsername(), dto.getModelId(), dto.getReservationId(), dto.getStationId(), dto.getCarNumber(),
-                   dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds, dto.getMessage());
+                   dto.getPricePerKWh(),expectAmount,estimatedTimeSeconds, dto.getMessage(),dto.getChargerId());
            session.sendMessage(new TextMessage(status));
        }catch (Exception e){
            e.printStackTrace();

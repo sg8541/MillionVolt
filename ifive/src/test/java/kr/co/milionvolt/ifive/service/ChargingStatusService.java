@@ -11,12 +11,12 @@ public class ChargingStatusService {
     @Autowired
     private ChargingStatusSerivce chargingStatusSerivce;
 
-    @Test
-    public void test(){
-        String userId ="wogjsdl1244";
-        int reservationId =1;
-        ChargingStatusDTO dto =  chargingStatusSerivce.chargingStatus(userId,reservationId);
-        System.out.println(dto);
-
-    }
+//    @Test
+//    public void test(){
+//        String userId ="wogjsdl1244";
+//        int reservationId =1;
+//        ChargingStatusDTO dto =  chargingStatusSerivce.chargingStatus(userId,reservationId);
+//        System.out.println(dto);
+//
+//    }
 }

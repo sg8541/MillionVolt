@@ -1,27 +1,16 @@
 <template>
   <div class="login-page">
-    <a href="../templates/main.html">
-      <img src="images/logo.png" alt="Logo" class="logo" />
-    </a>
-
+    <router-link to="/main" class="logo-link">
+      <img src="images/logo.png" alt="백 만 볼트 로고" class="logo">
+    </router-link>
     <div class="login-container">
       <h2>백만볼트 로그인</h2>
       <form @submit.prevent="handleSubmit">
         <div class="input-group">
-          <input 
-            type="text" 
-            v-model="userId" 
-            placeholder="아이디를 입력해주세요." 
-            required 
-          />
+          <input type="text" v-model="userId" placeholder="아이디를 입력해주세요." required />
         </div>
         <div class="input-group">
-          <input 
-            type="password" 
-            v-model="password" 
-            placeholder="비밀번호를 입력해주세요." 
-            required 
-          />
+          <input type="password" v-model="password" placeholder="비밀번호를 입력해주세요." required />
         </div>
         <button type="submit" class="login-button">로 그 인</button>
         <div class="signup-link">
@@ -46,9 +35,9 @@ export default {
     };
   },
   setup() {
-  const authStore = useAuthStore()
-  return { authStore }
-},
+    const authStore = useAuthStore()
+    return { authStore }
+  },
   methods: {
     async handleSubmit() {
       // 로그인 로직 처리
@@ -68,17 +57,16 @@ export default {
   background-color: white;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   flex-direction: column;
 }
 
 /* 로고 스타일 */
 .logo {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 150px;
+    /* top: 5px;
+    left: 5px; */
+    width: 150px;
 }
 
 /* 로그인 컨테이너 스타일 */
@@ -90,7 +78,7 @@ export default {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  border: 1px solid #c4c4c4;
+  border: 1px solid #C9D6DE;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -99,8 +87,9 @@ export default {
 
 /* 제목 스타일 */
 h2 {
-  font-size: 36px;
+  font-size: 30px;
   margin-bottom: 50px;
+  color:#52616A;
 }
 
 /* 입력 그룹 스타일 */
@@ -115,9 +104,14 @@ h2 {
   width: 400px;
   height: 40px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #c9d6de;
   border-radius: 4px;
   font-size: 16px;
+}
+
+.input-group input:focus {
+  border: 2px solid #52616a;
+  border-radius: 4px;
 }
 
 /* 로그인 버튼 스타일 */
@@ -125,11 +119,11 @@ h2 {
   width: 400px;
   padding: 10px;
   height: 65px;
-  background-color: #0b0b0b;
+  background-color: #C3C3C3;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 26px;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s;
   margin-bottom: 20px;
@@ -137,7 +131,7 @@ h2 {
 }
 
 .login-button:hover {
-  background-color: #363636;
+  background-color: #52616A;
 }
 
 /* 회원가입 링크 스타일 */
@@ -154,7 +148,8 @@ h2 {
 }
 
 .signup-link a:hover {
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  color:#52616A;
 }
 
 .input-group input:focus {
