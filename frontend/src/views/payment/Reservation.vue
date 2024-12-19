@@ -3,7 +3,7 @@
 
     <div class="reservation-username-title">예약자</div>
     <div class="reservation-username">
-            
+        
     </div>
 
     <div class="reservation-address-title">주소</div>
@@ -20,7 +20,7 @@
 
     <div class="reservation-deposit-title">보증금</div>
     <div class="reservation-depotsit">
-        5.000원
+        <string>{{depositAmount}}원</string>
     </div>
 
     <div class="reserve-date-container-title">예약 날짜 및 시간</div>
@@ -49,11 +49,14 @@
     <!-- 예약 목록 -->
     <div class="reservation-list-title">예약 목록</div>
     <div class="reservation-list">
-            <div v-for="(reservation, index) in reservationList" :key="index">
-                <p>예약 번호: {{ reservation.reservationId }}</p>
-                <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
-                <br>
-            </div>
+        <div v-if="reservationList.length === 0">
+            <p>해당 날짜에 예약된 항목이 없습니다.</p>
+        </div>
+        <div v-else v-for="(reservation, index) in reservationList" :key="index">
+            <p>예약 번호: {{ reservation.reservationId }}</p>
+            <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
+            <br />
+        </div>
     </div>
     <div class="reservation-button-container">
         <button class="reservation-button" @click="reserve">예약</button>
@@ -65,7 +68,6 @@ import { onMounted } from "vue";
 import { ref, computed } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
-
 const route = useRoute();
 
 const chargerId = ref(null);
@@ -74,6 +76,7 @@ const chargerSpeed = ref(null);
 const stationName = ref(null);
 const stationAddress = ref(null);
 const stationId = ref(null);
+const depositAmount = ref(100);
 
 onMounted(() => {
     chargerId.value = route.query.chargerId;
@@ -82,10 +85,10 @@ onMounted(() => {
     stationId.value = route.query.stationId;
     stationName.value = route.query.stationName;
     stationAddress.value = route.query.stationAddress;
-    console.log('stationId:', stationId.value);
 })
 
 
+//날짜 시간 형식 변경
 function formatDate(timestamp) {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -160,7 +163,7 @@ const reserve = async () => {
             pay_method: "카카오페이",
             merchant_uid: `order_${Date.now()}`,
             name: "보증금 결제",
-            amount: 100,
+            amount: depositAmount.value,
         },
         async (rsp) => {
             if (rsp.success) {
@@ -170,8 +173,8 @@ const reserve = async () => {
                     const response = await axios.post(`http://localhost:8081/api/v1/reservation/${reservation.value.impUid}`, {
                         startTime: reservationStartDate.value.toISOString(),
                         endTime: reservationEndDate.value.toISOString(),
-                        stationId: stationId,
-                        chargerId: chargerId,
+                        stationId: stationId.value,
+                        chargerId: chargerId.value,
                         status: 'confirmed',
 
                     });
@@ -205,7 +208,7 @@ const reserve = async () => {
         const formattedEndDate = reservation.value.endDate + "T23:59:59";
   
         const response = await axios.get(
-        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}/${stationId}/${chargerId}`
+        `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}/${stationId.value}/${chargerId.value}`
     );
   
     reservationList.value = response.data;
@@ -322,7 +325,7 @@ const reserve = async () => {
   margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
   border: 1px solid #ccc; /* 얇은 테두리 */
   width: 600px; 
-  overflow-y: auto, /* 스크롤 설정 */
+  overflow-y: auto; /* 스크롤 설정 */
 }
 
 .reservation-info-title, .reservation-list-title, .reservation-date-time-title,
