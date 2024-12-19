@@ -17,13 +17,16 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private final ChargingStatusSerivce chargingStatusSerivce;
     private final UserService userService;
     private final ReservationRedisService reservationRedisService;
+    private final ChargerService chargerService;
     private final PenaltyService penaltyService;
 
-    public WebSocketConfig(ChargingStatusSerivce chargingStatusSerivce, UserService userService, ReservationRedisService reservationRedisService,  PenaltyService penaltyService) {
+
+    public WebSocketConfig(ChargingStatusSerivce chargingStatusSerivce, UserService userService, ReservationRedisService reservationRedisService, ChargerService chargerService, PenaltyService penaltyService, SimpMessagingTemplate simpMessagingTemplate, PenaltyService penaltyService1) {
         this.chargingStatusSerivce = chargingStatusSerivce;
         this.userService = userService;
         this.reservationRedisService = reservationRedisService;
-        this.penaltyService = penaltyService;
+        this.chargerService = chargerService;
+        this.penaltyService = penaltyService1;
     }
 
     @Override
@@ -33,7 +36,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
         registry.addHandler(new AlarmWebSocketHandler(userService, reservationRedisService, penaltyService), "/alarm")
                 .setAllowedOrigins("*");
+
+        registry.addHandler(new ChargeStateChangeWebSocketHandler(chargerService),"/chargerstatus")
+                .setAllowedOrigins("*");
+
     }
+
 }
 
 
