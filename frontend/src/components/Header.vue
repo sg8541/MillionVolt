@@ -9,9 +9,9 @@
     <nav class="navigation">
       <template v-if="isLoggedIn">
         <a href="#" class="nav-item">결제 및 예약</a>
-        <RouterLink :to="`/myinfo/dashboard/${id}`">
+        <!-- <RouterLink :to="`/myinfo/dashboard/${id}`">
           <button type="button" class="nav-item">마이페이지</button>
-      </RouterLink>
+      </RouterLink> -->
       <RouterLink to="/logout">
         <a href="#" class="nav-item" @click="logout">로그아웃</a>
         </RouterLink>
@@ -192,6 +192,7 @@ if(token){
   isLoggedIn.value = false;
 }
 
+
 // 페이지 새로고침
 const reloadPage = () => {
   window.location.reload();
@@ -204,11 +205,8 @@ const logout = () => {
   
 };
 
-
-
 // 충전 속도에 따른 퍼센트 반환
 const getSpeedPercentage = (batteryPercent) => Math.min(batteryPercent, 100);
-
 
 // 충전 속도에 따른 색상 반환
 const getSpeedColor = (percent) => {

@@ -107,27 +107,58 @@ public class ChargingStationController {
         List<ChargingStationVO> stations;
         int totalCount;
 
-        if (query != null && !query.isBlank()) {
-            // 검색어 적용
-            stations = chargingStationService.searchChargingStations(query, page, size);
-            totalCount = chargingStationService.countSearchResults(query); // 검색 결과 총 개수
-        } else if (chargerSpeedId != null) {
-            // 충전 속도 필터링
-            stations = chargingStationService.filterByChargeSpeed(chargerSpeedId, page, size);
-            totalCount = chargingStationService.countStationsByChargeSpeed(chargerSpeedId); // 필터링 총 개수
-        } else {
-            // 전체 조회
-            stations = chargingStationService.getAllChargingStations(page, size);
-            totalCount = chargingStationService.countAllChargingStations(); // 전체 충전소 총 개수
+        try {
+            // 충전소 필터링 로직
+            if (query != null && !query.isBlank()) {
+                stations = chargingStationService.searchChargingStations(query, page, size);
+                totalCount = chargingStationService.countSearchResults(query);
+            } else if (chargerSpeedId != null) {
+                stations = chargingStationService.filterByChargeSpeed(chargerSpeedId, page, size);
+                totalCount = chargingStationService.countStationsByChargeSpeed(chargerSpeedId);
+            } else {
+                stations = chargingStationService.getAllChargingStations(page, size);
+                totalCount = chargingStationService.countAllChargingStations();
+            }
+
+            // 충전소별 충전기 정보 추가
+            List<Map<String, Object>> stationsWithChargers = stations.stream()
+                    .map(station -> {
+                        Map<String, Object> stationWithChargers = new HashMap<>();
+                        stationWithChargers.put("station", station);
+
+                        // 충전소 ID를 기준으로 충전기 정보 가져오기
+                        List<ChargerDTO> chargers = chargerServiceImpl.getChargersByStationId(station.getStationId());
+                        stationWithChargers.put("chargers", chargers);
+
+                        // 사용 가능한 충전기 개수 계산
+                        long availableChargers = chargers.stream()
+                                .filter(charger -> charger.getChargerStatusId() == 1)
+                                .count();
+                        stationWithChargers.put("availableChargerCount", availableChargers);
+
+                        // 충전기 속도 데이터 추가
+                        stationWithChargers.put("chargeSpeedIds", chargers.stream()
+                                .map(ChargerDTO::getChargerSpeedId)
+                                .distinct()
+                                .toList()); // 중복 제거하여 속도 ID 리스트로 추가
+
+                        return stationWithChargers;
+                    }).toList();
+
+            // 응답 데이터 구성
+            Map<String, Object> response = new HashMap<>();
+            response.put("stations", stationsWithChargers);
+            response.put("totalCount", totalCount);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // 예외 처리
+            System.err.println("Error fetching stations or chargers: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyMap());
         }
-
-        // 응답 데이터 구성
-        Map<String, Object> response = new HashMap<>();
-        response.put("stations", stations);
-        response.put("totalCount", totalCount);
-        return ResponseEntity.ok(response);
     }
-
 
     // 5. 카카오 지도 상 마커 표시 데이터
     @GetMapping("/markers")

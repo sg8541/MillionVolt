@@ -43,7 +43,12 @@
           사용 가능한 충전기: {{ station.availableChargerCount || 0 }} / 
           {{ station.totalCharger || 0 }}
         </p>
-        <p>충전 속도: {{ station.chargeSpeed || "정보 없음" }}</p>
+        <p>충전 속도: 
+  {{ station.chargeSpeedIds && station.chargeSpeedIds.length > 0 
+    ? station.chargeSpeedIds.map(getSpeedText).join(", ") 
+    : "정보 없음" }}
+</p>
+
         <p>충전 요금: {{ station.pricePerKWh || "정보 없음" }}</p>
       </li>
     </ul>
@@ -121,6 +126,17 @@ const filterOptions = [
   { id: 5, name: "300kW 이상" },
 ];
 
+const getSpeedText = (chargerSpeedId) => {
+  switch (chargerSpeedId) {
+    case 1: return "7kW";
+    case 2: return "50kW";
+    case 3: return "100kW";
+    case 4: return "200kW";
+    case 5: return "300kW 이상";
+    default: return "알 수 없음";
+  }
+};
+
 // 총 페이지 수 계산
 const totalPages = computed(() => {
   return totalItems.value > 0 ? Math.ceil(totalItems.value / itemsPerPage) : 0;
@@ -149,15 +165,17 @@ const fetchStations = async (page) => {
 
     // 데이터 업데이트
     stations.value = data.stations.map((station) => {
-      // 충전기 데이터가 없는 경우 빈 배열로 처리
-      const chargers = station.chargers || [];
-      return {
-        ...station,
-        availableChargerCount: calculateAvailableChargers(chargers),
-      };
-    });
-    totalItems.value = data.totalCount;
+  return {
+    ...station.station, // 충전소 데이터
+    chargers: station.chargers || [], // 충전기 데이터
+    availableChargerCount: station.availableChargerCount || 0, // 사용 가능한 충전기 개수
+    chargeSpeedIds: station.chargeSpeedIds || [], // 충전 속도 ID 리스트 추가
+  };
+});
 
+
+
+    totalItems.value = data.totalCount;
     console.log("Stations Updated:", stations.value);
     console.log("Total Items Updated:", totalItems.value);
   } catch (error) {
