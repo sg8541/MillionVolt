@@ -56,17 +56,22 @@
 import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { chargerStateChangeWebSocketStore } from "@/stores/webSocketChargerChangeStore";
+import { chargerStateChangeWebSocketStore } from '@/stores/webSocketChargerChangeStore';
 
-
+const token = localStorage.getItem('user');
 const store = chargerStateChangeWebSocketStore();
 
 onMounted(()=> {
-    store.connectCharger();
+  store.connectCharger(props.stationId);
+  console.log("온마운트 됨?")
 });
 
+store.chargeState.forEach = (item,index) => {
+  console.log(item);
+}
+
 onBeforeUnmount(()=>{
-    store.disconnectWebSocket();
+  store.disconnectWebSocket();
 })
 
 
@@ -154,6 +159,7 @@ const startCharging = async (chargerId, chargerType, chargerSpeed) => {
     // 상태 업데이트 완료 후 페이지 이동
     //await updateChargerStatus(chargerId);
 
+    if(token) {
     router.push({
       path: "/Reservation",
       query: {
@@ -166,6 +172,13 @@ const startCharging = async (chargerId, chargerType, chargerSpeed) => {
         stationAddress: stationInfo.value.address || "정보 없음",
       },
     });
+  }else{
+    alert('로그인 해주세요');
+    router.push({
+      path:'/login',
+      name:'Login'
+    })
+  } 
   } catch (error) {
     alert("충전기 상태 업데이트 중 문제가 발생했습니다. 다시 시도해주세요.");
     console.error("Error in startCharging:", error);
@@ -207,24 +220,27 @@ watch(
   { immediate: true }
 );
 
-
-// watch(
-//   () => store.chargeState, // 웹소켓에서 받아온 충전기 상태 배열
-//   (newChargeState) => {
-//     if (newChargeState && Array.isArray(newChargeState)) {
-//       // chargers 배열 업데이트
-//       chargers.value = chargers.value.map((charger) => {
-//         const updatedCharger = newChargeState.find(
-//           (state) => state.chargerId === charger.chargerId
-//         );
-//         return updatedCharger
-//           ? { ...charger, chargerStatusId: updatedCharger.chargerStatusId }
-//           : charger;
-//       });
-//     }
-//   },
-//   { deep: true, immediate: true }
-// );
+watch(
+  () => store.chargeState,
+  (newChargeState) => {
+    if (newChargeState && Array.isArray(newChargeState)) {
+      chargers.value = chargers.value.map((charger) => {
+        const updatedCharger = newChargeState.find(
+          (state) => state.chargerId === charger.chargerId
+        );
+        if (updatedCharger) {
+          // 새 객체로 반환하여 새로운 참조를 생성
+          return {
+            ...charger,
+            chargerStatusId: updatedCharger.chargerStatusId,
+          };
+        }
+        return charger;
+      });
+    }
+  },
+  { deep: true, immediate: true }
+);
 </script>
 
 <style scoped>

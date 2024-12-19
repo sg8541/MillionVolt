@@ -73,9 +73,8 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 String userId = getParameterFromQuery(query, "userId");
                 int reservationId = Integer.parseInt(getParameterFromQuery(query, "reservationId"));
                 int stationId = Integer.parseInt(getParameterFromQuery(query, "stationId"));
-                System.out.println(reservationId);
-                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, reservationId,stationId);
-                chargingStatusSerivce.chargingStatusInuse(dto.getChargerId(),dto.getStationId()); // 충전상태로 변환
+                ChargingStatusDTO dto = chargingStatusSerivce.chargingStatus(userId, reservationId, stationId);
+                chargingStatusSerivce.chargingStatusInuse(dto.getChargerId(), stationId); // 충전상태로 변환
                 double totalBattery = dto.getModelBattery();
                 double currentBattery = dto.getCarBattery(); // 현재 배터리 상태
                 originCurrentBattery = dto.getCarBattery(); // 초기 현재 배터리 상태
@@ -101,7 +100,6 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                                     "{\"message\": \"충전이 완료되었습니다.\"}"
                             );
                             session.sendMessage(new TextMessage(status));
-                            System.out.println("100% 충전완료, 세션 종료.");
                             payMap.clear();
                             break; // 충전 완료 시 루프 종료
                         }
