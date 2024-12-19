@@ -39,7 +39,6 @@ package kr.co.milionvolt.ifive.controller.reservation;
 import kr.co.milionvolt.ifive.domain.reservation.ReservationListDTO;
 import kr.co.milionvolt.ifive.service.reservation.ReservationListServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
