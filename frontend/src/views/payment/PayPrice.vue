@@ -1,6 +1,6 @@
 <template>
     <div class="pay-info-title">결제 상세 정보</div>
-    
+        <!--주소, 상호명-->
         <div class="pay-info-place-title">주소</div>
         <div class="pay-info-place-print">
             <div v-if="stationInfo">
@@ -9,6 +9,7 @@
             </div>
         </div>
 
+        <!--결제금액-->
         <div class="pay-info-amount-title">결제금액</div>
         <div class="pay-info-amount-print">
             <label>이용요금</label>
@@ -21,12 +22,13 @@
             <strong class="finaleAmount-label">{{finaleAmount}}</strong>
         </div>
 
-
+        <!--충전 시간 및 충전량-->
         <div class="pay-info-hourAndCharge-title">충전 시간 및 충전량</div>
         <div class="pay-info-hourAndCharge-print">
             <h5>{{formatDate(chargeStart)}} ~ {{formatDate(chargeEnd)}}</h5>
         </div>
 
+        <!--결제버튼-->
         <div>
             <button class="pay-button" @click="payment">결제하기</button>
         </div>
@@ -39,6 +41,7 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
+//날짜와 시간 형식 변환
 function formatDate(timestamp) {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -58,10 +61,7 @@ const chargeStart = ref(null);
 const chargeEnd = ref(null);
 const chargingKwh = ref(null);
 const chargerId = ref(null);
-
-const finaleAmount = computed(() => {
-    return amount.value - penaltyAmount.value; // 총 결제 금액 계산
-});
+const stationInfo = ref(null);
 
 onMounted(() => {
 console.log('route.query:', route.query);
@@ -76,6 +76,7 @@ console.log('route.query:', route.query);
     stationAdress();
 });
 
+//충전소 주소 및 상호명
 const stationAdress = async() => {
     const stationInfoResponse = await axios.get(
         `http://localhost:8081/api/v1/payment/printStationInfo/${stationId}`
@@ -83,7 +84,7 @@ const stationAdress = async() => {
     stationInfo.value = stationInfoResponse.data;
 };
 
-const stationInfo = ref(null);
+//결제 API
 const payment = () => {
     const imp = window.IMP;
     imp.init("imp50578251");
@@ -92,8 +93,8 @@ const payment = () => {
         pg: "html5_inicis",
         pay_method: "카카오페이",
         merchant_uid: "order_" + new Date().getTime(),
-        amount: 100,
-        name: "람보르기니 우라칸",
+        amount: amount.value - 5000,
+        // name: "람보르기니 우라칸",
     },
     async (rsp) => {
         if (rsp.success) {
@@ -126,7 +127,6 @@ const payment = () => {
     );
 };
 </script>
-
 <style>
 .amount-label {
     padding-left: 450px;
