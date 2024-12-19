@@ -138,6 +138,7 @@ const router = createRouter({
     {
       path:"/client",
       name:'StompClient',
+      component:StompClient
     },
   ],
 });
