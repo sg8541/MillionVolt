@@ -72,7 +72,13 @@ const checkEmail = async () => {
       }
     } catch (error) {
       // 오류 처리
-      alert('이메일 중복 확인 중 오류가 발생하였습니다.' + error);
+      if(error.response.status==400){
+        statusClass.value = 'error';
+        statusMessage.value = '사용할 수 없는 이메일입니다.';
+      }
+      else{
+        alert('이메일 중복 확인 중 오류가 발생하였습니다.' + error);
+      }
     }
   }
 };
