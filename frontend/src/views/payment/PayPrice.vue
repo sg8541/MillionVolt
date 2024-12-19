@@ -78,7 +78,7 @@ console.log('route.query:', route.query);
 
 const stationAdress = async() => {
     const stationInfoResponse = await axios.get(
-        `http://localhost:8081/api/v1/payment/printStationInfo/2`
+        `http://localhost:8081/api/v1/payment/printStationInfo/${stationId}`
     )
     stationInfo.value = stationInfoResponse.data;
 };
