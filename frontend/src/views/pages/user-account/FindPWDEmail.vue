@@ -9,7 +9,8 @@
 
       <div class="container">
         <div class="title">비밀번호 찾기 - 이메일 인증</div>
-        <p class="description"># 아이디 : {{ userId }}</p>
+        <p class="description">본인확인 이메일과 입력한 이메일이 같아야,<br>인증번호를 받을 수 있습니다.</p>
+        <p class="description2"># 아이디 : <span class="description3">{{ userId }}</span></p>
 
         <form class="form" @submit.prevent="handleSubmit">
           <input type="text" class="input-field" placeholder="이름을 입력해주세요." v-model="username" required />
@@ -112,18 +113,16 @@ export default {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
   height: 100vh;
   margin: 0;
   background-color: white;
 }
 
 .container {
-  width: 600px;
-  height: 600px;
+  width: 500px;
   background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
+  padding: 30px 24px 28px 24px;
+  border: 1px solid #c9d6de;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -132,14 +131,10 @@ export default {
 }
 
 .header {
-  margin-top: 20%;
   text-align: center;
 }
 
 .logo img {
-  /* position: absolute; */
-  /* top: 5px;
-  left: 5px; */
   width: 150px;
 }
 
@@ -148,17 +143,28 @@ export default {
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 30px;
+  color:#52616a;
 }
 
 .description {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+.description2 {
   font-size: 16px;
   color: #666;
   line-height: 1.5;
-  margin-top: 100px;
   margin-bottom: 10px;
   text-align: left;
   padding-left: 10px;
   width: 90%;
+}
+.description2 .description3{
+  color: #52616A;
+  font-weight: 600;
 }
 
 .form {
@@ -171,11 +177,19 @@ export default {
   width: 100%;
   height: 60px;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #c9d6de;
   border-radius: 4px;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 16px;
 }
+
+input{
+  outline: none;
+}
+
+.input-field:focus {
+    border: 2px solid #52616A;
+  }
+
 
 .email-row {
   display: flex;
@@ -187,34 +201,35 @@ export default {
 }
 
 .verify-button {
-  padding: 12px;
-  height: 46px;
-  border: 1px solid #595959;
-  border-radius: 4px;
-  font-size: 12px;
-  background-color: #ededed;
-  cursor: pointer;
-  margin-top: 10px;
+    padding: 12px;
+    height: 55px;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #C3C3C3;
+    cursor: pointer;
+    margin-top: 2px;
+    color: #fff;
 }
-
-.verify-button:hover {
-  background-color: #e0e0e0;
-}
+  
+  .verify-button:hover {
+    background-color: #52616A;
+  }
 
 .submit-button {
-  padding: 12px;
-  background-color: #0b0b0b;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #fff;
-  cursor: pointer;
-  height: 65px;
-}
+    padding: 12px;
+    background-color: #52616A;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    height: 65px;
+    margin-top:15px;
+  }
 
-.submit-button:hover {
-  background-color: #464646;
-}
+  .submit-button:hover {
+    background-color: #1E2022;
+  }
 
 .submit-button:disabled {
   cursor: not-allowed;

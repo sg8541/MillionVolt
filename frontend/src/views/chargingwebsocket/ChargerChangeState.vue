@@ -64,7 +64,7 @@ const chargerSpeedId = ref('');
 const stationId = ref('');
 
 onMounted(()=> {
-    store.connectCharger();
+    store.connectCharger(1);
     
 });
 

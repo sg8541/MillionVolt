@@ -114,25 +114,22 @@
     background-color: white;
     height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
   }
   
   .container {
     width: 500px;
-    height: 600px;
     background-color: #fff;
-    padding: 20px;
+    padding: 30px 24px 28px 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #C9D6DE;
     border-radius: 8px;
     text-align: center;
-    margin-bottom: 100px;
+    margin-bottom: 10%;
   }
 
   .header{
-    margin-top: 15%;
     text-align: center;
   }
 
@@ -144,7 +141,7 @@
     font-size: 28px;
     font-weight: bold;
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 48px;
     color: #52616a;
   }
   
@@ -152,13 +149,13 @@
     font-size: 16px;
     color: #666;
     line-height: 1.5;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
   }
   
   .form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    /* gap: 10px; */
   }
   
   .input-field {
@@ -184,38 +181,36 @@
   .email-input {
     flex: 1;
   }
-  
+
   .verify-button {
     padding: 12px;
-    height: 46px;
-    /* border: 1px solid #595959; */
+    height: 55px;
     border-radius: 4px;
     font-size: 14px;
-    font-weight: 600;
-    background-color: #e0e0e0;
+    background-color: #C3C3C3;
     cursor: pointer;
-    margin-top: 10px;
-    color:#fff;
-  }
+    margin-top: 2px;
+    color: #fff;
+}
   
   .verify-button:hover {
-    background-color: #C9D6DE;
-    /* color:#fff; */
+    background-color: #52616A;
   }
   
   .submit-button {
     padding: 12px;
-    background-color: #C3C3C3;
+    background-color: #52616A;
     border: none;
     border-radius: 4px;
     font-size: 16px;
     color: #fff;
     cursor: pointer;
     height: 65px;
+    margin-top:15px;
   }
   
   .submit-button:hover {
-    background-color: #52616A;
+    background-color: #1E2022;
   }
   
   .submit-button:disabled {
@@ -223,11 +218,11 @@
   }
   
   .links {
-    margin-top: 30px;
+    margin-top: 22px;
     display: flex;
     justify-content: space-between;
     font-size: 14px;
-    color: #666;
+    color: #a4a4a4;
   }
   
   .links a {

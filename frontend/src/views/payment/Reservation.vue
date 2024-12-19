@@ -1,69 +1,86 @@
 <template>
-    <div class="reservation-go-info-title">예약 진행 및 예약 상세 정보</div>
+    <div class="wrap">
+        <div class="header">
+      <div class="logo">
+        <router-link to="/main">
+          <img src="images/logo.png" alt="백만볼트 로고">
+        </router-link>
+      </div>
+        <div class="container">
+            <div class="reservation-go-info-title">예약 진행 및 예약 상세 정보</div>
+            <div class="reservation-username-title">예약자</div>
+            <div class="reservation-content">
 
-    <div class="reservation-username-title">예약자</div>
-    <div class="reservation-username">
-        <div v-if="username">{{ username }}</div>
-    </div>
+            </div>
+            <div class="reservation-address-title">상호명</div>
+            <div class="reservation-content">
+                <string>{{ stationName }}</string>
+            </div>
 
-    <div class="reservation-address-title">주소</div>
-    <div class="reservation-address">
-        <string>{{stationAddress}} &nbsp; {{stationName}}</string>            
-    </div>
 
-    <div class="reservation-chargerType-title">충전기 타입</div>
-    <div class="reservation-chargerType">
-        <string>{{chargerType}}</string>
-        <br>
-        <string>{{chargerSpeed}}</string>
-    </div>
+            <div class="reservation-address-title">주소</div>
+            <div class="reservation-content">
+                <string>{{ stationAddress }}</string>
+            </div>
 
-    <div class="reservation-deposit-title">보증금</div>
-    <div class="reservation-depotsit">
-        <string>{{depositAmount}}원</string>
-    </div>
+            <div class="reservation-chargerType-title">충전기 타입</div>
+            <div class="reservation-content">
+                <string>{{ chargerType }}</string>
+                <br>
+                <string>{{ chargerSpeed }}</string>
+            </div>
 
-    <div class="reserve-date-container-title">예약 날짜 및 시간</div>
-    <div class="reserve-date-container">
-        <!--날짜 설정-->
-        <div class="date-container">
-            <label for="reservation-start-date">시작 날짜</label>
-            <input type="date" id="reservation-start-date" v-model="reservation.startDate" @change="printReservationList" />
+            <div class="reservation-deposit-title">보증금</div>
+            <div class="reservation-content">
+                <string>{{ depositAmount }}원</string>
+            </div>
 
-            <span>-</span>
+            <div class="reserve-date-container-title">예약 날짜 및 시간</div>
+            <div class="reserve-date-container">
+                <div class="date-container">
+                    <label for="reservation-start-date">시작 날짜</label>
+                    <input type="date" id="reservation-start-date" v-model="reservation.startDate"
+                        @change="printReservationList" />
 
-            <label for="reservation-end-date">종료 날짜</label>
-            <input type="date" id="reservation-end-date" v-model="reservation.endDate" @change="printReservationList" />
+                    <span>-</span> <!-- 구분선 -->
+
+                    <label for="reservation-end-date">종료 날짜</label>
+                    <input type="date" id="reservation-end-date" v-model="reservation.endDate"
+                        @change="printReservationList" />
+                </div>
+
+                <div class="time-container">
+                    <label for="reservation-start-time">시작 시간</label>
+                    <input type="time" id="reservation-start-time" v-model="reservation.startTime" :step="300"
+                        @blur="validateTime('startTime')" />
+
+                    <span>-</span> <!-- 구분선 -->
+
+                    <label for="reservation-end-time">종료 시간</label>
+                    <input type="time" id="reservation-end-time" v-model="reservation.endTime" :step="300"
+                        @blur="validateTime('endTime')" />
+                </div>
+                <h5 class="minuteAlarm">시간은 5분 단위로 예약이 가능합니다.</h5>
+            </div>
+            <!-- 예약 목록 -->
+            <div class="reservation-list-title">예약 목록</div>
+            <div class="reservation-list">
+                <div v-if="reservationList.length === 0">
+                    <p>해당 날짜에 예약된 항목이 없습니다.</p>
+                </div>
+                <div v-else v-for="(reservation, index) in reservationList" :key="index">
+                    <p>예약 번호: {{ reservation.reservationId }}</p>
+                    <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
+                    <br />
+                </div>
+            </div>
+            <div class="reservation-button-container">
+                <button class="reservation-button" @click="reserve">예약</button>
+            </div>
         </div>
-        
-        <!--시간 설정-->
-        <div class="time-container">
-            <label for="reservation-start-time">시작 시간</label>
-            <input type="time" id="reservation-start-time" v-model="reservation.startTime" :step="300" @blur="validateTime('startTime')" />
+    </div>
+    </div>
 
-            <span>-</span>
-
-            <label for="reservation-end-time">종료 시간</label>
-            <input type="time" id="reservation-end-time" v-model="reservation.endTime" :step="300" @blur="validateTime('endTime')" />
-        </div>
-        <h5 class="minuteAlarm">시간은 5분 단위로 예약이 가능합니다.</h5>
-    </div>
-    
-    <!-- 예약 목록 -->
-    <div class="reservation-list-title">예약 목록</div>
-    <div class="reservation-list">
-        <div v-if="reservationList.length === 0">
-            <p>해당 날짜에 예약된 항목이 없습니다.</p>
-        </div>
-        <div v-else v-for="(reservation, index) in reservationList" :key="index">
-            <p>예약 번호: {{ reservation.reservationId }}</p>
-            <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
-            <br />
-        </div>
-    </div>
-    <div class="reservation-button-container">
-        <button class="reservation-button" @click="reserve">예약</button>
-    </div>
 </template>
 
 <script setup>
@@ -238,11 +255,52 @@
     };
 </script>
 <style>
+
+.wrap {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    background-color: white;
+}
+
+.container {
+    width: 650px;
+    background-color: #fff;
+    border: 1px solid #969696;
+    padding: 30px 24px 28px 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    align-content: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 10%;
+}
+
+.logo img {
+  width: 150px;
+}
+
+/* .reserve-date-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+} */
+
 .reservation-go-info-title {
-    font-size: 30px; 
-    font-weight: bold; 
-    color: #333; 
-    margin: 20px auto 5px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #52616A;
+    margin: 10px 0px 48px 0px;
     white-space: nowrap;
 }
 
@@ -251,14 +309,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-content: center; 
-    background-color: #f9f9f9;
-    border: 1px solid #ddd; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #C9D6DE;
+    border-radius: 10px;
     padding: 15px;
     margin: 20px auto;
-    width: 600px;
     box-sizing: border-box;
 }
 
@@ -267,114 +323,169 @@
     align-items: center;
     gap: 10px;
     justify-content: center;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+    background-color: #fff;
+    border: 1px solid #C9D6DE;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 15px; 
+    padding: 15px;
     margin: 20px auto;
-    width: 600px;
     box-sizing: border-box;
 }
 
 /* 구분선 */
-.date-container span, .time-container span {
+.date-container span,
+.time-container span {
     margin: 0 10px;
     font-size: 18px;
 }
 
 /* 레이블 스타일 */
-.date-container label, .time-container label {
+.date-container label,
+.time-container label {
     margin-right: 10px;
     font-weight: bold;
+    color:#52616A;
 }
 
 /* 날짜 및 시간 입력 필드 스타일 */
-.date-container input, .time-container input {
+.date-container input,
+.time-container input {
     width: 150px;
-    padding: 5px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #ccc;
     box-sizing: border-box;
+    height: 40px;
+    background-color: #efefef;
+    color:#52616A;
 }
 
 /* 포커스 시 스타일 */
-.date-container input:focus, .time-container input:focus {
-    border-color: #007BFF;
+.date-container input:focus,
+.time-container input:focus {
+    border-color: #c9d6de;
     outline: none;
 }
 
-.reservation-address, .reservation-username {
-  background-color: #ffffff; /* 컨테이너 배경색 */
-  border-radius: 10px; /* 모서리를 둥글게 */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
-  padding: 20px; /* 내부 여백 */
-  margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
-  border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 600px; /* 넓이를 화면의 80%로 설정 */
+.reservation-content {
+    border: 1px solid #C9D6DE;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    height: 60px;
+
 }
 
-.reservation-chargerType, .reservation-depotsit {
-  background-color: #ffffff; /* 컨테이너 배경색 */
-  border-radius: 10px; /* 모서리를 둥글게 */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
-  padding: 20px; /* 내부 여백 */
-  margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
-  border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 600px; 
+.reservation-address,
+.reservation-username {
+    background-color: #ffffff;
+    /* 컨테이너 배경색 */
+    border-radius: 10px;
+    /* 모서리를 둥글게 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* 부드러운 그림자 효과 */
+    padding: 20px;
+    /* 내부 여백 */
+    /* 세로 간격 + 중앙 정렬 */
+    border: 1px solid #ccc;
+    /* 얇은 테두리 */
+    /* width: 600px; 넓이를 화면의 80%로 설정 */
+}
+
+.reservation-chargerType,
+.reservation-depotsit {
+    background-color: #ffffff;
+    /* 컨테이너 배경색 */
+    border-radius: 10px;
+    /* 모서리를 둥글게 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* 부드러운 그림자 효과 */
+    padding: 20px;
+    /* 내부 여백 */
+    margin: 15px auto;
+    /* 세로 간격 + 중앙 정렬 */
+    border: 1px solid #ccc;
+    /* 얇은 테두리 */
+    /* width: 600px;  */
 }
 
 .reservation-list {
-  background-color: #ffffff; /* 컨테이너 배경색 */
-  border-radius: 10px; /* 모서리를 둥글게 */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
-  padding: 20px; /* 내부 여백 */
-  margin: 15px auto; /* 세로 간격 + 중앙 정렬 */
-  border: 1px solid #ccc; /* 얇은 테두리 */
-  width: 600px; 
-  overflow-y: auto; /* 스크롤 설정 */
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0px 22px 0px;
+    border: 1px solid #C9D6DE;
+    overflow-y: auto;
+    color:#52616A;
+
 }
 
-.reservation-info-title, .reservation-list-title, .reservation-date-time-title,
-.reserve-date-container-title, .reservation-address-title, .reservation-chargerType-title,
-.reservation-deposit-title, .reservation-username-title{
-  font-size: 24px; /* 원하는 폰트 크기 */
-  font-weight: bold; /* 폰트 두께 */
-  color: #333; /* 텍스트 색상 */
-  padding-left: 190px;
-  margin-bottom: 5px; /* 아래쪽 마진 추가 */
-  margin-top: 20px;
-  margin-left: calc(15vw + 0px);
-  white-space: nowrap;
+p{
+    margin: 0px;
+    padding:0px;
+}
+
+string{
+    margin-top:2px;
+    color:#52616A;
+}
+.reservation-info-title,
+.reservation-list-title,
+.reservation-date-time-title,
+.reserve-date-container-title,
+.reservation-address-title,
+.reservation-chargerType-title,
+.reservation-deposit-title,
+.reservation-username-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: #1E2022;
+    /* padding-left: 190px; */
+    margin-bottom: 5px;
+    margin-top: 20px;
+    /* margin-left: calc(15vw + 0px); */
+    white-space: nowrap;
+    /* float: left; */
+    display: flex;
 }
 
 .reservation-button {
-  background-color: black; /* 배경색 검은색 */
-  color: white; /* 텍스트 색상 흰색 */
-  border: none; /* 기본 테두리 제거 */
-  padding: 10px 20px; /* 여백 설정 (상하, 좌우) */
-  font-size: 16px; /* 폰트 크기 */
-  font-weight: bold; /* 텍스트 굵게 */
-  border-radius: 10px; /* 모서리 둥글게 */
-  cursor: pointer; /* 마우스를 올렸을 때 포인터 모양 */
-  transition: background-color 0.3s ease; /* 배경색 변화 애니메이션 */
-  width: 600px;
-  margin: 0 auto; /* 가로축 가운데 정렬 */
-  display: block; /* block 속성으로 설정 */
-  text-align: center;
+    background-color: #52616A;
+    width: 100%;
+    height: 68px;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    /* 여백 설정 (상하, 좌우) */
+    font-size: 17px;
+    /* 폰트 크기 */
+    font-weight: bold;
+    /* 텍스트 굵게 */
+    border-radius: 10px;
+    /* 모서리 둥글게 */
+    cursor: pointer;
+    /* 마우스를 올렸을 때 포인터 모양 */
+    transition: background-color 0.3s ease;
+    /* 배경색 변화 애니메이션 */
+    /* width: 600px; */
+    margin: 0 auto;
+    /* 가로축 가운데 정렬 */
+    display: block;
+    /* block 속성으로 설정 */
+    text-align: center;
 }
 
 
-.reservation-button:hover, .reservation-list-button:hover {
-  background-color: #333;
+.reservation-button:hover,
+.reservation-list-button:hover {
+    background-color: #1E2022;
 }
 
 .minuteAlarm {
     color: rgb(238, 110, 110);
-    margin-left: calc(28vw + 0px);
+    /* margin-left: calc(28vw + 0px); */
     margin-bottom: 30px;
-    white-space: nowrap;   
+    white-space: nowrap;
+    font-size: 16px;
+    text-align: center;
 }
 </style>
-

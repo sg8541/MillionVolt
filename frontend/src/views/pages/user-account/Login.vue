@@ -12,7 +12,7 @@
         <div class="input-group">
           <input type="password" v-model="password" placeholder="비밀번호를 입력해주세요." required />
         </div>
-        <button type="submit" class="login-button">로 그 인</button>
+        <button type="submit" class="login-button">로  그  인</button>
         <div class="signup-link">
           <router-link to="/find-id">아이디 찾기</router-link>
           <router-link to="/find-password">비밀번호 찾기</router-link>
@@ -62,6 +62,10 @@ export default {
   flex-direction: column;
 }
 
+form{
+  width: 100%;
+}
+
 /* 로고 스타일 */
 .logo {
     /* top: 5px;
@@ -72,9 +76,8 @@ export default {
 /* 로그인 컨테이너 스타일 */
 .login-container {
   width: 500px;
-  height: 500px;
   background-color: white;
-  padding: 40px;
+  padding: 30px 24px 28px 24px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -87,22 +90,22 @@ export default {
 
 /* 제목 스타일 */
 h2 {
-  font-size: 30px;
-  margin-bottom: 50px;
+  font-size: 28px;
+  margin-top: 10px;
+  margin-bottom: 48px;
   color:#52616A;
 }
 
 /* 입력 그룹 스타일 */
 .input-group {
   margin-bottom: 10px;
-  width: 100%;
   display: flex;
   justify-content: center;
 }
 
 .input-group input {
-  width: 400px;
-  height: 40px;
+  width: 100%;
+  height: 60px;
   padding: 10px;
   border: 1px solid #c9d6de;
   border-radius: 4px;
@@ -116,35 +119,35 @@ h2 {
 
 /* 로그인 버튼 스타일 */
 .login-button {
-  width: 400px;
+  width: 100%;
   padding: 10px;
-  height: 65px;
-  background-color: #C3C3C3;
+  height: 68px;
+  background-color: #52616A;
   color: white;
   border: none;
   border-radius: 4px;
   font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin-bottom: 22px;
+  margin-top: 15px;
 }
 
 .login-button:hover {
-  background-color: #52616A;
+  background-color: #1E2022;
 }
 
 /* 회원가입 링크 스타일 */
 .signup-link {
-  margin-top: 20px;
+  display: flex;
   font-size: 14px;
-  text-align: center;
+  justify-content: space-between;
 }
 
 .signup-link a {
   color: #a4a4a4;
   text-decoration: none;
-  margin: 0 30px;
+  /* margin: 0 30px; */
 }
 
 .signup-link a:hover {
