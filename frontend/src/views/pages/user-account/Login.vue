@@ -119,7 +119,7 @@ h2 {
   width: 400px;
   padding: 10px;
   height: 65px;
-  background-color: #C3C3C3;
+  background-color: #52616A;
   color: white;
   border: none;
   border-radius: 4px;
@@ -131,7 +131,7 @@ h2 {
 }
 
 .login-button:hover {
-  background-color: #52616A;
+  background-color: #1E2022;
 }
 
 /* 회원가입 링크 스타일 */

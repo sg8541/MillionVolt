@@ -72,21 +72,21 @@
     background-color: white;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     height: 100vh;
     margin: 0;
   }
   
   .container {
     width: 500px;
-    height: 500px;
+    height: 400px;
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid #C9D6DE;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 80px 30px 80px 30px;
+    padding: 30px 24px 24px 24px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-bottom: 10%;
@@ -94,7 +94,6 @@
   }
   
   .header {
-  margin-top: 10%;
   text-align: center;
 }
 
@@ -106,29 +105,30 @@
     font-size: 28px;
     font-weight: bold;
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 48px;
+    color: #52616a;
   }
   
   .description {
     font-size: 16px;
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #666;
     line-height: 1.5;
     text-align: left;
     padding-left: 10px;
     width: 90%;
     /* margin-top: 80px; */
-    margin-bottom: 5px;
+    margin-bottom: 24px;
     text-align: center;
   }
   
   .info-box {
-    width: 90%;
+    width: 100%;
     height: 180px;
-    border: 1px solid #ddd;
+    border: 1px solid #c9d6de;
     border-radius: 8px;
     padding: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
   }
@@ -146,42 +146,40 @@
   }
   
   .info-text {
-    color: #444;
+    color: #1E2022;
     font-size: 16px;
     font-weight: bold;
   }
   
   .buttons {
-    width: 90%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
   }
   
   button {
-    width: 48%;
+    width: 49%;
     padding: 15px;
     font-size: 16px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
   }
   
   .login-button {
-    background-color: #1f1e1e;
+    background-color: #52616a;
     color: white;
-    border: 1px solid #ddd;
   }
   
   .password-button {
-    background-color: #969696;
+    background-color: #52616a;
     color: white;
-    border: 1px solid #ddd;
   }
   
   button:hover {
     opacity: 0.9;
+    background-color: #1E2022;
   }
   </style>
   
