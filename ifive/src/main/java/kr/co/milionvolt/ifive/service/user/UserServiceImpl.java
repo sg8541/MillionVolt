@@ -166,4 +166,10 @@ public class UserServiceImpl implements UserService {
         return id;
     }
 
+    @Override
+    public boolean updateUserCarBattery(Integer id, String carBettery) {
+        boolean result = userMapper.updateUserCarBattery(id, carBettery);
+        return result;
+    }
+
 }

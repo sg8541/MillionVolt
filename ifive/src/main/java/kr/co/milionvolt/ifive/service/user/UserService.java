@@ -41,4 +41,6 @@ public interface UserService {
 
     boolean updateUserInfo(UpdateUserInfoDTO infoDTO);
     public int selectUserId(String userId); // 예약번호 조회 알림때 사용하는 메서드
+
+    boolean updateUserCarBattery(Integer id, String carBettery);
 }

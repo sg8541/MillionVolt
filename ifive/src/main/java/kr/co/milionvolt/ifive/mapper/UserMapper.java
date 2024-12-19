@@ -190,4 +190,8 @@ public interface UserMapper {
     @Select(" SELECT id FROM user where user_id=#{userId}")
     public Integer selectFindId(String userId);
 
+    @Update("update user_car " +
+            "set car_battery = #{carBattery} " +
+            "where car_id = #{carId}")
+    boolean updateUserCarBattery(Integer carId, String carBattery);
 }

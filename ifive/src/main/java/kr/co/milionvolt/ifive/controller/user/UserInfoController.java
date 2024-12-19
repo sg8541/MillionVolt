@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -89,6 +90,21 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("정보 수정 중 문제가 발생하였습니다.");
         }
     }
+
+    // 내 차 수정(차 배터리)
+    @PutMapping("/car/{id}")
+    public ResponseEntity<?> updateUserCarBatteryAndChargerType(@PathVariable Integer id,
+                                                                @RequestBody Map<String, String> request) {
+
+        String carBattery = request.get("carBattery");
+        boolean success = userService.updateUserCarBattery(id, carBattery);
+        if(success) {
+            return ResponseEntity.status(HttpStatus.OK).body("배터리와 충전 선호타입이 성공적으로 변경되었습니다.");
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("정보 수정 중 문제가 발생하였습니다.");
+        }
+    }
+
 
 
     // 예약 리스트 조회
