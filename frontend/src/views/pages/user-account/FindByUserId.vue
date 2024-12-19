@@ -120,9 +120,8 @@
   
   .container {
     width: 500px;
-    height: 545px;
     background-color: #fff;
-    padding: 30px 24px 24px 24px;
+    padding: 30px 24px 28px 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #C9D6DE;
     border-radius: 8px;
@@ -223,7 +222,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 14px;
-    color: #666;
+    color: #a4a4a4;
   }
   
   .links a {

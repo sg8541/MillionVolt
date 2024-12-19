@@ -102,7 +102,7 @@ export default {
 }
 
 .container .content{
-  padding: 30px 24px 30px 24px;
+  padding: 30px 24px 28px 24px;
 }
 
 .content {
@@ -133,8 +133,10 @@ h2 {
   height: 60px;
 }
 
-.input-box:focus {
-  border: 2px solid #c9d6de;
+
+.input-box input:focus {
+  outline: none;
+  border: 2px solid #52616A;
 }
 
 .next-btn {
@@ -158,14 +160,11 @@ h2 {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: #666;
 }
 
 .footer-links a {
-  color: #666;
+  color: #a4a4a4;
   font-size: 14px;
-  /* padding: 0 40px; */
-  /* margin: 0 100px; */
   text-decoration: none;
 }
 

@@ -79,18 +79,16 @@
   
   .container {
     width: 500px;
-    height: 400px;
     background-color: #fff;
     border: 1px solid #C9D6DE;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 24px 24px 24px;
+    padding: 30px 24px 28px 24px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-bottom: 10%;
-
   }
   
   .header {
@@ -111,20 +109,18 @@
   
   .description {
     font-size: 16px;
-    /* font-weight: bold; */
     color: #666;
     line-height: 1.5;
     text-align: left;
     padding-left: 10px;
     width: 90%;
-    /* margin-top: 80px; */
     margin-bottom: 24px;
     text-align: center;
   }
   
   .info-box {
     width: 100%;
-    height: 180px;
+    height: 140px;
     border: 1px solid #c9d6de;
     border-radius: 8px;
     padding: 20px;
