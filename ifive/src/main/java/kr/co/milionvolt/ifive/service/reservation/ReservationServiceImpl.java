@@ -39,9 +39,7 @@ public class ReservationServiceImpl implements ReservationService {
         try {
             if(reservationMapper.checkConflictReservation(reservationDTO) != 0) {
                 message = "이미 예약된 시간이 있습니다. 시간을 확인해주세요";
-            } else if(reservationMapper.checkConflictReservationPlusFifteen(reservationDTO) != 0) {
-                message =  "이미 예약된 시간의 15분 전후는 예약을 할 수 없습니다.";
-            } else if(reservationMapper.checkConflictReservation(reservationDTO) == 0 && reservationMapper.checkConflictReservationPlusFifteen(reservationDTO) == 0 && payment != null) {
+            } else if(reservationMapper.checkConflictReservation(reservationDTO) == 0 && payment != null) {
                 reservationDTO.setCreatedAt(LocalDateTime.now());
 
                 ZonedDateTime koreaStartTime = reservationDTO.getStartTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
