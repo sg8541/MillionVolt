@@ -97,7 +97,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                             currentBattery = totalBattery;
                             chargingStatusSerivce.chargingUpdate(carId,currentBattery);
                             String status = String.format(
-                                    "{\"message\": \"충전이 완료되었습니다.\"}"
+                                    "{\"message\": \"충전 완료\"}"
                             );
                             session.sendMessage(new TextMessage(status));
                             payMap.clear();
