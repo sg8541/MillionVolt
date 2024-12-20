@@ -19,11 +19,11 @@ const tabs = [
     icon: 'bx-lock-open',
     tab: 'security',
   },
-  {
-    title: '내 차 정보',
-    icon: 'bx-car',
-    tab: 'mycar',
-  },
+  // {
+  //   title: '내 차 정보',
+  //   icon: 'bx-car',
+  //   tab: 'mycar',
+  // },
 ]
 </script>
 
@@ -63,9 +63,9 @@ const tabs = [
       </VWindowItem>
 
       <!-- Notification -->
-      <VWindowItem value="mycar">
+      <!-- <VWindowItem value="mycar">
         <AccountSettingsNotification />
-      </VWindowItem>
+      </VWindowItem> -->
     </VWindow>
   </div>
 </template>

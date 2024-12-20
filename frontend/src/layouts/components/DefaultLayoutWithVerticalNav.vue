@@ -47,7 +47,7 @@ onMounted(()=>{
 
         <NavbarThemeSwitcher class="me-2" />
 
-        <UserProfile />
+        <!-- <UserProfile /> -->
       </div>
     </template>
 

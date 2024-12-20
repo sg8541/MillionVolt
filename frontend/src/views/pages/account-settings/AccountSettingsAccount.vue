@@ -255,6 +255,7 @@ onMounted(() => {
    text-align: center;
   }
   
+
   /* 파란색 버튼 */
   .blue-btn {
    background-color: blue;
@@ -265,17 +266,18 @@ onMounted(() => {
    background-color: #003366;
   }
   
+  /* 회색 버튼
   /* 회색 버튼 */
-  /* 회색 버튼 */
-  .gray-btn {
-   background-color: gray;
-   color: white;
+  /* .gray-btn {
+   background-color: #52616A;
+   color: white; */
    /* 글자 컬러를 화이트로 설정 */
-  }
-  
-  .gray-btn:hover {
-   background-color: #4f4f4f;
-  }
+  /* }
+   */
+  /* .gray-btn:hover {
+   background-color: #1E2022;
+   color:#fff; 
+  } */
   
   .yellow-btn {
    background-color: #FEE500;

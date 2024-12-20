@@ -83,7 +83,7 @@ onMounted(() => {
     console.log('route.query:', route.query);
     userId.value = route.query.userId;
     stationId.value = route.query.stationId;
-    reservationId.value = route.query.reservationId;
+    //reservationId.value = route.query.reservationId;
     chargeStart.value = route.query.chargeStart;
     chargeEnd.value = route.query.chargeEnd;
     chargerId.value = route.query.chargerId;
@@ -136,6 +136,8 @@ const payment = () => {
         } catch (error) {
             console.error("서버 전송 실패:", error);
         }
+    }
+}
     );
 };
 </script>

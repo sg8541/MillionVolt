@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('user', JSON.stringify(this.user))
 
         // 로그인 성공 시 리디렉션
-        router.push('/myinfo/dashboard/'+this.user.id) // 원하는 페이지로 변경 가능
+        router.push('/main') // 원하는 페이지로 변경 가능
       } catch (error) {
         if (error.response && error.response.data) {
           this.errorMessage = error.response.data
@@ -47,7 +47,8 @@ export const useAuthStore = defineStore('auth', {
         this.user = null
         localStorage.removeItem('accessToken')
         localStorage.removeItem('user')
-        router.push('/login')
+        // router.push('/login')
+        window.location.reload()
       }
     },
     async refreshAccessToken() {
