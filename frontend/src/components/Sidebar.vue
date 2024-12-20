@@ -9,7 +9,7 @@
         class="search-input"
         @keyup.enter="fetchStations(1)"
       />
-      <button @click="fetchStations(1)">검색</button>
+      <button class="search-button" @click="fetchStations(1)">검색</button>
     </div>
 
     <!-- 필터링 버튼 -->
@@ -173,6 +173,8 @@ const fetchStations = async (page) => {
   };
 });
 
+
+
     totalItems.value = data.totalCount;
     console.log("Stations Updated:", stations.value);
     console.log("Total Items Updated:", totalItems.value);
@@ -245,8 +247,18 @@ fetchStations(1);
 .search-input {
   flex: 1;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #C9D6DE;
   border-radius: 4px;
+}
+
+.search-button {
+  border: 1px solid #C9D6DE;
+  border-radius: 4px;
+  border-color: #C9D6DE;
+}
+
+.search-button:hover {
+  background-color: #C9D6DE;
 }
 
 .filter-options {
@@ -268,10 +280,14 @@ fetchStations(1);
   box-sizing: border-box; /* 패딩 포함한 크기 계산 */
 }
 
+.filter-button:hover {
+  background-color: #C9D6DE;
+}
+
 .filter-button.active {
-  background-color: #007bff;
+  background-color: #52616a;
   color: #fff;
-  border-color: #007bff;
+  border-color: #52616a;
 }
 
 .station-item {
@@ -285,7 +301,7 @@ fetchStations(1);
 }
 
 .station-item:hover {
-  background: #f0f0f0;
+  background: #E3E3E3;
 }
 .pagination {
   display: flex;
@@ -304,7 +320,7 @@ fetchStations(1);
 }
 
 .pagination button.active {
-  background-color: #007bff;
+  background-color: #52616a;
   color: #fff;
   font-weight: bold;
   cursor: not-allowed;

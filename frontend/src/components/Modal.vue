@@ -268,7 +268,7 @@ watch(
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #f00;
+  background: #1E2022;
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -281,11 +281,16 @@ watch(
 .action-button {
   margin-top: 10px;
   padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
+  background-color: #C3C3C3;
+  color: #333;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #666666;
+  color: #F0F5F9;
 }
 
 .action-button:disabled {
