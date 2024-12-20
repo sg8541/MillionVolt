@@ -37,7 +37,7 @@
         class="station-item"
         @click="openModal(station.stationId)"
       >
-        <p class="font-bold">{{ station.name }}</p>
+        <p class="font-bold" style="font-size: larger; font-weight: bold; color: #52616A;">{{ station.name }}</p>
         <p>주소: {{ station.address }}</p>
         <p>
           사용 가능한 충전기: {{ station.availableChargerCount || 0 }} / 
@@ -246,15 +246,24 @@ fetchStations(1);
 
 .search-input {
   flex: 1;
+  background-color: #fff;
   padding: 8px;
   border: 1px solid #C9D6DE;
   border-radius: 4px;
+}
+
+.search-input:focus {
+  outline: none;
+  border: 1px solid #52616a;
 }
 
 .search-button {
   border: 1px solid #C9D6DE;
   border-radius: 4px;
   border-color: #C9D6DE;
+  background-color: #52616a;
+  color: #fff;
+  width: 20%;
 }
 
 .search-button:hover {
