@@ -9,7 +9,7 @@
         class="search-input"
         @keyup.enter="fetchStations(1)"
       />
-      <button @click="fetchStations(1)">검색</button>
+      <button class="search-button" @click="fetchStations(1)">검색</button>
     </div>
 
     <!-- 필터링 버튼 -->
@@ -37,7 +37,7 @@
         class="station-item"
         @click="openModal(station.stationId)"
       >
-        <p class="font-bold">{{ station.name }}</p>
+        <p class="font-bold" style="font-size: larger; font-weight: bold; color: #52616A;">{{ station.name }}</p>
         <p>주소: {{ station.address }}</p>
         <p>
           사용 가능한 충전기: {{ station.availableChargerCount || 0 }} / 
@@ -173,6 +173,8 @@ const fetchStations = async (page) => {
   };
 });
 
+
+
     totalItems.value = data.totalCount;
     console.log("Stations Updated:", stations.value);
     console.log("Total Items Updated:", totalItems.value);
@@ -244,9 +246,28 @@ fetchStations(1);
 
 .search-input {
   flex: 1;
+  background-color: #fff;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #C9D6DE;
   border-radius: 4px;
+}
+
+.search-input:focus {
+  outline: none;
+  border: 1px solid #52616a;
+}
+
+.search-button {
+  border: 1px solid #C9D6DE;
+  border-radius: 4px;
+  border-color: #C9D6DE;
+  background-color: #52616a;
+  color: #fff;
+  width: 20%;
+}
+
+.search-button:hover {
+  background-color: #C9D6DE;
 }
 
 .filter-options {
@@ -268,10 +289,14 @@ fetchStations(1);
   box-sizing: border-box; /* 패딩 포함한 크기 계산 */
 }
 
+.filter-button:hover {
+  background-color: #C9D6DE;
+}
+
 .filter-button.active {
-  background-color: #007bff;
+  background-color: #52616a;
   color: #fff;
-  border-color: #007bff;
+  border-color: #52616a;
 }
 
 .station-item {
@@ -285,7 +310,7 @@ fetchStations(1);
 }
 
 .station-item:hover {
-  background: #f0f0f0;
+  background: #E3E3E3;
 }
 .pagination {
   display: flex;
@@ -304,7 +329,7 @@ fetchStations(1);
 }
 
 .pagination button.active {
-  background-color: #007bff;
+  background-color: #52616a;
   color: #fff;
   font-weight: bold;
   cursor: not-allowed;
