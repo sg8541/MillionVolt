@@ -143,7 +143,7 @@ const payment = () => {
 };
 
 </script>
-<style>
+<style scoped>
 .wrap {
     font-family: Arial, sans-serif;
     display: flex;
