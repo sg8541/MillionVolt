@@ -3,6 +3,7 @@
   <header id="header" class="flex items-center justify-between">
     <!-- 로고 -->
     <div class="logo" @click="reloadPage">
+      <img src="/src/assets/images/logo/logo-yellow-white.png" alt="로고" style="width:100%;">
     </div>
 
     <!-- 네비게이션 메뉴 -->
@@ -271,6 +272,7 @@ const handleLogout = async () => {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
+  height: 65px;
 }
 
 .logo {
@@ -282,6 +284,7 @@ const handleLogout = async () => {
 }
 
 .logo img {
+  height: 60px;
   margin-right: 10px;
 }
 

@@ -11,7 +11,7 @@
       <!-- 충전소 기본 정보 -->
       <div class="station-info">
         <h2>{{ stationInfo.name || "정보 없음" }}</h2>
-        <p>{{ stationInfo.address || "정보 없음" }}</p>
+        <p >{{ stationInfo.address || "정보 없음" }}</p>
         <p>
           사용 가능한 충전기: 
           {{ availableChargersCount }} / {{ chargers.length || 0 }}
@@ -91,7 +91,7 @@ const emit = defineEmits(["close"]);
 // 데이터 저장
 const stationInfo = ref({});
 const chargers = ref([]);
-const defaultImage = "/images/default-station.png";
+const defaultImage = "https://ssyenc.co.kr/file/record/815/%EA%B0%80%EB%9D%BD%EC%8C%8D%EC%9A%A91%EC%B0%A8%20%EC%95%84%ED%8C%8C%ED%8A%B8.jpg";
 
 // Close modal
 const closeModal = () => {
@@ -241,6 +241,22 @@ watch(
 </script>
 
 <style scoped>
+.station-info{
+  margin-top: 10px;
+  
+}
+
+.station-info h2{
+  margin-bottom: 20px;
+}
+
+.station-info p {
+  margin-bottom: 10px;
+}
+
+.station-image img{
+  width: 100%;
+}
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -252,13 +268,20 @@ watch(
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  
+}
+
+b, strong{
+  color: #52616a;
 }
 
 .modal-container {
-  background: #fff;
+  background: #f0f5f9;
   width: 80%;
-  max-width: 800px;
-  padding: 20px;
+  max-width: 770px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 24px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -268,7 +291,7 @@ watch(
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #f00;
+  background: #1E2022;
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -281,11 +304,16 @@ watch(
 .action-button {
   margin-top: 10px;
   padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
+  background-color: #C3C3C3;
+  color: #333;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #52616a;
+  color: #F0F5F9;
 }
 
 .action-button:disabled {
@@ -301,10 +329,10 @@ watch(
 
 .charger-block {
   flex: 1 0 21%;
-  background: #f0f0f0;
+  background: #fff;
   padding: 10px;
   text-align: center;
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #c9d6de;
 }
 </style>
