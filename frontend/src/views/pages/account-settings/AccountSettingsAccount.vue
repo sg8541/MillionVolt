@@ -194,7 +194,7 @@ onMounted(() => {
       </VCardText>
      </VCard>
     </VCol>
-  
+
     <!-- 이메일 중복 검사 모달 -->
     <div v-if="isModalVisible" class="modal-overlay">
      <div class="modal">
@@ -261,11 +261,11 @@ onMounted(() => {
    background-color: blue;
    color: white;
   }
-  
+
   .blue-btn:hover {
    background-color: #003366;
   }
-  
+
   /* 회색 버튼
   /* 회색 버튼 */
   /* .gray-btn {
@@ -276,7 +276,7 @@ onMounted(() => {
    */
   /* .gray-btn:hover {
    background-color: #1E2022;
-   color:#fff; 
+   color:#fff;
   } */
   
   .yellow-btn {
@@ -354,6 +354,5 @@ onMounted(() => {
    color: red;
   }
   </style>
-  
   
   

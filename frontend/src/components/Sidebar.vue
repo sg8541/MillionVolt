@@ -49,7 +49,7 @@
     : "정보 없음" }}
 </p>
 
-        <p>충전 요금: {{ station.pricePerKWh || "정보 없음" }}</p>
+        <p>충전 요금: {{ station.pricePerKWh+'원' || "정보 없음" }}</p>
       </li>
     </ul>
     <p v-else>조건에 맞는 충전소가 없습니다.</p>
@@ -172,8 +172,6 @@ const fetchStations = async (page) => {
     chargeSpeedIds: station.chargeSpeedIds || [], // 충전 속도 ID 리스트 추가
   };
 });
-
-
 
     totalItems.value = data.totalCount;
     console.log("Stations Updated:", stations.value);
