@@ -40,5 +40,5 @@ public interface ChargingStatusMapper {
 
     @Update(" UPDATE charger SET charger_status_id = 1" +
             " WHERE charger_id=#{chargerId} AND station_id=#{stationId}")
-    public void chargingStatusAvailable(int chargerId, int stationId); // 출차시 상태변화???
+    public void chargingStatusAvailable(int chargerId, int stationId);
 }

@@ -105,41 +105,45 @@ const payment = () => {
     const imp = window.IMP;
     imp.init("imp50578251");
     imp.request_pay(
-    {
-        pg: "html5_inicis",
-        pay_method: "카카오페이",
-        merchant_uid: "order_" + new Date().getTime(),
-        amount: amount.value,
-        // name: "람보르기니 우라칸",
-    },
-    async (rsp) => {
-        if (rsp.success) {
-        console.log("결제 성공", rsp);
-          // 결제 성공 시 서버로 결제 정보 전송
-        try {
-            const response = await axios.post(
-            `http://localhost:8081/api/v1/payment/save/${rsp.imp_uid}`,
-            {
-                imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
-                paymentMethod: rsp.pay_method, // 결제 방법
-                paymentStatus: rsp.status, // 결제 상태 (성공/실패)
-                amount: rsp.paid_amount, // 결제 금액
-                userId: userId.value, // 유저의 아이디 
-                reservationId: reservationId.value, // 예약번호
-                stationId: stationId.value, // 충전소 번호
-                chargerId: chargerId.value, // 충전기 번호 
-                chargeStart: chargeStart.value, // 충전 시작 시간
-                chargeEnd:  chargeEnd.value,// 충전 종료 시간
-            });
-            window.location.href = "/";
-            console.log("서버 응답:", response.data);
-        } catch (error) {
-            console.error("서버 전송 실패:", error);
+        {
+            pg: "html5_inicis",
+            pay_method: "카카오페이",
+            merchant_uid: "order_" + new Date().getTime(),
+            paid_amount: amount.value,
+            // name: "람보르기니 우라칸",
+        },
+        async (rsp) => {
+            if (rsp.success) {
+                console.log("결제 성공", rsp);
+                // 결제 성공 시 서버로 결제 정보 전송
+                try {
+                    const response = await axios.post(
+                        `http://localhost:8081/api/v1/payment/save/${rsp.imp_uid}`,
+                        {
+                            imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
+                            paymentMethod: rsp.pay_method, // 결제 방법
+                            paymentStatus: rsp.status, // 결제 상태 (성공/실패)
+                            amount: rsp.paid_amount, // 결제 금액
+                            userId: userId.value, // 유저의 아이디 
+                            reservationId: reservationId.value, // 예약번호
+                            stationId: stationId.value, // 충전소 번호
+                            chargerId: chargerId.value, // 충전기 번호 
+                            chargeStart: chargeStart.value, // 충전 시작 시간
+                            chargeEnd: chargeEnd.value, // 충전 종료 시간
+                        }
+                    );
+                    window.location.href = "/";
+                    console.log("서버 응답:", response.data);
+                } catch (error) {
+                    console.error("서버 전송 실패:", error);
+                }
+            }
         }
     }
 }
     );
 };
+
 </script>
 <style>
 .wrap {
