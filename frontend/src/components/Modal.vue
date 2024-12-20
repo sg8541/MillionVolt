@@ -20,12 +20,11 @@
 
       <!-- 충전소 상세 정보 -->
       <div class="station-details">
-        <p><strong>사업자:</strong> {{ stationInfo.operator || "정보 없음" }}</p>
-        <p><strong>사용 제한:</strong> {{ stationInfo.restrictions || "정보 없음" }}</p>
-        <p><strong>운영 시간:</strong> {{ stationInfo.operatingHours || "정보 없음" }}</p>
-        <p><strong>전화번호:</strong> {{ stationInfo.phoneNumber || "정보 없음" }}</p>
+        <p><strong>기종 정보:</strong> {{ stationInfo.deviceType || "정보 없음" }}</p>
+        <p><strong>시설 구분:</strong> {{ stationInfo.facilityType || "정보 없음" }}</p>
+        <p><strong>충전 금액:</strong> {{ stationInfo.pricePerKWh+'원' || "정보 없음" }}</p>
       </div>
-
+      
       <!-- 충전기 블록 -->
       <div class="chargers-container">
         <div
@@ -156,8 +155,6 @@ const updateChargerStatus = async (chargerId) => {
 // 충전 시작 함수: 충전 예약 페이지로 이동
 const startCharging = async (chargerId, chargerType, chargerSpeed) => {
   try {
-    // 상태 업데이트 완료 후 페이지 이동
-    //await updateChargerStatus(chargerId);
 
     if(token) {
     router.push({
