@@ -529,11 +529,10 @@
 }
 
 .terms-container {
-  width: 800px;
-  height: 630px;
+  width: 600px;
   background: #fff;
-  border: 1px solid #ccc;
-  padding: 20px;
+  border: 1px solid #C9D6DE;
+  padding: 30px 24px 28px 24px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 100px;
@@ -543,7 +542,7 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
-  border-bottom: 3px solid #969696;
+  border-bottom: 3px solid #52616A;
   margin-top: 20px;
   padding-bottom: 30px;
 }
@@ -586,7 +585,7 @@
   padding: 15px;
   font-size: 16px;
   color: white;
-  background-color: #ccc;
+  background-color: #52616A;
   border: none;
   border-radius: 8px;
   cursor: not-allowed;
@@ -594,7 +593,7 @@
 }
 
 .next-button.enabled {
-  background-color: #141414;
+  background-color: #1E2022;
   cursor: pointer;
 }
 
