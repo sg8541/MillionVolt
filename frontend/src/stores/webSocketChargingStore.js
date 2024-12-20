@@ -66,7 +66,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
         const reservationId = route.query.reservationId; 
         const stationId = route.query.stationId;
 
-
         socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}&stationId=${stationId}`);
     
         socketInstance.value.onopen = () => {
@@ -103,7 +102,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
             }
         };
         
-    
+        
         socketInstance.value.onclose = () => {
             console.log('웹소켓 연결 종료1');
             socketInstance.value.close();

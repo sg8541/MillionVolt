@@ -1,8 +1,8 @@
 <template>
-    <!-- <div class="logo" @click="mainmove">
-        <img src="images/logo.png" alt="백만불트 로고">
-    </div> -->
-    <button @click="moveToTestAlarm">TestAlarm으로 이동</button>
+  <div class="body-chargingStatus">
+    <button @click="moveToTestAlarm">
+        <img class="imglogo" src="/images/logo.png">
+    </button >
     <div class="charging-container">
         <div class="charging-header">
             <h2>{{ store.chargingData.name }}</h2>
@@ -54,6 +54,7 @@
             <button class="stop-btn" @click="disconnectWebSocket">충전 종료</button>
         </div>
     </div>
+</div>  
 </template>
 
 <script setup>
@@ -220,6 +221,15 @@ watchEffect(() => {
     margin-bottom: 6px;
 }
 
+.body-chargingStatus{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 수평 가운데 정렬 */
+    justify-content: center; /* 수직 가운데 정렬 */
+    background-color: #fff;
+    min-height: 100vh; /* 화면 전체를 채우도록 설정 */
+    padding-bottom: 0; /* 추가된 여백 제거 */
+}
 
 /* 전체 컨테이너 */
 .charging-container {
@@ -344,5 +354,9 @@ watchEffect(() => {
 
 .stop-btn:hover {
     background: #676767;
+}
+.imglogo{
+    margin: 0; /* 마진 초기화 */
+    width: 150px; /* 로고 크기 조절 */
 }
 </style>
