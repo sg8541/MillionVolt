@@ -10,7 +10,7 @@
             <div class="reservation-go-info-title">예약 진행 및 예약 상세 정보</div>
             <div class="reservation-username-title">예약자</div>
             <div class="reservation-content">
-
+                <string>{{ username }}</string>
             </div>
             <div class="reservation-address-title">상호명</div>
             <div class="reservation-content">
