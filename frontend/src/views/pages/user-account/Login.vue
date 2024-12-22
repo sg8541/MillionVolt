@@ -7,7 +7,9 @@
       <h2>백만볼트 로그인</h2>
       <form @submit.prevent="handleSubmit">
         <div class="input-group">
-          <input type="text" v-model="userId" placeholder="아이디를 입력해주세요." required />
+          <input type="text" v-model="userId" 
+          @input="handleUserIdInput"
+          placeholder="아이디를 입력해주세요." required />
         </div>
         <div class="input-group">
           <input type="password" v-model="password" placeholder="비밀번호를 입력해주세요." required />
@@ -39,6 +41,9 @@ export default {
     return { authStore }
   },
   methods: {
+    handleUserIdInput(inputId){
+        this.userId = String(inputId.target.value);
+    },
     async handleSubmit() {
       // 로그인 로직 처리
       console.log("아이디:", this.userId, "비밀번호:", this.password);
