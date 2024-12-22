@@ -128,9 +128,9 @@ export default {
     },
   },
   methods: {
-    // 비밀번호 패턴 검증(숫자+영어 8자리 이상)
+    // 비밀번호 패턴 검증(숫자+영어 8자리 이상, 특수문자 허용)
     passwordValidation(password) {
-      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      const passwordRegex = /^[a-zA-Z\d\W_]{8,}$/;
       return passwordRegex.test(password);
     },
     // 전화번호 패턴 검증 + 자동 하이픈 생성
