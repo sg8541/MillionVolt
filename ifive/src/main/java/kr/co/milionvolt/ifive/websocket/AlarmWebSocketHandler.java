@@ -107,12 +107,14 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     if(reservationEndTime.isBefore(now.plusMinutes(1))&& reservationEndTime.isAfter(now.minusMinutes(1))){
                         System.out.println("예약 종료한 시간 : "+reservationEndTime);
                         PenaltiechargerStatusCheckVO penaltiechargerStatusCheckVO;
-                        penaltiechargerStatusCheckVO =  penaltyService.findChargerId(reservation.getReservationId());
-
+                        penaltiechargerStatusCheckVO =  penaltyService.findChargerId(reservation.getReservationId(),reservation.getStationId());
+                        System.out.println("확인 :  "+penaltiechargerStatusCheckVO);
+                        // 해당 충전기 번호 찾기
                         if(penaltiechargerStatusCheckVO.getChargerStatusId()==2){
                             System.out.println("예약 종료시간."+reservationEndTime);
-                           LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId());
+                            LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId());
                             int resNum =  reservation.getReservationId();
+                            System.out.println(closeReservationTime);
                             penaltiySendAlarm(session, closeReservationTime, resNum, reservationEndTime);
                         }
                     }
@@ -148,7 +150,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     } else if (reservationEndTime.isAfter(reservationEndTime.plusMinutes(15))) {
                         System.out.println("보증금 환수.");
                         String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "뒷차 예약시간 부터 1분당 100원 벌금");
-                        //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
+                        //
                         session.sendMessage(new TextMessage(status));
                     } else {
                         PenaltyCheckVO vo = penaltyService.penaltyCheckVo(resNum);
@@ -169,7 +171,6 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                             }
                             penaltyService.updatePenalty(penaltyAmount, resNum);
                         }
-
                         if(num % 5 == 1) {
                             String status = String.format("{\"reservationId\": \"%d\"}", resNum);
                             session.sendMessage(new TextMessage(status));

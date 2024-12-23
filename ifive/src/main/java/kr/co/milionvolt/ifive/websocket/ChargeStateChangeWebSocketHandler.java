@@ -38,13 +38,8 @@ public class ChargeStateChangeWebSocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         System.out.println(payload);//가져올 값 charger90   00ae    `   `w
-
         int stationId = Integer.parseInt(payload);
-        System.out.println("값 제대로 들어옴> : "+stationId);
-//        chargerService.getChargersByStationId(stationId);
-
         sendChagerStateUpdateData(session, stationId);
-
     }
 
     @Override

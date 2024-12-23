@@ -3,6 +3,7 @@ package kr.co.milionvolt.ifive.domain.notification;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,8 +20,8 @@ public class ChargingStatusDTO {
     private Integer carId;
     private Integer reservationId;
     private double modelBattery;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Integer stationId;
     private String name;
     private String address;

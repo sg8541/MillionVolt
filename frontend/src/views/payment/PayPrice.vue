@@ -74,6 +74,7 @@ const chargeEnd = ref(null);
 const chargingKwh = ref(null);
 const chargerId = ref(null);
 const stationInfo = ref(null);
+const penaltyAmount = ref(''); 
 
 // const finaleAmount = computed(() => {
 //     return amount.value - penaltyAmount.value; // 총 결제 금액 계산
@@ -83,13 +84,14 @@ onMounted(() => {
     console.log('route.query:', route.query);
     userId.value = route.query.userId;
     stationId.value = route.query.stationId;
-    //reservationId.value = route.query.reservationId;
+    reservationId.value = route.query.reservationId;
     chargeStart.value = route.query.chargeStart;
     chargeEnd.value = route.query.chargeEnd;
     chargerId.value = route.query.chargerId;
     chargingKwh.value = route.query.chargingKwh;
     amount.value = parseFloat(route.query.amount);
     stationAdress();
+    penalty();
 });
 
 
@@ -140,6 +142,16 @@ const payment = () => {
             }
         }
     );
+};
+
+const penalty = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8081/api/v1/penalty/${route.query.reservationId}`);
+        penaltyAmount.value = response.data; // ref의 값은 .value를 사용해야 함
+        console.log("벌금 얼마 : "+penaltyAmount.value);
+    } catch (error) {
+        console.error('Error fetching penalty amount:', error);
+    }
 };
 
 </script>

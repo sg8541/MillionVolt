@@ -16,10 +16,10 @@ public class PenaltyServiceImpl implements PenaltyService{
     private PenaltyMapper penaltyMapper;
 
     @Override
-    public PenaltiechargerStatusCheckVO findChargerId(int reservationId) {
+    public PenaltiechargerStatusCheckVO findChargerId(int reservationId,int stationId) {
         PenaltiechargerStatusCheckVO penaltiechargerStatusCheckVO = null;
         try{
-            penaltiechargerStatusCheckVO= penaltyMapper.findChargerId(reservationId);
+            penaltiechargerStatusCheckVO= penaltyMapper.findChargerId(reservationId, stationId);
             if (penaltiechargerStatusCheckVO == null) {
                 System.out.println("예약 ID에 해당하는 충전기를 찾을 수 없습니다.");
             }
@@ -79,5 +79,20 @@ public class PenaltyServiceImpl implements PenaltyService{
         }
 
         return penaltyCheckVO;
+    }
+
+    @Override
+    public int selectPenaltyAmount(int reservationId) {
+        int num =0;
+        try{
+            int result = penaltyMapper.selectPenatlyAmount(reservationId);
+            if(result != 0){
+                num =result;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("결과가 없으면 0 리턴");
+        }
+        return num;
     }
 }
