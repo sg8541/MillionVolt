@@ -37,17 +37,29 @@ public interface ReservationMapper {
 //            " AND charger_id = #{chargerId} ")
 //    int checkConflictReservation(ReservationDTO reservationDTO);
 
-    @Select(" SELECT count(*) " +
-            " FROM reservation " +
-            " WHERE (DATE(start_time) = DATE(#{startTime}) " +
-            " AND TIME(start_time) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
-            " OR (DATE(end_time) = DATE(#{startTime}) " +
-            " AND TIME(end_time) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
-            " OR  (DATE(start_time) = DATE(#{startTime}) " +
-            " AND TIME(start_time) <= TIME(#{startTime}) " +
-            " AND TIME(end_time) >= TIME(#{endTime})) " +
-            " AND charger_id = #{chargerId}" +
-            " AND status = 'confirmed'")
+//    @Select(" SELECT count(*) " +
+//            " FROM reservation " +
+//            " WHERE (DATE(start_time) = DATE(#{startTime}) " +
+//            " AND TIME(start_time) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
+//            " OR (DATE(end_time) = DATE(#{startTime}) " +
+//            " AND TIME(end_time) BETWEEN TIME(#{startTime}) AND TIME(#{endTime})) " +
+//            " OR  (DATE(start_time) = DATE(#{startTime}) " +
+//            " AND TIME(start_time) <= TIME(#{startTime}) " +
+//            " AND TIME(end_time) >= TIME(#{endTime})) " +
+//            " AND charger_id = #{chargerId}" +
+//            " AND status = 'confirmed'")
+//    int checkConflictReservation(ReservationDTO reservationDTO);
+
+    @Select("SELECT count(*) " +
+            "FROM reservation " +
+            "WHERE charger_id = #{chargerId} " +
+            "AND station_id = #{stationId} " +
+            "AND status = 'confirmed' " +
+            "AND (" +
+            "    start_time BETWEEN #{startTime} AND #{endTime} " +
+            "    OR end_time BETWEEN #{startTime} AND #{endTime} " +
+            "    OR (start_time <= #{startTime} AND end_time >= #{endTime})" +
+            ")")
     int checkConflictReservation(ReservationDTO reservationDTO);
 
 //    @Select(" SELECT count(*) " +

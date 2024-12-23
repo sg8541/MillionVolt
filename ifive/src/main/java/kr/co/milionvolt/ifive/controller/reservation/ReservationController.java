@@ -41,6 +41,7 @@ public class ReservationController {
             }
         } catch (Exception e) {
             response.put("message", "예약 처리 중 오류가 발생했습니다.");
+            System.err.println("controller" + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
         return ResponseEntity.status(200).body(response);
