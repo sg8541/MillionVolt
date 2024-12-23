@@ -81,11 +81,12 @@ public class PayPriceServiceImpl implements PayPriceService {
 
                 if (insertResult) {
                     // 상태 업데이트
-                    chargingStatusMapper.chargingStatusAvailable(payPriceDTO.getChargeId(), payPriceDTO.getStationId());
+                    chargingStatusMapper.chargingStatusAvailable(payPriceDTO.getChargerId(), payPriceDTO.getStationId());
                     return true;
                 }
                 return false;
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new RuntimeException("DB 저장 중 오류 발생", e);
             }
         }

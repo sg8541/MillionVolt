@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class PayPriceDTO {
-    private int paymentId;
     private int userId;
     private int reservationId;
     private int stationId;
-    private int chargeId;
+    private int chargerId;
     private long amount;
+    private long chargedEnergy;
     private String paymentMethod;
     private String paymentStatus;
     private LocalDateTime createdAt;
