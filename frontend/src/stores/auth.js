@@ -22,7 +22,10 @@ export const useAuthStore = defineStore('auth', {
         this.user = {
           id: response.data.id,
           userId: response.data.userId,
-          role: response.data.role
+          role: response.data.role,
+          userName: response.data.userName,
+          carBattery: response.data.carBattery,
+          modelBattery: response.data.modelBattery
         }
         localStorage.setItem('user', JSON.stringify(this.user))
 

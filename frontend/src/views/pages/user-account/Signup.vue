@@ -206,7 +206,11 @@ export default {
           window.location.href = '/login';
         }
       } catch (error) {
-        alert(error)
+        if(error.response.status == 403){
+          alert("회원가입 중 문제가 발생하였습니다. 잠시 후 다시 수행해 주시길 바랍니다.")
+        }else {
+          alert("문제가 발생하였습니다." + error)
+        }
       }
     },
     // 아이디 중복 검사
