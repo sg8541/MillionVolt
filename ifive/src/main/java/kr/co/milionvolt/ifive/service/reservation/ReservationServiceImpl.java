@@ -36,17 +36,16 @@ public class ReservationServiceImpl implements ReservationService {
         Payment payment = response.getResponse();
 
         String message = "";
+        ZonedDateTime koreaStartTime = reservationDTO.getStartTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime koreaEndTime = reservationDTO.getEndTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+
+        reservationDTO.setStartTime(koreaStartTime.toLocalDateTime());
+        reservationDTO.setEndTime(koreaEndTime.toLocalDateTime());
         try {
             if(reservationMapper.checkConflictReservation(reservationDTO) != 0) {
-                message = "이미 예약된 시간이 있습니다. 시간을 확인해주세요";
+                message = "이미 예약된 시간이 있습니다. 시간을 확인해주세요.";
             } else if(reservationMapper.checkConflictReservation(reservationDTO) == 0 && payment != null) {
                 reservationDTO.setCreatedAt(LocalDateTime.now());
-
-                ZonedDateTime koreaStartTime = reservationDTO.getStartTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
-                ZonedDateTime koreaEndTime = reservationDTO.getEndTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
-
-                reservationDTO.setStartTime(koreaStartTime.toLocalDateTime());
-                reservationDTO.setEndTime(koreaEndTime.toLocalDateTime());
 
                 message =  "예약이 완료되었습니다.";
                     int num =  reservationMapper.insertReservation(reservationDTO);

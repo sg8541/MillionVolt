@@ -1,12 +1,12 @@
 <template>
-    <div class="wrap">
-        <div class="header">
-      <div class="logo">
+    <div class="reservation-wrap">
+        <div class="reservation-header">
+      <div class="reservation-logo">
         <router-link to="/main">
           <img src="images/logo.png" alt="백만볼트 로고">
         </router-link>
       </div>
-        <div class="container">
+        <div class="reservation-container">
             <div class="reservation-go-info-title">예약 진행 및 예약 상세 정보</div>
             <div class="reservation-username-title">예약자</div>
             <div class="reservation-content">
@@ -103,7 +103,7 @@
 
     const token = localStorage.getItem('user');
     const parsedToken = JSON.parse(token);
-            const userId = parsedToken.id;
+    const userId = parsedToken.id;
 
     // 라우터를 통해서 예약정보 값 받기기
     onMounted(() => {
@@ -179,10 +179,23 @@
         }
         return true;
     };
+    
+    // 날짜 및 시간 차이 검사 (24시간 이내인지 확인)
+    const isValidDuration = () => {
+        if (!reservationStartDate.value || !reservationEndDate.value) return false;
+
+        const duration = reservationEndDate.value - reservationStartDate.value;
+        const maxDuration = 24 * 60 * 60 * 1000; // 24시간을 밀리초로 변환
+        if (duration > maxDuration) {
+            alert("예약은 최대 24시간 이내로만 가능합니다.");
+            return false;
+        }
+        return true;
+    };
 
     // 예약 API 호출
     const reserve = async () => {
-        if (!isValidDateAndTime()) return;
+        if (!isValidDateAndTime()||!isValidDuration()) return;
 
         const { IMP } = window;
         IMP.init("imp50578251");
@@ -256,7 +269,7 @@
 </script>
 <style>
 
-.wrap {
+.reservation-wrap {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -264,7 +277,7 @@
     background-color: white;
 }
 
-.container {
+.reservation-container {
     width: 650px;
     background-color: #fff;
     border: 1px solid #969696;
@@ -275,12 +288,12 @@
     align-content: center;
 }
 
-.header {
+.reservation-header {
   text-align: center;
   margin-bottom: 10%;
 }
 
-.logo img {
+.reservation-logo img {
   width: 150px;
 }
 

@@ -9,11 +9,17 @@
             <div class="container">
                 <div class="pay-info-title">결제 상세 정보</div>
 
+                <div class="pay-info-place-title">상호명</div>
+                <div class="pay-info-place-print">
+                    <div v-if="stationInfo">
+                        <h5>{{ stationInfo.name }}</h5>
+                    </div>
+                </div>
+
                 <div class="pay-info-place-title">주소</div>
                 <div class="pay-info-place-print">
                     <div v-if="stationInfo">
                         <h5>{{ stationInfo.address }}</h5>
-                        <h5>{{ stationInfo.name }}</h5>
                     </div>
                 </div>
 
@@ -97,7 +103,7 @@ onMounted(() => {
 
 const stationAdress = async () => {
     const stationInfoResponse = await axios.get(
-        `http://localhost:8081/api/v1/payment/printStationInfo/${stationId}`
+        `http://localhost:8081/api/v1/payment/printstationinfo/${stationId.value}`
     )
     stationInfo.value = stationInfoResponse.data;
 };
@@ -111,7 +117,7 @@ const payment = () => {
             pg: "html5_inicis",
             pay_method: "카카오페이",
             merchant_uid: "order_" + new Date().getTime(),
-            paid_amount: amount.value,
+            amount: amount.value,
             // name: "람보르기니 우라칸",
         },
         async (rsp) => {
@@ -122,16 +128,17 @@ const payment = () => {
                     const response = await axios.post(
                         `http://localhost:8081/api/v1/payment/save/${rsp.imp_uid}`,
                         {
-                            imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
-                            paymentMethod: rsp.pay_method, // 결제 방법
-                            paymentStatus: rsp.status, // 결제 상태 (성공/실패)
-                            amount: rsp.paid_amount, // 결제 금액
-                            userId: userId.value, // 유저의 아이디 
-                            reservationId: reservationId.value, // 예약번호
+                            userId: userId.value, // 유저의 아이디
                             stationId: stationId.value, // 충전소 번호
                             chargerId: chargerId.value, // 충전기 번호 
+                            amount: amount.value, // 결제 금액
+                            chargedEnergy: chargingKwh.value, // 충전 전력량
+                            paymentMethod: rsp.pay_method, // 결제 방법
+                            paymentStatus: rsp.status, // 결제 상태 (성공/실패)
+                            reservationId: reservationId.value, // 예약번호
                             chargeStart: chargeStart.value, // 충전 시작 시간
                             chargeEnd: chargeEnd.value, // 충전 종료 시간
+                            imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
                         }
                     );
                     window.location.href = "/";

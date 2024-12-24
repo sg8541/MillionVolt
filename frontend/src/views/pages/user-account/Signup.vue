@@ -1,10 +1,10 @@
 <template>
+<div class="wrap">
   <div class="header">
-    <router-link to="/main" class="logo-link">
+    <router-link to="/main" class="logo">
       <img src="images/logo.png" alt="백 만 볼트 로고" class="logo">
     </router-link>
   </div>
-  <div class="wrap">
 
     <div class="container">
 
@@ -128,9 +128,9 @@ export default {
     },
   },
   methods: {
-    // 비밀번호 패턴 검증(숫자+영어 8자리 이상)
+    // 비밀번호 패턴 검증(숫자+영어 8자리 이상, 특수문자 허용)
     passwordValidation(password) {
-      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      const passwordRegex = /^[a-zA-Z\d\W_]{8,}$/;
       return passwordRegex.test(password);
     },
     // 전화번호 패턴 검증 + 자동 하이픈 생성
@@ -206,7 +206,11 @@ export default {
           window.location.href = '/login';
         }
       } catch (error) {
-        alert(error)
+        if(error.response.status == 403){
+          alert("회원가입 중 문제가 발생하였습니다. 잠시 후 다시 수행해 주시길 바랍니다.")
+        }else {
+          alert("문제가 발생하였습니다." + error)
+        }
       }
     },
     // 아이디 중복 검사
@@ -257,42 +261,43 @@ export default {
   box-sizing: border-box;
 }
 
+.v-application__wrap{
+  background-color: white;
+}
+
 .wrap {
+  margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
   background-color: white;
   display: flex;
-  justify-content: center;
-  /* align-items: center; */
-  /* height: 100vh; */
-  margin: 0 auto 100px auto;
+  align-items: center;
+  flex-direction: column;
 }
-
 
 .container {
   width: 600px;
-  height: 850px;
+  border: 1px solid #C9D6DE;
+  /* height: 850px; */
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 30px;
+  margin-bottom: 10%;
 }
 
 .header {
   text-align: center;
-  /* margin-bottom: 30px; */
 }
 
-.wrap .header .logo {
-  text-align: center;
-  position: absolute;
-}
-
-
-.logo {
-  /* top: 5px;
-    left: 5px; */
+.logo img {
   width: 150px;
 }
+
+/* .wrap .header .logo {
+  text-align: center;
+  position: absolute;
+} */
 
 h2 {
   font-size: 18px;
@@ -320,24 +325,26 @@ select,
 .form-row input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #C9D6DE;
   border-radius: 4px;
   font-size: 14px;
 }
 
 .verify-btn {
-  background-color: #a5a5a5;
-  color: white;
+  background-color: #C3C3C3;
+  color: #fff;
   padding: 8px 12px;
   font-size: 14px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin-left: 10px;
+
 }
 
 .verify-btn:hover {
-  background-color: #7e7e7e;
+  background-color: #52616A;
+  color: white;
 }
 
 
@@ -346,7 +353,7 @@ select,
 }
 
 .submit-btn {
-  background-color: #0b0b0b;
+  background-color: #52616A;
   color: white;
   padding: 12px 20px;
   font-size: 16px;
@@ -357,7 +364,7 @@ select,
 }
 
 .submit-btn:hover {
-  background-color: #3c3c3c;
+  background-color: #1E2022;
 }
 
 small,
@@ -400,5 +407,10 @@ select option {
 
 input {
   outline: none;
+}
+
+input:focus {
+  border: 2px solid #52616A;
+  /* 기본 포커스 테두리 제거 */
 }
 </style>
