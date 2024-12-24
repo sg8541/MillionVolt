@@ -90,6 +90,8 @@ export default {
             path: '/new-password',
             query: {
               userId: this.userId,
+              email: this.email,
+              usename: this.username
             },
           });
         }
