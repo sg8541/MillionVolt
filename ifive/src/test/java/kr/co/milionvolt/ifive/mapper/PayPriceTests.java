@@ -19,7 +19,7 @@ public class PayPriceTests {
     @Test
     public void test() {
         // DTO에 값 설정
-        payPriceDTO.setPaymentId(2);  // payment_id 설정
+//        payPriceDTO.setPaymentId(2);  // payment_id 설정
         payPriceDTO.setUserId(2);      // user_id 설정
         payPriceDTO.setReservationId(2); // reservation_id 설정
         payPriceDTO.setAmount(20000);   // amount 설정

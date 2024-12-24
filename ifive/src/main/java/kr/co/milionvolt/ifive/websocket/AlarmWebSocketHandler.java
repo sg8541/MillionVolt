@@ -100,7 +100,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                                 "{\"reservationId\": \"%d\", \"startTime\": \"%s\", \"message\": \"%s\" ,\"stationId\": \"%d\"}",
                                 reservation.getReservationId(),
                                 reservationTime,
-                                "예약시간) 충전을 시작해주세요.",
+                                "충전을 시작해주세요!",
                                 reservation.getStationId()
                         );
                         System.out.println("예약 발송 : "+reservation);
@@ -138,21 +138,17 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         scheduler.shutdown();
                         return;
                     }
-                    num += 1;
-                    repeatNum.put("repeat",num);
                     System.out.println("벌금테이블 동작.");
                     LocalDateTime now = LocalDateTime.now();
                     if(now.isBefore(closeReservationTime)) {
                         System.out.println("제일 가까운 예약 내역." + closeReservationTime);
-
-                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "출차해주세요. 예약시간으로부터 15분 후 보증금 환수 예정.");
+                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "출차해주세요!");
                         //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
                         session.sendMessage(new TextMessage(status));
 
-                    } else if (reservationEndTime.isAfter(reservationEndTime.plusMinutes(15))) {
+                    } else if (now.isEqual(closeReservationTime.plusMinutes(15))) { // 예약시간으로부터 15분전 알림.
                         System.out.println("보증금 환수.");
-                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "뒷차 예약시간 부터 1분당 100원 벌금");
-                        //
+                        String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "뒷 예약시간 15분 전 입니다.");
                         session.sendMessage(new TextMessage(status));
                     } else {
                         PenaltyCheckVO vo = penaltyService.penaltyCheckVo(resNum);
@@ -164,22 +160,29 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                             dto.setReservationId(resNum); // 보증금 환수.
                             penaltyService.insertPenalty(dto);
                         } else {
-                            if(num == 1){
+                            if (repeatNum.get("repeat") == null) {
+                                repeatNum.put("repeat", num);
                                 penaltyAmount = 100 + vo.getPenaltyAmount();
                                 amount.put("amount",penaltyAmount);
                             }else{
+                                num = repeatNum.get("repeat");
+                                num++;
+                                repeatNum.put("repeat", num);
                                 penaltyAmount += 100;
                                 amount.put("amount",penaltyAmount);
                             }
                             penaltyService.updatePenalty(penaltyAmount, resNum);
                         }
-                        if(num % 5 == 1) {
-                            String status = String.format("{\"reservationId\": \"%d\"}", resNum);
-                            session.sendMessage(new TextMessage(status));
-                        }
+                        String status = String.format("{\"penaltyAmount\": \"%d\", \"message\": \"%s\"}", penaltyAmount,"벌금 부여");
+                        session.sendMessage(new TextMessage(status));
+
+//                        if(num % 5 == 1) {
+//                            String status = String.format("{\"reservationId\": \"%d\"}", resNum);
+//                            session.sendMessage(new TextMessage(status));
+//                        }
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
+                   e.printStackTrace();
                 }
             },0,1,TimeUnit.MINUTES); // 1분마다 실행.
         }

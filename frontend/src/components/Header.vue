@@ -62,13 +62,21 @@
 
         <div v-if="storeAlarm.alarm.message" class="alert-content">
           <p>{{ storeAlarm.alarm.message }}</p>
-          <div v-if="storeAlarm.alarm.message != '새로운 알람이 없습니다.'" class="speed-indicator">
+          <div v-if="storeAlarm.alarm.message == '충전을 시작해주세요!'" class="speed-indicator">
             <label @click="showModal"><strong>충전하러가기</strong></label>
+          </div>
+          <div v-else-if="storeAlarm.alarm.message == '출차해주세요!'">
+            <label><strong>{{storeAlarm.alarm.closeReservationTime}}(뒷예약)의 15분 전까지 출차하지 않으면 보증금이 환수됩니다. </strong></label>
+          </div>
+          <div v-else-if="storeAlarm.alarm.message == '뒷 예약시간 15분 전 입니다.'">
+            <label><strong>{{storeAlarm.alarm.closeReservationTime}} 시간부터 벌금이 부여됩니다.(분당 100원) </strong></label>
+          </div>
+          <div v-if="storeAlarm.alarm.penaltyAmount">
+            <label><strong>현재 벌금 금액 : {{storeAlarm.alarm.penaltyAmount}} </strong></label>
+          </div>
           </div>
         </div>
       </div>
-
-    </div>
     <div v-if="isModalVisible" class="alert-modal" @click.self="hideModal">
       <div class="modal-content">
 
@@ -79,7 +87,6 @@
         <button @click="hideModal" class="modal-btn">취소</button>
       </div>
     </div>
-
   </header>
 </template>
 
