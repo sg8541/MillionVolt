@@ -10,7 +10,8 @@
 
       <div class="login-container">
         <h2>새로운 비밀번호 입력</h2>
-        <p class="description">새로운 비밀번호를 입력해주세요</p>
+        <p class="description">새로운 비밀번호를 입력해주세요<br>비밀번호는 8자리 이상, 영문 숫자가 포함되어야 합니다.</p>
+        
         <p class="description2"># 아이디 : <span class="description3">{{ userId }}</span></p>
 
         <form @submit.prevent="handleSubmit">
@@ -73,7 +74,7 @@ export default {
         if (response.status === 200) {
           alert("비밀번호가 성공적으로 변경되었습니다.");
           alert("로그인 화면으로 이동합니다.");
-          // this.$router.replace({ path: '/login' })
+          this.$router.replace({ path: '/login' })
         }
       } catch (error) {
         alert("비밀번호 초기화 중 에러가 발생하였습니다. " + error);
