@@ -36,14 +36,6 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenExpiration);
 
-//        return Jwts.builder()
-//                .setHeaderParam("typ", "JWT")
-//                .setSubject(String.valueOf(id)) // memberId를 String으로 변환하여 설정
-//                .claim("role", role)
-//                .setIssuedAt(now)
-//                .setExpiration(expiryDate)
-//                .signWith(SignatureAlgorithm.HS512, getSecretKey())
-//                .compact();
         String token = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(String.valueOf(id))

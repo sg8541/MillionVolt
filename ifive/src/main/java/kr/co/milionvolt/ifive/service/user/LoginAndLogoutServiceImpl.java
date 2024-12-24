@@ -41,10 +41,9 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
 
             // 인증 성공 후 사용자 정보 조회
             UserDetailsVO detailsVO = userMapper.findByUserId(loginDTO.getUserId());
-//            if (detailsVO == null) {
-//                return new LoginException("사용자를 찾을 수 없습니다.");
-//            }
-
+            if (detailsVO == null) {
+                throw new LoginException("사용자를 찾을 수 없습니다.");
+            }
             // Access Token 및 Refresh Token 생성
             String accessToken = tokenProvider.generateAccessToken(detailsVO.getId(), detailsVO.getRole());
             String refreshToken = tokenProvider.generateRefreshToken(detailsVO.getId());
@@ -63,6 +62,9 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
             return TokenResponseDTO.builder()
                     .id(detailsVO.getId())
                     .userId(detailsVO.getUserId())
+                    .userName(detailsVO.getUserName())
+                    .carBattery(detailsVO.getCarBattery())
+                    .modelBattery(detailsVO.getModelBattery())
                     .role(detailsVO.getRole())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
@@ -118,6 +120,9 @@ public class LoginAndLogoutServiceImpl implements LoginAndLogoutService {
         return TokenResponseDTO.builder()
                 .id(detailsVO.getId())
                 .userId(detailsVO.getUserId())
+                .userName(detailsVO.getUserName())
+                .carBattery(detailsVO.getCarBattery())
+                .modelBattery(detailsVO.getModelBattery())
                 .role(detailsVO.getRole())
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)

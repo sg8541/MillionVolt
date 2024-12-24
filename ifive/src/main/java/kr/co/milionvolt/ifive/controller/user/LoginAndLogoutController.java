@@ -48,6 +48,9 @@ public class LoginAndLogoutController {
             TokenResponseDTO responseBody = TokenResponseDTO.builder()
                     .id(tokenResponseDTO.getId())
                     .userId(tokenResponseDTO.getUserId())
+                    .userName(tokenResponseDTO.getUserName())
+                    .carBattery(tokenResponseDTO.getCarBattery())
+                    .modelBattery(tokenResponseDTO.getModelBattery())
                     .role(tokenResponseDTO.getRole())
                     .accessToken(tokenResponseDTO.getAccessToken())
                     .build();
@@ -127,6 +130,9 @@ public class LoginAndLogoutController {
             TokenResponseDTO responseBody = TokenResponseDTO.builder()
                     .id(tokenResponseDTO.getId())
                     .userId(tokenResponseDTO.getUserId())
+                    .userName(tokenResponseDTO.getUserName())
+                    .carBattery(tokenResponseDTO.getCarBattery())
+                    .modelBattery(tokenResponseDTO.getModelBattery())
                     .role(tokenResponseDTO.getRole())
                     .accessToken(tokenResponseDTO.getAccessToken())
                     .build();
