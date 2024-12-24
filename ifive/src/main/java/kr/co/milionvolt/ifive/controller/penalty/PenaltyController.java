@@ -2,6 +2,7 @@ package kr.co.milionvolt.ifive.controller.penalty;
 
 import jdk.jfr.RecordingState;
 import kr.co.milionvolt.ifive.service.penalty.PenaltyService;
+import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,13 @@ public class PenaltyController {
 
     @GetMapping("/penalty/{reservationId}")
     public ResponseEntity<Integer> sendPenayltAmount(@PathVariable int reservationId){
-        int num = penaltyService.selectPenaltyAmount(reservationId);
-
-        ResponseEntity<Integer> entity = new ResponseEntity<>(num, HttpStatus.OK);
+        ResponseEntity<Integer> entity = null;
+        try{
+            int num = penaltyService.selectPenaltyAmount(reservationId);
+            entity  = new ResponseEntity<>(num, HttpStatus.OK);
+        }catch (BindingException e){
+            entity = new ResponseEntity<>(0 , HttpStatus.OK);
+        }
         return entity;
     }
 }

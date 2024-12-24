@@ -7,6 +7,7 @@ import kr.co.milionvolt.ifive.entity.ReservationRedis;
 import kr.co.milionvolt.ifive.service.penalty.PenaltyService;
 import kr.co.milionvolt.ifive.service.reservation.ReservationRedisService;
 import kr.co.milionvolt.ifive.service.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -22,6 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class AlarmWebSocketHandler extends TextWebSocketHandler {
     private final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Integer> uid = new ConcurrentHashMap<>();
@@ -47,7 +49,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
-        System.out.println("웹소켓 연결 확인.");
+        log.info("웹소켓 연결 확인.");
 
     }
 
@@ -66,7 +68,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println("웹소켓 연결종료: " + session.getId());
+        log.info("웹소켓 연결종료 : "+ session.getId());
         sessions.remove(uid);
         sessions.remove(repeatNum);
     }
@@ -78,13 +80,13 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
         scheduler.scheduleAtFixedRate(() -> {
             try {
                     if (session == null || !session.isOpen()) {
-                        System.out.println("Session closed for userId: " + userId);
+                        log.info("Session closed for userId: " + userId);
                         scheduler.shutdown();
                         return;
                     }
-                System.out.println("1분마다 동작.");
+                System.out.println("알람 1분 동작.");
                 LocalDateTime now = LocalDateTime.now();
-                System.out.println(now);
+                System.out.println("현재 시간 : "+now);
                 List<ReservationRedis> reservations = reservationRedisService.findReservationInfoByUserId(userId);
                 if (reservations == null || reservations.isEmpty()) {
                     System.out.println("No reservations found for userId: " + userId);
@@ -92,7 +94,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                 for (ReservationRedis reservation : reservations) {
                     LocalDateTime reservationTime = reservation.getStartTime();
                     LocalDateTime reservationEndTime  = reservation.getEndTime();
-                    System.out.println("예약 내역 확인 : "+ reservationTime);
+                    System.out.println("예약 종료 내역 확인 : "+ reservationEndTime);
                     if (reservationTime.isBefore(now.plusMinutes(1)) && reservationTime.isAfter(now.minusMinutes(1))) {
                         String status = String.format(
                                 "{\"reservationId\": \"%d\", \"startTime\": \"%s\", \"message\": \"%s\" ,\"stationId\": \"%d\"}",
@@ -107,7 +109,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     if(reservationEndTime.isBefore(now.plusMinutes(1))&& reservationEndTime.isAfter(now.minusMinutes(1))){
                         System.out.println("예약 종료한 시간 : "+reservationEndTime);
                         PenaltiechargerStatusCheckVO penaltiechargerStatusCheckVO;
-                        penaltiechargerStatusCheckVO =  penaltyService.findChargerId(reservation.getReservationId(),reservation.getStationId());
+                        penaltiechargerStatusCheckVO =  penaltyService.findChargerId(reservation.getReservationId(),reservation.getStationId(),reservation.getChargerId());
                         System.out.println("확인 :  "+penaltiechargerStatusCheckVO);
                         // 해당 충전기 번호 찾기
                         if(penaltiechargerStatusCheckVO.getChargerStatusId()==2){
@@ -132,7 +134,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
             scheduler.scheduleAtFixedRate(()-> {
                 try{
                     if (session == null || !session.isOpen()) {
-                        System.out.println("세션종료.");
+                        log.info("세션종료");
                         scheduler.shutdown();
                         return;
                     }

@@ -4,6 +4,7 @@ import kr.co.milionvolt.ifive.domain.penaltie.PenaltieDTO;
 import kr.co.milionvolt.ifive.domain.penaltie.PenaltiechargerStatusCheckVO;
 import kr.co.milionvolt.ifive.domain.penaltie.PenaltyCheckVO;
 import kr.co.milionvolt.ifive.mapper.PenaltyMapper;
+import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,10 @@ public class PenaltyServiceImpl implements PenaltyService{
     private PenaltyMapper penaltyMapper;
 
     @Override
-    public PenaltiechargerStatusCheckVO findChargerId(int reservationId,int stationId) {
+    public PenaltiechargerStatusCheckVO findChargerId(int reservationId,int stationId, int chargerId) {
         PenaltiechargerStatusCheckVO penaltiechargerStatusCheckVO = null;
         try{
-            penaltiechargerStatusCheckVO= penaltyMapper.findChargerId(reservationId, stationId);
+            penaltiechargerStatusCheckVO= penaltyMapper.findChargerId(reservationId, stationId, chargerId);
             if (penaltiechargerStatusCheckVO == null) {
                 System.out.println("예약 ID에 해당하는 충전기를 찾을 수 없습니다.");
             }
@@ -88,9 +89,10 @@ public class PenaltyServiceImpl implements PenaltyService{
             int result = penaltyMapper.selectPenatlyAmount(reservationId);
             if(result != 0){
                 num =result;
+            }else{
+                num = 0;
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (BindingException e){
             System.out.println("결과가 없으면 0 리턴");
         }
         return num;

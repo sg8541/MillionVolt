@@ -17,11 +17,11 @@ public interface PenaltyMapper {
     @Select(" SELECT c.charger_id ,c.charger_status_id" +
             " FROM charger c " +
             " JOIN reservation r " +
-            " ON c.charger_id = r.charger_id " +
+            " ON c.station_id = r.station_id " +
             " WHERE r.reservation_id=#{reservationId} " +
             " AND r.station_id=#{stationId} " +
-            " LIMIT 1")
-    public PenaltiechargerStatusCheckVO findChargerId(int reservationId,int stationId); // 예약의 대한 충전기 조회
+            " AND c.charger_id =#{chargerId}")
+    public PenaltiechargerStatusCheckVO findChargerId(int reservationId, int stationId, int chargerId); // 예약의 대한 충전기 조회
 
     @Select(" SELECT r.start_time " +
             " FROM charger c" +
