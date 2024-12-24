@@ -5,6 +5,7 @@ import illustrationJohnLight from '@images/cards/illustration-john-light.png'
 // import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
 import { defineProps, ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router'
 import api from '@/axios'
 const { global } = useTheme()
@@ -12,7 +13,11 @@ const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrat
 
 const route = useRoute()
 
-const id = route.params.id;
+
+const authStore = useAuthStore();
+const user = computed(() => authStore.user || {});
+const modelBattery = user.value.modelBattery || '';
+
 
 defineProps({
   userCarInfo: {
@@ -44,6 +49,10 @@ const updateBattery = async () => {
     console.error('Error fetching my info:', error);
   }
 };
+
+const batteryCharge = (carBattery/modelBattery)*100;
+console.log(batteryCharge);
+const id = route.params.id;
 
 
 </script>

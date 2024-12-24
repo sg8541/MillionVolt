@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     passwordValidation(password) {
-      const passwordRegex = /^[a-zA-Z\d\W_]{8,}$/;
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d\W]{8,}$/;
       return passwordRegex.test(password);
     },
     async handleSubmit() {
@@ -73,7 +73,7 @@ export default {
         if (response.status === 200) {
           alert("비밀번호가 성공적으로 변경되었습니다.");
           alert("로그인 화면으로 이동합니다.");
-          this.$router.replace({ path: '/login' })
+          // this.$router.replace({ path: '/login' })
         }
       } catch (error) {
         alert("비밀번호 초기화 중 에러가 발생하였습니다. " + error);
