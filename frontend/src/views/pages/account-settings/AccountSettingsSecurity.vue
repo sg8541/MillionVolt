@@ -72,6 +72,7 @@ const updatePassword = async () => {
     <!-- SECTION: Change Password -->
     <VCol cols="12">
       <VCard title="비밀번호 변경">
+        <VDivider />
         <VForm @submit.prevent="updatePassword">
           <VCardText>
             <!-- 👉 Current Password -->

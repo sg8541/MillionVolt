@@ -66,16 +66,10 @@ public class UserServiceImpl implements UserService {
 
         return carInfoDTO;
     }
-    // 차 번호 + 차 모델 변경
+    // 차 정보 변경
     @Override
-    public boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO) {
-        boolean success = userMapper.updateUserCarNumberAndCarModel(carNumberDTO);
-        return success;
-    }
-    // 차 배터리 + 선호 충전 타입 변경
-    @Override
-    public boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO) {
-        boolean success = userMapper.updateUserCarBatteryAndChargerSpeed(updateDTO);
+    public boolean updateUserCarInfo(CarInfoUpdateDTO updateDTO) {
+        boolean success = userMapper.updateUserCarInfo(updateDTO);
         return success;
     }
 

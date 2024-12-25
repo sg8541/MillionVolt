@@ -16,10 +16,8 @@ public interface UserService {
     boolean findByPassword(Integer id, PasswordDTO passwordDTO);
     // 유저 차 조회
     UserCarInfoDTO userCarInfo(Integer id);
-    // 유저 차 번호 + 모델 업데이트
-    boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO);
-    // 유저 배터리 + 선호 타입 업데이트
-    boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO);
+    // 유저 차 정보 업데이트
+    boolean updateUserCarInfo(CarInfoUpdateDTO updateDTO);
     // 유저의 예약 내역
     List<UserInfoReservationListVO> getUserReservationList(Integer id);
     // 유저의 결제 내역

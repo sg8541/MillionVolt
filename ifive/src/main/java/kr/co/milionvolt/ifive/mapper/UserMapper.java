@@ -39,7 +39,7 @@ public interface UserMapper {
     String findByPassword(Integer id);
 
     // 유저의 자동차 정보 조회
-    @Select("select car_number, car_battery, charger_speed_id, model_id " +
+    @Select("select car_number, car_battery, charger_speed_id, model_id,  model_battery " +
             "from user_car " +
             "join charge_speed " +
             "using (charger_speed_id) " +
@@ -48,17 +48,15 @@ public interface UserMapper {
             "where user_car.car_id = #{carId}")
     UserCarInfoDTO findByUserCar(@Param("carId") Integer id);
 
-    // 유저의 차 번호 + 차 모델 변경
+    // 유저의 차 번호 + 차 모델 차 배터리 + 선호 충전 타입 변경
     @Update("update user_car " +
-            "set car_number = #{carNumber}, model_id = #{modelId} " +
+            "set " +
+            "car_battery = #{carBattery}, " +
+            "charger_speed_id = #{chargerSpeedId}, " +
+            "car_number = #{carNumber}, " +
+            "model_id = #{modelId} " +
             "where car_id = #{carId}")
-    boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO);
-
-    // 유저의 차 배터리 + 선호 충전 타입 변경
-    @Update("update user_car " +
-            "set car_battery = #{carBattery}, charger_speed_id = #{chargerSpeedId} " +
-            "where car_id = #{carId}")
-    boolean updateUserCarBatteryAndChargerSpeed(CarBatteryAndChargerSpeedUpdateDTO updateDTO);
+    boolean updateUserCarInfo(CarInfoUpdateDTO updateDTO);
 
     // 유저의 예약 내역 리스트
     @Select("select reservation_id, " +
