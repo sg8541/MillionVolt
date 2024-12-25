@@ -17,9 +17,11 @@ public interface PenaltyMapper {
     @Select(" SELECT c.charger_id ,c.charger_status_id" +
             " FROM charger c " +
             " JOIN reservation r " +
-            " ON c.charger_id = r.charger_id " +
-            " WHERE r.reservation_id=#{reservationId}")
-    public PenaltiechargerStatusCheckVO findChargerId(int reservationId); // 예약의 대한 충전기 조회
+            " ON c.station_id = r.station_id " +
+            " WHERE r.reservation_id=#{reservationId} " +
+            " AND r.station_id=#{stationId} " +
+            " AND c.charger_id =#{chargerId}")
+    public PenaltiechargerStatusCheckVO findChargerId(int reservationId, int stationId, int chargerId); // 예약의 대한 충전기 조회
 
     @Select(" SELECT r.start_time " +
             " FROM charger c" +
@@ -41,4 +43,8 @@ public interface PenaltyMapper {
 
     @Select(" SELECT penalty_id, penalty_amount FROM penalty WHERE reservation_id = #{reservationId} ")
     public PenaltyCheckVO penaltyCheckVo(int reservationId);
+
+
+    @Select(" SELECT penalty_amount FROM penalty WHERE reservation_id=#{reservationId} " )
+    public int selectPenatlyAmount(int reservationId);
 }

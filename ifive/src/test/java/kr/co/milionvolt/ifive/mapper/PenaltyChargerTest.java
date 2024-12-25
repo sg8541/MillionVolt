@@ -12,11 +12,11 @@ public class PenaltyChargerTest {
     @Autowired
     private PenaltyMapper penaltyMapper;
 
-    @Test
-    public void test(){
-       PenaltiechargerStatusCheckVO  vo =  penaltyMapper.findChargerId(12);
-        System.out.println(vo);
-    }
+//    @Test
+//    public void test(){
+//       PenaltiechargerStatusCheckVO  vo =  penaltyMapper.findChargerId(12);
+//        System.out.println(vo);
+//    }
 
     @Test
     public void test2(){

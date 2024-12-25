@@ -58,6 +58,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 console.log("이미연결된 웹소켓.");
                 return;
             }
+         
         
         const token = localStorage.getItem('user');
         const parsedToken = JSON.parse(token);
@@ -66,6 +67,9 @@ export const useWebSocketStore = defineStore('websocket', () => {
         const reservationId = route.query.reservationId; 
         const stationId = route.query.stationId;
 
+        if(!reservationId|| !stationId){
+            return;
+        }
         socketInstance.value = new WebSocket(`ws://localhost:8081/charging?userId=${userId}&reservationId=${reservationId}&stationId=${stationId}`);
     
         socketInstance.value.onopen = () => {
