@@ -4,15 +4,20 @@ import kr.co.milionvolt.ifive.domain.user.FindFwdDTO;
 import kr.co.milionvolt.ifive.domain.user.FindIdDTO;
 import kr.co.milionvolt.ifive.domain.user.ResetDTO;
 import kr.co.milionvolt.ifive.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
 
@@ -47,5 +52,22 @@ public class UserController {
         userService.newPwd(dto);
         ResponseEntity<String> entity = new ResponseEntity<>("비밀번호 수정 완료",HttpStatus.OK);
         return entity;
+    }
+
+    @PostMapping("/exit/{id}")
+    public ResponseEntity<?> exit(@PathVariable Integer id,
+                                  @RequestBody Map<String, String> request) {
+        String password = request.get("password");
+        final int WITHDRAWAL_SUCCESS = 200;
+        final int PASSWORD_MISMATCH = 400;
+        int result = userService.exitUser(id, password);
+        if(result == WITHDRAWAL_SUCCESS){
+            return ResponseEntity.status(HttpStatus.OK).body("탈퇴 요청이 성공적으로 처리되었습니다.");
+        }else if(result ==PASSWORD_MISMATCH){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호를 다시 확인해 주세요");
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("회원탈퇴 중 문제가 발생하였습니다.");
+        }
+
     }
 }

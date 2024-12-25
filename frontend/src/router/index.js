@@ -7,6 +7,7 @@ import ChargingStationPage from "@/views/main/ChargingStationPage.vue";
 import { useAuthStore } from "@/stores/auth";
 import ChargerChangeState from "@/views/chargingwebsocket/ChargerChangeState.vue";
 import StompClient from "@/components/StompClient.vue";
+import ExitUser from "@/views/pages/user-account/ExitUser.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -138,9 +139,9 @@ const router = createRouter({
       component: () => import("../views/pages/user-account/NewPassword.vue"),
     },
     {
-      path: "/exit",
+      path: "/exit/:id",
       name: "ExitUser",
-      component: () => import("../views/pages/user-account/ExitUser.vue"),
+      component: ExitUser
     },
     {
       path:"/client",

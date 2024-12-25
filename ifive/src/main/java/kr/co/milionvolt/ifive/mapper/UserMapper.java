@@ -2,10 +2,7 @@ package kr.co.milionvolt.ifive.mapper;
 
 import kr.co.milionvolt.ifive.domain.user.*;
 import kr.co.milionvolt.ifive.domain.userinfo.*;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -214,4 +211,7 @@ public interface UserMapper {
             "set car_battery = #{carBattery} " +
             "where car_id = #{carId}")
     boolean updateUserCarBattery(Integer carId, String carBattery);
+
+    @Delete("delete from user where id = #{id}")
+    boolean exitUser(Integer id);
 }

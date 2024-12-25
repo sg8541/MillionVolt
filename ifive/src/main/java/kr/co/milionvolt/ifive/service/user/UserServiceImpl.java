@@ -39,13 +39,13 @@ public class UserServiceImpl implements UserService {
     public boolean updatePassword(Integer id, PasswordDTO passwordDTO) {
         boolean success = false;
         log.info(passwordDTO.toString());
-        if(findByPassword(id, passwordDTO)){
+        if (findByPassword(id, passwordDTO.getPassword())) {
             String newPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
             log.info("newPassword: = ", newPassword);
             success = userMapper.updatePW(id, newPassword);
             return success;
             // 패스워드 변경 도중 실패한 상황에 대한 상태처리 추가 필요.
-        }else{
+        } else {
             // 패스워드가 일치하지 않은 경우에 대한 값
             return false;
         }
@@ -53,11 +53,12 @@ public class UserServiceImpl implements UserService {
 
     // 비밀번호 확인
     @Override
-    public boolean findByPassword(Integer id, PasswordDTO passwordDTO) {
+    public boolean findByPassword(Integer id, String password) {
         String currentPassword = userMapper.findByPassword(id);
-        boolean findPasswordResult = passwordEncoder.matches(passwordDTO.getPassword(), currentPassword);
-        return findPasswordResult;
+        boolean passwordResult = passwordEncoder.matches(password, currentPassword);
+        return passwordResult;
     }
+
 
     // 차 정보 조회
     @Override
@@ -66,6 +67,7 @@ public class UserServiceImpl implements UserService {
 
         return carInfoDTO;
     }
+
     // 차 정보 변경
     @Override
     public boolean updateUserCarInfo(CarInfoUpdateDTO updateDTO) {
@@ -119,7 +121,7 @@ public class UserServiceImpl implements UserService {
     //비밀번호 찾기1
     @Override
     public String findPasswordByUserId(String userId) {
-        String  email = userMapper.findPasswordByUserId(userId);
+        String email = userMapper.findPasswordByUserId(userId);
         return email;
     }
 
@@ -127,7 +129,7 @@ public class UserServiceImpl implements UserService {
     //비밀번호 찾기2
     @Override
     public FindFwdDTO findPass(String username, String email) {
-        FindFwdDTO dto =  userMapper.findPassword(username,email);
+        FindFwdDTO dto = userMapper.findPassword(username, email);
         return dto;
     }
 
@@ -146,7 +148,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUserInfo(UpdateUserInfoDTO infoDTO) {
-        try{
+        try {
             boolean result = userMapper.updateUserInfo(infoDTO);
             return result;
         } catch (Exception e) {
@@ -156,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int selectUserId(String userId) {
-        int id =   userMapper.selectFindId(userId);
+        int id = userMapper.selectFindId(userId);
         return id;
     }
 
@@ -165,5 +167,20 @@ public class UserServiceImpl implements UserService {
         boolean result = userMapper.updateUserCarBattery(id, carBettery);
         return result;
     }
+
+    @Override
+    public int exitUser(Integer id, String password) {
+        if (findByPassword(id, password)) {
+            boolean result = userMapper.exitUser(id);
+            if (result) {
+                return 200;
+            } else {
+                return 300;
+            }
+        } else {
+            return 400;
+        }
+    }
+
 
 }
