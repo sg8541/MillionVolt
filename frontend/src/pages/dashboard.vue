@@ -24,6 +24,10 @@ const fetchMyInfo = async (id) => {
     info.value = response.data;
     console.log("dashboard id : " + id);
   } catch (error) {
+  if(error.response.status == 403){
+    alert('잘못된 접근입니다. 다시 로그인 해주세요')
+    this.$router.replace({ path: '/login' });
+  }else
     console.error("Error fetching my info:", error);
   }
 }
