@@ -96,7 +96,7 @@
     const stationName = ref(null);
     const stationAddress = ref(null);
     const stationId = ref(null);
-    const username = ref('')
+    const username = ref('');
     const depositAmount = ref(100);
 
 
@@ -187,7 +187,7 @@
         const duration = reservationEndDate.value - reservationStartDate.value;
         const maxDuration = 24 * 60 * 60 * 1000; // 24시간을 밀리초로 변환
         if (duration > maxDuration) {
-            alert("예약은 최대 24시간 이내로만 가능합니다.");
+            alert("예약은 최대 24시간까지만 가능합니다.");
             return false;
         }
         return true;
@@ -225,14 +225,12 @@
                         window.location.href = "/";
                     } catch (error) {
                         // alert(error.response?.data?.message || "예약 처리 중 오류가 발생했습니다.");
-                        if (error.response?.status === 409) {
+                        if (error.response?.status === 400) {
                             // 예약 충돌 관련 오류 처리
                             alert(error.response.data.message);
                         } else if (error.response?.status === 500) {
                             // 서버 내부 오류 처리
-                            alert("서버에서 오류가 발생했습니다. 다시 시도해주세요.");
-                        } else {
-                            alert("알 수 없는 오류가 발생했습니다.");
+                            alert(error.response.data.message);
                         }
                     }
                 } else {
