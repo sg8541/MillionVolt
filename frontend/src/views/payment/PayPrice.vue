@@ -33,7 +33,12 @@
                 </div>
                 <div class="pay-info-amount-title">선결제 금액</div>
                 <div class="pay-info-amount-print">
+                    <div v-if="penaltyAmount == 0">
                     <strong class="amount-label"> 5000 </strong>
+                    </div>
+                    <div v-else>
+                        <strong class="amount-label"> 0 </strong>
+                    </div>    
                 </div>
                 <div class="pay-info-amount-title">벌금 결제</div>
                 <div class="pay-info-amount-print">
