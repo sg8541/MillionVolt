@@ -106,7 +106,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         System.out.println("예약 발송 : "+reservation);
                         session.sendMessage(new TextMessage(status));
                     }
-                    if(reservationEndTime.isBefore(now.plusMinutes(1))&& reservationEndTime.isAfter(now.minusMinutes(1))){
+                    if(reservationEndTime.isAfter(now.minusSeconds(30))&& reservationEndTime.isBefore(now.plusSeconds(30))){
                         System.out.println("예약 종료한 시간 : "+reservationEndTime);
                         PenaltiechargerStatusCheckVO penaltiechargerStatusCheckVO;
                         penaltiechargerStatusCheckVO =  penaltyService.findChargerId(reservation.getReservationId(),reservation.getStationId(),reservation.getChargerId());
@@ -127,7 +127,6 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
             }, 0, 1, TimeUnit.MINUTES); // 1분마다 실행
          }
 
-
     private void penaltiySendAlarm(WebSocketSession session, LocalDateTime closeReservationTime, int resNum, LocalDateTime reservationEndTime){
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -146,7 +145,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
                         session.sendMessage(new TextMessage(status));
 
-                    } else if (now.isEqual(closeReservationTime.plusMinutes(15))) { // 예약시간으로부터 15분전 알림.
+                    } else if (now.isAfter(closeReservationTime.minusMinutes(15)) && now.isBefore(closeReservationTime)) { // 예약시간으로부터 15분전 알림.
                         System.out.println("보증금 환수.");
                         String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "뒷 예약시간 15분 전 입니다.");
                         session.sendMessage(new TextMessage(status));
@@ -160,19 +159,20 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                             dto.setReservationId(resNum); // 보증금 환수.
                             penaltyService.insertPenalty(dto);
                         } else {
-                            if (repeatNum.get("repeat") == null) {
-                                repeatNum.put("repeat", num);
+                            if (repeatNum.get(String.valueOf(resNum)) == null) {
+                                repeatNum.put(String.valueOf(resNum), 1);
                                 penaltyAmount = 100 + vo.getPenaltyAmount();
-                                amount.put("amount",penaltyAmount);
-                            }else{
-                                num = repeatNum.get("repeat");
-                                num++;
-                                repeatNum.put("repeat", num);
+                                amount.put(String.valueOf(resNum), penaltyAmount);
+                            } else {
+                                int currentRepeat = repeatNum.get(String.valueOf(resNum));
+                                currentRepeat++;
+                                repeatNum.put(String.valueOf(resNum), currentRepeat);
                                 penaltyAmount += 100;
-                                amount.put("amount",penaltyAmount);
+                                amount.put(String.valueOf(resNum), penaltyAmount);
                             }
                             penaltyService.updatePenalty(penaltyAmount, resNum);
                         }
+
                         String status = String.format("{\"penaltyAmount\": \"%d\", \"message\": \"%s\"}", penaltyAmount,"벌금 부여");
                         session.sendMessage(new TextMessage(status));
 
