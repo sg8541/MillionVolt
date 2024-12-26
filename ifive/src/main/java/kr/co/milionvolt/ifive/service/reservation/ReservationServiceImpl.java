@@ -121,7 +121,7 @@ public class ReservationServiceImpl implements ReservationService {
             Payment payment = response.getResponse();
 
             if (payment == null || !"paid".equals(payment.getStatus())) {
-                return "결제 확인 중 오류가 발생했습니다.";
+                return "예약 처리 중 오류가 발생했습니다.";
             }
 
             // 4. DB에 예약 저장

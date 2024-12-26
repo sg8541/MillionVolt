@@ -117,8 +117,7 @@ const payment = () => {
             pg: "html5_inicis",
             pay_method: "카카오페이",
             merchant_uid: "order_" + new Date().getTime(),
-            amount: amount.value,
-            // name: "람보르기니 우라칸",
+            amount: amount.value + penaltyAmount.value,
         },
         async (rsp) => {
             if (rsp.success) {
