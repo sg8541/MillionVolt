@@ -116,12 +116,7 @@ const loadMarkers = async () => {
 
           // 마커 클릭 이벤트
           kakao.maps.event.addListener(marker, "click", () => {
-            // 모바일 추가. 기존 코드는 openModal(station.stationId); 하나만 있었음.
-            if (isMobile.value) {
               openModal(station.stationId); // 모바일은 모달 대신 패널
-            } else {
-              openModal(station.stationId); // 데스크톱은 기존 모달 사용
-            }
           });
 
           markers.value.push(marker);
@@ -211,34 +206,6 @@ onMounted(async () => {
   position: relative;
   height: 100%; /* 부모 요소 높이 상속 */
   overflow: hidden; /* 내부 스크롤 방지 */
-}
-
-/* 여기서부터 전부 다 모바일 추가 */
-.mobile-map {
-  height: 60vh; /* 모바일에서 지도 크기 조정 */
-}
-
-.desktop-map {
-  height: 100vh; /* 데스크톱에서는 전체 화면 */
-}
-
-.mobile-panel {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-}
-
-.close-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 </style>

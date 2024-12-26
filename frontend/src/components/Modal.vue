@@ -258,6 +258,7 @@ watch(
 .station-image img{
   width: 100%;
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -269,7 +270,6 @@ watch(
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  
 }
 
 b, strong{

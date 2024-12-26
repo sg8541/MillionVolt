@@ -1,7 +1,28 @@
 <template>
 <div class="sidebar" :class="{ visible: isSidebarVisible }">
     <!-- 닫기 버튼 -->
-    <button @click="$emit('toggleSidebar')">닫기</button>
+    <button class="close-button" @click="$emit('toggleSidebar')">닫기</button>
+
+    <!-- 네비게이션 메뉴 -->
+    <nav class="navigation">
+      <template v-if="isLoggedIn">
+        <a href="#" class="nav-item">결제 및 예약</a>
+        <RouterLink :to="`/myinfo/dashboard/${id}`">
+          <button type="button" class="nav-item">마이페이지</button>
+        </RouterLink>
+        <RouterLink to="/main">
+          <a href="#" class="nav-item" @click.prevent="handleLogout">로그아웃</a>
+        </RouterLink>
+      </template>
+      <template v-else>
+        <RouterLink to="/login">
+          <a href="#" class="nav-item">로그인</a>
+        </RouterLink>
+        <RouterLink to="/agreement">
+          <a href="#" class="nav-item">회원가입</a>
+        </RouterLink>
+      </template>
+    </nav>
 
     <!-- 검색창 -->
     <div class="search-bar mb-4">
@@ -38,7 +59,7 @@
         v-for="station in stations"
         :key="station.stationId"
         class="station-item"
-        @click="openModal(station.stationId)"
+        @click="$emit('stationSelected', station)"
       >
         <p class="font-bold" style="font-size: larger; font-weight: bold; color: #52616A;">{{ station.name }}</p>
         <p>주소: {{ station.address }}</p>
@@ -94,14 +115,6 @@
     마지막 »
   </button>
 </div>
-
-    <!-- 모달 컴포넌트 -->
-    <Modal
-      v-if="isModalVisible"
-      :stationId="selectedStationId"
-      :isVisible="isModalVisible"
-      @close="closeModal"
-    />
   </div>
 </template>
 
@@ -117,7 +130,6 @@ const props = defineProps({
     required: true,
   },
 });
-console.log("Sidebar에서 전달받은 isSidebarVisible 값:", props.isSidebarVisible);
 
 const stations = ref([]); // 충전소 데이터
 const loading = ref(false);
@@ -186,8 +198,6 @@ const fetchStations = async (page) => {
   };
 });
 
-
-
     totalItems.value = data.totalCount;
     console.log("Stations Updated:", stations.value);
     console.log("Total Items Updated:", totalItems.value);
@@ -248,7 +258,7 @@ fetchStations(1);
   position: fixed; /* 화면에 고정 */
   top: 0;
   right: 0;
-  width: 250px;
+  width: 350px;
   height: 100%; /* 화면 전체 높이 */
   background-color: #f9f9f9;
   z-index: 1000; /* 상위 요소 위에 나타나도록 */

@@ -7,31 +7,21 @@
           @stationSelected="selectStation"
           @updateStations="updateStations"
         />
-        <Modal
-          v-if="selectedStation"
-          :station="selectedStation"
-          @close="selectedStation = null"
-        />
-        <div
-          v-if="selectedStation && selectedStation.chargers"
-          class="chargers-container"
-        >
-          <Charger
-            v-for="(charger, index) in selectedStation.chargers"
-            :key="charger.charger_id"
-            :charger="charger"
-            :index="index"
-            @reserve="handleReserve"
-          />
-        </div>
-      </div>
-      <Sidebar
+        <Sidebar
         class="sidebar"
         :stations="stations"
         :isSidebarVisible="isSidebarVisible"
         @toggleSidebar="toggleSidebar"
         @stationSelected="selectStation"
       />
+      <!-- 중앙에서 하나의 모달 사용 -->
+      <Modal
+        v-if="isModalVisible"
+        :stationId="selectedStation?.stationId"
+        :isVisible="isModalVisible"
+        @close="closeModal"
+      />
+      </div>
     </div>
   </div>
 </template>
@@ -50,15 +40,16 @@ export default {
       stations: [], // 충전소 데이터
       selectedStation: null, // 선택된 충전소
       isSidebarVisible: false, // 사이드바 가시성 상태
+      isModalVisible: false, // 모달 표시 여부
     };
   },
   methods: {
     toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible; // 상태 값 반전
-      console.log("isSidebarVisible 상태:", this.isSidebarVisible); // 상태 값 디버깅
     },
     selectStation(station) {
       this.selectedStation = station; // 선택된 충전소 업데이트
+      this.isModalVisible = true; // 모달 표시
     },
     updateStations(stations) {
       this.stations = stations; // Map.vue에서 전달받은 충전소 데이터 업데이트
@@ -79,6 +70,10 @@ export default {
     },
     handleReserve(charger) {
       alert(`Reserving charger ID: ${charger.charger_id}`);
+    },
+      closeModal() {
+    this.isModalVisible = false; // 모달 닫기
+    this.selectedStation = null; // 선택된 충전소 초기화
     },
   },
 };
