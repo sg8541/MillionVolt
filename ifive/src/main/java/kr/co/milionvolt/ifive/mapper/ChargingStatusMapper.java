@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface ChargingStatusMapper {
-
     @Select(" SELECT u.id, u.user_id, u.username, uc.car_battery, uc.car_number, uc.car_id , " +
             " cm.model_id, cm.model_battery,r.reservation_id, r.start_time, r.end_time, " +
             " cs.station_id, cs.name, cs.address, " +
@@ -28,7 +27,7 @@ public interface ChargingStatusMapper {
             " ON c.charger_speed_id = csp.charger_speed_id " +
             " WHERE u.user_id = #{userId} " +
             " AND r.reservation_id = #{reservationId} " +
-            " AND cs.station_id = #{stationId}")
+            " AND cs.station_id = #{stationId} ")
     public ChargingStatusDTO chargingStatus(String userId, int reservationId,int stationId);
 
     @Update( "UPDATE user_car SET  car_battery =#{carBattery} WHERE car_id=#{carId}")

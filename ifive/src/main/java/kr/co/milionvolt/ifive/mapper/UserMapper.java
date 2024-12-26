@@ -143,10 +143,32 @@ public interface UserMapper {
     List<UserInfoPaymentListVO> getDashboardPayments(Integer id);
 
 
-    @Select("select id, user_id, password, role from user where user_id = #{userId}")
+    @Select("SELECT " +
+            "    u.id, " +
+            "    u.user_id, " +
+            "    u.password, " +
+            "    u.username, " +
+            "    u.role, " +
+            "    uc.car_battery, " +
+            "    cm.model_battery " +
+            "FROM user_car uc " +
+            "JOIN user u ON uc.car_id = u.id " +
+            "JOIN car_model cm ON uc.model_id = cm.model_id " +
+            "where user_id = #{userId}")
     UserDetailsVO findByUserId(String userId);
 
-    @Select("select id, user_id, password, role from user where id = #{id}")
+    @Select("SELECT " +
+            "    u.id, " +
+            "    u.user_id, " +
+            "    u.password, " +
+            "    u.username, " +
+            "    u.role, " +
+            "    uc.car_battery, " +
+            "    cm.model_battery " +
+            "FROM user_car uc " +
+            "JOIN user u ON uc.car_id = u.id " +
+            "JOIN car_model cm ON uc.model_id = cm.model_id " +
+            "where id = #{id}")
     UserDetailsVO findById(Integer id);
 
 

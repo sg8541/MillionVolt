@@ -10,6 +10,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -63,12 +64,15 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
         System.out.println("웹소켓 연결 종료" + userId);
          sessions.remove(userId);
         stopCharging(session);
+
+
     }
 
     private void startCharging(WebSocketSession session) {
 
         new Thread(() -> {
             try {
+                LocalDateTime now;
                 String query = session.getUri().getQuery();
                 String userId = getParameterFromQuery(query, "userId");
                 int reservationId = Integer.parseInt(getParameterFromQuery(query, "reservationId"));
@@ -91,7 +95,7 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
 
                     Thread.sleep(1000); // 1초 간격으로 실행.
                     currentBattery += chargeAmount; // chargeAmount에 시간을 곱해야함.
-
+                     now = LocalDateTime.now();
 
                         if(currentBattery>= totalBattery){
                             currentBattery = totalBattery;
@@ -102,6 +106,13 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                             session.sendMessage(new TextMessage(status));
                             payMap.clear();
                             break; // 충전 완료 시 루프 종료
+                        }
+                        if(now.isEqual(dto.getEndTime())){
+                            chargingStatusSerivce.chargingUpdate(carId,currentBattery);
+                            String status = String.format("{\"message\": \"예약시간으로 인한 충전종료\"}");
+                            session.sendMessage(new TextMessage(status));
+                            payMap.clear();
+                            break;
                         }
                     currentBatteryMap.put(userId, currentBattery);
                     dto.setCarBattery(currentBattery);
@@ -208,6 +219,4 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 return 7.0;
         }
     }
-
-
 }

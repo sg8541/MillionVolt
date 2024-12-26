@@ -128,9 +128,9 @@ export default {
     },
   },
   methods: {
-    // 비밀번호 패턴 검증(숫자+영어 8자리 이상)
+    // 비밀번호 패턴 검증(숫자+영어 8자리 이상, 특수문자 허용)
     passwordValidation(password) {
-      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      const passwordRegex = /^[a-zA-Z\d\W_]{8,}$/;
       return passwordRegex.test(password);
     },
     // 전화번호 패턴 검증 + 자동 하이픈 생성
@@ -206,7 +206,11 @@ export default {
           window.location.href = '/login';
         }
       } catch (error) {
-        alert(error)
+        if(error.response.status == 403){
+          alert("회원가입 중 문제가 발생하였습니다. 잠시 후 다시 수행해 주시길 바랍니다.")
+        }else {
+          alert("문제가 발생하였습니다." + error)
+        }
       }
     },
     // 아이디 중복 검사
