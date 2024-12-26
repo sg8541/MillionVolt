@@ -107,13 +107,14 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                             payMap.clear();
                             break; // 충전 완료 시 루프 종료
                         }
-                        if(now.isEqual(dto.getEndTime())){
-                            chargingStatusSerivce.chargingUpdate(carId,currentBattery);
-                            String status = String.format("{\"message\": \"예약시간으로 인한 충전종료\"}");
-                            session.sendMessage(new TextMessage(status));
-                            payMap.clear();
-                            break;
-                        }
+//                        if(now.isBefore(dto.getEndTime().plusMinutes(1)) && now.isAfter(dto.getEndTime().minusMinutes(1))){
+//                            chargingStatusSerivce.chargingUpdate(carId,currentBattery);
+//                            System.out.println("예약 종료.");
+//                            String status = String.format("{\"message\": \"예약시간으로 인한 충전종료\"}");
+//                            session.sendMessage(new TextMessage(status));
+//                            payMap.clear();
+//                            break;
+//                        }
                     currentBatteryMap.put(userId, currentBattery);
                     dto.setCarBattery(currentBattery);
 

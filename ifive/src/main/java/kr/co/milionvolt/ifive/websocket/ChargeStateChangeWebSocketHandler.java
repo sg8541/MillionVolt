@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.milionvolt.ifive.domain.charger.ChargerDTO;
 import kr.co.milionvolt.ifive.domain.charger.ChargerVO;
 import kr.co.milionvolt.ifive.service.charger.ChargerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 public class ChargeStateChangeWebSocketHandler extends TextWebSocketHandler {
     private final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
@@ -63,7 +65,7 @@ public class ChargeStateChangeWebSocketHandler extends TextWebSocketHandler {
                     session.sendMessage(new TextMessage(jsonString));
                 }
                 }catch (Exception e){
-                        e.printStackTrace();
+                       log.info("세션 종료시 데이터 못보내는 에러. ");
                 }
             }, 0, 1, TimeUnit.SECONDS); // 1초마다 실행
         }

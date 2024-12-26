@@ -8,7 +8,9 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         message: '',
         reservationId: '',
         startTime: '',
-        stationId:''
+        stationId:'',
+        closeReservationTime:'',
+        penaltyAmount:''
     });
 
     const isConnected = ref(false);
@@ -39,8 +41,10 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         alarm.value.reservationId = data.reservationId;
         alarm.value.startTime = data.startTime;
         alarm.value.stationId= data.stationId;
-
-        console.log(alarm.value.message);
+        alarm.value.closeReservationTime = data.closeReservationTime;
+        alarm.value.penaltyAmount = data.penaltyAmount;
+        
+        console.log(alarm.value.closeReservationTime);
         };
 
         // 에러 처리
