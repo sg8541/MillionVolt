@@ -1,5 +1,8 @@
 <template>
-  <div class="sidebar">
+<div class="sidebar" :class="{ visible: isSidebarVisible }">
+    <!-- 닫기 버튼 -->
+    <button @click="$emit('toggleSidebar')">닫기</button>
+
     <!-- 검색창 -->
     <div class="search-bar mb-4">
       <input
@@ -103,8 +106,18 @@
 </template>
 
 <script setup>
+
 import { ref, computed } from "vue";
 import Modal from "@/components/Modal.vue";
+
+// props 정의
+const props = defineProps({
+  isSidebarVisible: {
+    type: Boolean,
+    required: true,
+  },
+});
+console.log("Sidebar에서 전달받은 isSidebarVisible 값:", props.isSidebarVisible);
 
 const stations = ref([]); // 충전소 데이터
 const loading = ref(false);
@@ -232,11 +245,21 @@ fetchStations(1);
 
 <style scoped>
 .sidebar {
-  width: 100%;
-  height: 100%;
+  position: fixed; /* 화면에 고정 */
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100%; /* 화면 전체 높이 */
   background-color: #f9f9f9;
-  overflow-y: auto;
+  z-index: 1000; /* 상위 요소 위에 나타나도록 */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  transition: transform 0.3s ease-in-out; /* 애니메이션 추가 */
+  transform: translateX(-100%); /* 기본적으로 화면 밖에 숨김 */
+}
+
+.sidebar.visible {
+  transform: translateX(0); /* 화면 안으로 슬라이드 */
 }
 
 .search-bar {
@@ -337,6 +360,15 @@ fetchStations(1);
 
 .pagination button:hover:not(.active) {
   background-color: #e6e6e6;
+}
+.close-button {
+  position: absolute;
+  top: 10px; /* 상단 여백 */
+  right: 10px; /* 오른쪽 여백 */
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  font-size: 20px; /* 글자 크기 */
+  cursor: pointer; /* 클릭 가능 커서 */
 }
 
 </style>

@@ -1,3 +1,4 @@
+<!-- 기존 코드에서 모바일 전환시 추가되는 코드들은 "모바일 추가"라고 명시해 놓음. -->
 <template>
   <div v-if="isVisible" class="modal-overlay">
     <div class="modal-container">

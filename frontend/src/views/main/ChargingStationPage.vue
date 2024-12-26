@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Header class="header" />
+    <Header class="header" @toggleSidebar="toggleSidebar" />
     <div class="content">
       <div class="map-container">
         <Map
@@ -28,6 +28,8 @@
       <Sidebar
         class="sidebar"
         :stations="stations"
+        :isSidebarVisible="isSidebarVisible"
+        @toggleSidebar="toggleSidebar"
         @stationSelected="selectStation"
       />
     </div>
@@ -47,9 +49,14 @@ export default {
     return {
       stations: [], // 충전소 데이터
       selectedStation: null, // 선택된 충전소
+      isSidebarVisible: false, // 사이드바 가시성 상태
     };
   },
   methods: {
+    toggleSidebar() {
+      this.isSidebarVisible = !this.isSidebarVisible; // 상태 값 반전
+      console.log("isSidebarVisible 상태:", this.isSidebarVisible); // 상태 값 디버깅
+    },
     selectStation(station) {
       this.selectedStation = station; // 선택된 충전소 업데이트
     },
@@ -109,6 +116,11 @@ export default {
   background-color: #f4f4f4;
   overflow-y: auto;
   border-left: 1px solid #ddd;
+  display: none; /* 기본적으로 숨김 */
+}
+
+.sidebar.visible {
+  display: block; /* 가시성 상태에 따라 표시 */
 }
 
 .chargers-container {

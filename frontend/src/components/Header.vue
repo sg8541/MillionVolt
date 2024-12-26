@@ -6,26 +6,11 @@
       <img src="/src/assets/images/logo/logo-yellow-white.png" alt="로고" style="width:100%;">
     </div>
 
-    <!-- 네비게이션 메뉴 -->
-    <nav class="navigation">
-      <template v-if="isLoggedIn">
-        <a href="#" class="nav-item">결제 및 예약</a>
-        <RouterLink :to="`/myinfo/dashboard/${id}`">
-          <button type="button" class="nav-item">마이페이지</button>
-        </RouterLink>
-        <RouterLink to="/main">
-          <a href="#" class="nav-item" @click.prevent="handleLogout">로그아웃</a>
-        </RouterLink>
-      </template>
-      <template v-else>
-        <RouterLink to="/login">
-          <a href="#" class="nav-item">로그인</a>
-        </RouterLink>
-        <RouterLink to="/agreement">
-          <a href="#" class="nav-item">회원가입</a>
-        </RouterLink>
-      </template>
-    </nav>
+    <!-- 사이드바 -->
+    <button @click="$emit('toggleSidebar'); console.log('햄버거 버튼 클릭됨')" class="hamburger-menu">
+  ☰
+</button>
+
 
     <!-- 알림 아이콘 -->
     <div class="relative alert-container">
@@ -40,6 +25,7 @@
 
         <div v-if="store.chargingData.chargerType" class="alert-content">
           <p>{{ store.finishAlarm.message }}</p>
+
           <div v-if="store.chargingData.chargerType" class="speed-indicator">
             <label><strong>충전 속도: {{ store.chargingData.chargerType }}</strong></label>
             <div class="speed-bar">
@@ -84,7 +70,6 @@
 </template>
 
 <script setup>
-
 import { useAuthStore } from '@/stores/auth';
 import { onMounted, ref, watch, computed } from "vue";
 import { useWebSocketStore } from '@/stores/webSocketChargingStore';
@@ -93,15 +78,11 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const isAlertBoxVisible = ref(false);
-
 const store = useWebSocketStore();
 const storeAlarm = useAlarmWebSocketStore();
-
 const isModalVisible = ref(false);
 
-
 storeAlarm.alarm = { message: "새로운 알람이 없습니다." };
-
 storeAlarm.alarm = storeAlarm.alarm || { message: null };
 store.finishAlarm = store.finishAlarm || { message: null };
 
@@ -150,13 +131,10 @@ watch(
   }
 );
 
-
 // 알림창 토글
 const toggleAlertBox = () => {
   isAlertBoxVisible.value = !isAlertBoxVisible.value;
 };
-
-
 
 const currentBatteryPercent = ref(0);
 
@@ -173,7 +151,6 @@ watch(
   },
   { immediate: true } // 처음 마운트 시에도 실행
 );
-
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user || {});
@@ -195,7 +172,6 @@ if (token) {
   isLoggedIn.value = false;
 }
 
-
 // 페이지 새로고침
 const reloadPage = () => {
   window.location.reload();
@@ -203,8 +179,6 @@ const reloadPage = () => {
 
 // 로그아웃 함수
 // const logout = () => {
-
-
 // };
 
 // 충전 속도에 따른 퍼센트 반환
@@ -375,7 +349,6 @@ const handleLogout = async () => {
   }
 }
 
-
 .alert-modal {
   display: none;
   position: fixed;
@@ -434,4 +407,14 @@ const handleLogout = async () => {
 .modal-click:hover {
   background-color: #e6e6e6;
 }
+
+.hamburger-menu {
+  font-size: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  margin-left: auto;
+}
+
 </style>
