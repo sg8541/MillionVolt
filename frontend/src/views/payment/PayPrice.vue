@@ -33,11 +33,20 @@
                 </div>
                 <div class="pay-info-amount-title">선결제 금액</div>
                 <div class="pay-info-amount-print">
-                    <strong class="amount-label">{{ amount }}</strong>
+                    <div v-if="penaltyAmount == 0">
+                    <strong class="amount-label"> 5000 </strong>
+                    </div>
+                    <div v-else>
+                        <strong class="amount-label"> 0 </strong>
+                    </div>    
+                </div>
+                <div class="pay-info-amount-title">벌금 결제</div>
+                <div class="pay-info-amount-print">
+                    <strong class="amount-label">{{ penaltyAmount }}</strong>
                 </div>
                 <div class="pay-info-amount-title">결제 금액</div>
                 <div class="pay-info-amount-print">
-                    <strong class="amount-label">{{ amount }}</strong>
+                    <strong class="amount-label">{{ totalAmount }}</strong>
                 </div>
                 <div class="pay-info-hourAndCharge-title">충전 시간 및 충전량</div>
                 <div class="pay-info-hourAndCharge-print">
@@ -53,7 +62,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
@@ -99,6 +108,11 @@ onMounted(() => {
     stationAdress();
     penalty();
 });
+
+const totalAmount = computed(() => {
+    return amount.value+penaltyAmount.value;
+});
+
 
 
 const stationAdress = async () => {

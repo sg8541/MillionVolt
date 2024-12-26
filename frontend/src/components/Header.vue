@@ -37,11 +37,17 @@
             <div>
               {{ currentBatteryPercent }}%
             </div>
-            <div v-if="currentBatteryPercent < 100" @click="movePaymentPrice">
-              <label><strong>충전정보 보기</strong></label>
+            <div v-if="storeAlarm.alarm.penaltyAmount" @click="movePaymentPrice">
+              <label><strong>결제하러가기</strong></label>
+            </div>
+            <div v-else-if="currentBatteryPercent == 100" @click="movePaymentPrice">
+              <label><strong>결제하러가기</strong></label>
+            </div>
+            <div v-else-if="store.finishAlarm.message == '예약시간으로 인한 충전종료'"  @click="movePaymentPrice">
+              <label><strong>결제하러가기</strong></label>
             </div>
             <div v-else @click="movePaymentPrice">
-              <label><strong>결제하러가기</strong></label>
+              <label><strong>충전정보 보기</strong></label>
             </div>
           </div>
         </div>
@@ -151,12 +157,14 @@ const toggleAlertBox = () => {
 
 const currentBatteryPercent = ref(0);
 
+console.log(store.finishAlarm.message);
+
 watch(
   () => store.chargingData.batteryPercent,
   (newValue) => {
     console.log("업데이트된 배터리 퍼센트:", newValue);
     currentBatteryPercent.value = newValue || 0; // 값이 없을 경우 0으로 처리
-    store.finishAlarm.message = "충전 중인 상태입니다.";
+    // store.finishAlarm.message = "충전 중인 상태입니다.";
     if (currentBatteryPercent.value == 100) {
       store.finishAlarm.message = "충전 완료";
       isAlertBoxVisible.value = true;
