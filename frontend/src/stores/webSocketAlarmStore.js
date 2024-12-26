@@ -43,8 +43,6 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
         alarm.value.stationId= data.stationId;
         alarm.value.closeReservationTime = data.closeReservationTime;
         alarm.value.penaltyAmount = data.penaltyAmount;
-        
-        console.log(alarm.value.closeReservationTime);
         };
 
         // 에러 처리
