@@ -13,13 +13,11 @@ public interface UserService {
     // 비밀번호 변경
     boolean updatePassword(Integer id, PasswordDTO passwordDTO);
     // 비밀번호 확인
-    boolean findByPassword(Integer id, PasswordDTO passwordDTO);
+    boolean findByPassword(Integer id, String password);
     // 유저 차 조회
     UserCarInfoDTO userCarInfo(Integer id);
-    // 유저 차 번호 + 모델 업데이트
-    boolean updateUserCarNumberAndCarModel(CarNumberAndModelUpdateDTO carNumberDTO);
-    // 유저 배터리 + 선호 타입 업데이트
-    boolean updateUserCarBatteryAndChargerType(CarBatteryAndChargerSpeedUpdateDTO updateDTO);
+    // 유저 차 정보 업데이트
+    boolean updateUserCarInfo(CarInfoUpdateDTO updateDTO);
     // 유저의 예약 내역
     List<UserInfoReservationListVO> getUserReservationList(Integer id);
     // 유저의 결제 내역
@@ -43,4 +41,6 @@ public interface UserService {
     public int selectUserId(String userId); // 예약번호 조회 알림때 사용하는 메서드
 
     boolean updateUserCarBattery(Integer id, String carBettery);
+
+    int exitUser(Integer id, String password);
 }

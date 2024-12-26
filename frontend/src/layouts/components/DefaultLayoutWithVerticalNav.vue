@@ -81,26 +81,25 @@ onMounted(()=>{
         }"
       />
 
-      <!-- 👉 Pages -->
-      <VerticalNavLink
-        :item="{
-          title: 'Error',
-          icon: 'bx-info-circle',
-          to: '/no-existence',
-        }"
-      />
-
       <!-- 👉 User Interface -->
       <VerticalNavSectionTitle
         :item="{
           heading: 'User Interface',
         }"
       />
+      <VerticalNavLink
+        :item="{
+          title: '회원탈퇴',
+          icon: 'bx-info-circle',
+          to: '/exit/'+route.params.id,
+        }"
+      />
 
     </template>
 
-    <template #after-vertical-nav-items>
-      <!-- 👉 illustration -->
+    <!-- 👉 illustration -->
+    <!-- <template #after-vertical-nav-items>
+    
       <a
         href="https://themeselection.com/item/sneat-vuetify-vuejs-admin-template"
         target="_blank"
@@ -108,15 +107,11 @@ onMounted(()=>{
         style="margin-left: 7px;"
       >
       </a>
-    </template>
+    </template> -->
 
     <!-- 👉 Pages -->
     <slot />
 
-    <!-- 👉 Footer -->
-    <!-- <template #footer>
-      <Footer />
-    </template> -->
   </VerticalNavLayout>
 </template>
 

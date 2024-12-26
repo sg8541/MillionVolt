@@ -52,8 +52,7 @@ export const useAuthStore = defineStore('auth', {
         this.user = null
         localStorage.removeItem('accessToken')
         localStorage.removeItem('user')
-        // router.push('/login')
-        window.location.reload()
+        router.replace('/main')
       }
     },
     async refreshAccessToken() {

@@ -97,7 +97,7 @@ const confirmChange = () => {
   }
 }
 
-// 닉네임 변경 취소
+// 이메일 변경 취소
 const cancelChange = () => {
   modalEmail.value = ''
   statusMessage.value = ''

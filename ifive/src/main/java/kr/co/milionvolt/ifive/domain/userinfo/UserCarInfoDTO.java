@@ -14,4 +14,6 @@ public class UserCarInfoDTO {
     private String chargerSpeedId;
     private String modelId;
     private BigDecimal carBattery;
+    private Integer modelBattery;
+
 }

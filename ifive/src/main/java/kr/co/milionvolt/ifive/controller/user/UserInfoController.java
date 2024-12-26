@@ -67,25 +67,13 @@ public class UserInfoController {
         }
     }
 
-    // 내 차 수정(차 번호 + 차 넘버 변경)
+    // 내 차 수정
     @PostMapping("/car/{id}")
-    public ResponseEntity<?> updateUserCarNumberAndCarModel(@PathVariable Integer id, @RequestBody CarNumberAndModelUpdateDTO carNumberDTO) {
-        carNumberDTO.setCarId(id);
-        boolean success = userService.updateUserCarNumberAndCarModel(carNumberDTO);
-        if(success) {
-            return ResponseEntity.status(HttpStatus.OK).body("차 번호와 모델 정보가 성공적으로 변경되었습니다.");
-        }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("정보 수정 중 문제가 발생하였습니다.");
-        }
-    }
-
-    // 내 차 수정(차 배터리 + 선호 kW 정보)
-    @PatchMapping("/car/{id}")
-    public ResponseEntity<?> updateUserCarBatteryAndChargerType(@PathVariable Integer id,  @RequestBody CarBatteryAndChargerSpeedUpdateDTO updateDTO) {
+    public ResponseEntity<?> updateUserCarInfo(@PathVariable Integer id, @RequestBody CarInfoUpdateDTO updateDTO) {
         updateDTO.setCarId(id);
-        boolean success = userService.updateUserCarBatteryAndChargerType(updateDTO);
+        boolean success = userService.updateUserCarInfo(updateDTO);
         if(success) {
-            return ResponseEntity.status(HttpStatus.OK).body("배터리와 충전 선호타입이 성공적으로 변경되었습니다.");
+            return ResponseEntity.status(HttpStatus.OK).body("차량 정보가 성공적으로 변경되었습니다.");
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("정보 수정 중 문제가 발생하였습니다.");
         }

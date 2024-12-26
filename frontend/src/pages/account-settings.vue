@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import AccountSettingsAccount from '@/views/pages/account-settings/AccountSettingsAccount.vue'
-import AccountSettingsNotification from '@/views/pages/account-settings/AccountSettingsNotification.vue'
+import AccountSettingsCar from '@/views/pages/account-settings/AccountSettingsCar.vue'
 import AccountSettingsSecurity from '@/views/pages/account-settings/AccountSettingsSecurity.vue'
 
 const route = useRoute()
@@ -19,11 +19,11 @@ const tabs = [
     icon: 'bx-lock-open',
     tab: 'security',
   },
-  // {
-  //   title: '내 차 정보',
-  //   icon: 'bx-car',
-  //   tab: 'mycar',
-  // },
+  {
+    title: '내 차 정보',
+    icon: 'bx-car',
+    tab: 'mycar',
+  },
 ]
 </script>
 
@@ -63,9 +63,9 @@ const tabs = [
       </VWindowItem>
 
       <!-- Notification -->
-      <!-- <VWindowItem value="mycar">
-        <AccountSettingsNotification />
-      </VWindowItem> -->
+      <VWindowItem value="mycar">
+        <AccountSettingsCar />
+      </VWindowItem>
     </VWindow>
   </div>
 </template>
