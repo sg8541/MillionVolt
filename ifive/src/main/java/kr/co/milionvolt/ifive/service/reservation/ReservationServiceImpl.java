@@ -135,6 +135,7 @@ public class ReservationServiceImpl implements ReservationService {
             reservationRedis.setEndTime(reservationDTO.getEndTime());
             reservationRedis.setUserId(reservationDTO.getUserId());
             reservationRedis.setStationId(reservationDTO.getStationId());
+            reservationRedis.setChargerId(reservationDTO.getChargerId());
             reservationRedisService.save(reservationRedis);
 
             message = "예약이 완료되었습니다.";
