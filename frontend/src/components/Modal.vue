@@ -1,3 +1,4 @@
+<!-- 기존 코드에서 모바일 전환시 추가되는 코드들은 "모바일 추가"라고 명시해 놓음. -->
 <template>
   <div v-if="isVisible" class="modal-overlay">
     <div class="modal-container">
@@ -257,6 +258,7 @@ watch(
 .station-image img{
   width: 100%;
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -268,7 +270,6 @@ watch(
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  
 }
 
 b, strong{

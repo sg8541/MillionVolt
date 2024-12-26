@@ -1,6 +1,9 @@
+<!-- 기존 코드에서 모바일 전환시 추가되는 코드들은 "모바일 추가"라고 명시해 놓음. -->
 <template>
   <div class="relative">
-    <div id="map" class="w-full h-screen"></div>
+    <!-- 모바일 추가 -->
+    <div id="map" :class="{ 'mobile-map': isMobile, 'desktop-map': !isMobile }"></div>
+
     <div v-if="error" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md">
       {{ error }}
     </div>
@@ -13,6 +16,13 @@
       :isVisible="isModalVisible"
       @close="closeModal"
     />
+
+    <!-- 모바일 추가 -->
+    <div v-if="isMobile && isModalVisible" class="mobile-panel">
+      <h3>충전소 정보</h3>
+      <p>충전소 ID: {{ selectedStationId }}</p>
+      <button class="close-btn" @click="closeModal">닫기</button>
+    </div>
   </div>
 </template>
 
@@ -27,9 +37,17 @@ const markers = ref([]); // 충전소 마커 리스트
 const geocoder = ref(null);
 const error = ref(null);
 const loading = ref(true);
-
 const selectedStationId = ref(null); // 선택된 충전소 ID
 const isModalVisible = ref(false); // 모달 표시 여부
+
+// 모바일 추가
+// 반응형 상태 관리
+const isMobile = ref(window.innerWidth <= 768);
+// 창 크기 변화 감지
+window.addEventListener("resize", () => {
+  isMobile.value = window.innerWidth <= 768;
+});
+
 
 // Kakao API Key 설정
 const kakaoApiKey = import.meta.env.VITE_KAKAO_API_KEY;
@@ -74,7 +92,6 @@ const loadMarkers = async () => {
     }
 
     const stations = await response.json();
-    console.log("전체 충전소 데이터:", stations);
 
     if (!stations || stations.length === 0) {
       console.warn("충전소 데이터가 없습니다.");
@@ -99,9 +116,7 @@ const loadMarkers = async () => {
 
           // 마커 클릭 이벤트
           kakao.maps.event.addListener(marker, "click", () => {
-            console.log(`마커 클릭됨: ${station.name}`);
-            openModal(station.stationId);
-            //router.push({ name: "Reservation", params: { station_id: station.stationId } }); // 예약 페이지로 이동
+              openModal(station.stationId); // 모바일은 모달 대신 패널
           });
 
           markers.value.push(marker);
@@ -111,7 +126,6 @@ const loadMarkers = async () => {
       });
     });
   } catch (error) {
-    console.error("충전소 데이터를 불러오는 중 문제가 발생했습니다:", error);
     error.value = "충전소 데이터를 불러오는 중 문제가 발생했습니다.";
   } finally {
     loading.value = false;
@@ -129,7 +143,8 @@ const initializeMap = () => {
   // 지도 설정
   map.value = new kakao.maps.Map(container, {
     center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본 서울 중심 좌표
-    level: 5,
+    // 모바일 추가
+    level: isMobile.value ? 7 : 5,
   });
 
   geocoder.value = new kakao.maps.services.Geocoder();
@@ -154,18 +169,14 @@ const initializeMap = () => {
             new kakao.maps.Size(32, 32)
           ),
         });
-
-        console.log("사용자 위치:", coords);
         loadMarkers(); // 충전소 마커 로드
       },
       (err) => {
-        console.warn("사용자 위치를 가져올 수 없습니다:", err);
         error.value = "사용자 위치를 가져올 수 없어 기본 위치를 사용합니다.";
         loadMarkers(); // 기본 위치에서 충전소 마커 로드
       }
     );
   } else {
-    console.warn("Geolocation API를 사용할 수 없습니다.");
     error.value = "위치 정보를 가져올 수 없어 기본 위치를 사용합니다.";
     loadMarkers(); // 기본 위치에서 충전소 마커 로드
   }
@@ -176,18 +187,15 @@ onMounted(async () => {
   try {
     await loadKakaoMapsScript();
     kakao.maps.load(() => {
-      console.log("카카오 지도 로드 성공");
       initializeMap();
     });
   } catch (error) {
-    console.error("카카오 지도 로드 실패:", error);
     error.value = "카카오 지도를 로드하는 중 문제가 발생했습니다.";
   }
 });
 </script>
 
 <style scoped>
-
 #map {
   width: 100%;
   height: 100%;
