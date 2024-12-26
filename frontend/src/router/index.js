@@ -147,6 +147,11 @@ const router = createRouter({
       name:'StompClient',
       component:StompClient
     },
+    {
+      path:"/forbidden",
+      name:"Forbidden",
+      component: () => import("../pages/forbidden.vue"),
+    }
   ],
 });
 

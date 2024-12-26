@@ -10,7 +10,7 @@
 
       <div class="login-container">
         <h2>새로운 비밀번호 입력</h2>
-        <p class="description">새로운 비밀번호를 입력해주세요</p>
+        <p class="description">새로운 비밀번호를 입력해주세요<br>비밀번호는 8자리 이상, 영문 숫자가 포함되어야 합니다.</p>
         <p class="description2"># 아이디 : <span class="description3">{{ userId }}</span></p>
 
         <form @submit.prevent="handleSubmit">
@@ -35,12 +35,11 @@ export default {
   data() {
     return {
       userId: this.$route.query.userId || '',
+      username: this.$route.query.username || '',
+      email: this.$route.query.email || '',
       password: "",
       passwordConfirm: "",
     };
-  },
-  created() {
-    this.userId = this.$route.query.userId || '';  // 쿼리 파라미터가 존재하면 userId를 할당
   },
   computed: {
     passwordMismatch() {
@@ -50,7 +49,7 @@ export default {
   },
   methods: {
     passwordValidation(password) {
-      const passwordRegex = /^[a-zA-Z\d\W_]{8,}$/;
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d\W]{8,}$/;
       return passwordRegex.test(password);
     },
     async handleSubmit() {
@@ -63,12 +62,13 @@ export default {
         return;
       }
       // 비밀번호 변경 API 호출
+      console.log(this.userId, this.username, this.email);
       try {
         const response = await api.post(`/resetPwd`, {
           password: this.password,
           userId: this.userId,
-          username: this.$route.query.username,
-          email: this.$route.query.email,
+          username: this.username,
+          email: this.email,
         })
         if (response.status === 200) {
           alert("비밀번호가 성공적으로 변경되었습니다.");

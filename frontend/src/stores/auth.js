@@ -34,7 +34,9 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         if (error.response && error.response.data) {
           this.errorMessage = error.response.data
+          
         } else {
+          alert('로그인 중 오류가 발생했습니다.');
           this.errorMessage = '로그인 중 오류가 발생했습니다.'
         }
         throw new Error(this.errorMessage)

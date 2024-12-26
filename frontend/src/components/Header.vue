@@ -112,6 +112,12 @@ onMounted(() => {
     storeAlarm.connectAlarmWebSocket()
   }
   console.log("온마운트");
+  const hasCheckedLogout = ref(false); // 로그아웃 여부를 추적하는 플래그
+
+if (!hasCheckedLogout.value && accessToken.value === null && id !== "") {
+  handleRefreshAccessToken()
+  hasCheckedLogout.value = true; // 로그아웃 상태를 확인했음을 표시
+}
 });
 
 //   watch(
@@ -176,24 +182,13 @@ watch(
 
 
 const authStore = useAuthStore();
+const accessToken = computed(() => authStore.accessToken);
 const user = computed(() => authStore.user || {});
 const id = user.value.id || '';
 
 //console.log("=====" + user.value.id);
 // 로그인 상태 관리
-const isLoggedIn = ref(false);
-if (id == null || '') {
-  isLoggedIn.value = false;
-} else {
-  isLoggedIn.value = true;
-}
-
-const token = localStorage.getItem('user');
-if (token) {
-  isLoggedIn.value = true;
-} else {
-  isLoggedIn.value = false;
-}
+const isLoggedIn = computed(() => !!accessToken.value);
 
 
 // 페이지 새로고침
@@ -249,16 +244,24 @@ const movePaymentPrice = () => {
 }
 
 const handleLogout = async () => {
-      try {
-        await authStore.logout()
-        showUserMenu.value = false
-        console.log("로그아웃 실행");
-        isLoggedIn.value = false;
-        router.push('/main') // 로그아웃 후 홈으로 이동
-      } catch (error) {
-        console.error('로그아웃 실패:', error)
-      }
-    }
+  try {
+    await authStore.logout()
+    showUserMenu.value = false
+    console.log("로그아웃 실행");
+    isLoggedIn.value = false;
+    router.push('/main') // 로그아웃 후 홈으로 이동
+  } catch (error) {
+    console.error('로그아웃 실패:', error)
+  }
+}
+const handleRefreshAccessToken = async () => {
+  try {
+    await authStore.refreshAccessToken()
+  } catch (error) {
+    console.error('토큰재발급 실패:', error)
+  }
+}
+
 </script>
 
 <style scoped>

@@ -1,8 +1,8 @@
 <template>
     <div class="terms-page">
-      <a href="../templates/main.html">
-        <img src="images/logo.png" alt="백만볼트 로고" class="logo" width="150" />
-      </a>
+      <router-link to="/main">
+        <img src="images/logo.png" alt="백만볼트 로고">
+      </router-link>
       <div class="terms-container">
         <div class="terms-header">이용약관</div>
         <div class="terms-item" v-for="term in terms" :key="term.name">

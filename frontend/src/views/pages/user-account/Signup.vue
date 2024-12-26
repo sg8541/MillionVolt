@@ -130,7 +130,8 @@ export default {
   methods: {
     // 비밀번호 패턴 검증(숫자+영어 8자리 이상, 특수문자 허용)
     passwordValidation(password) {
-      const passwordRegex = /^[a-zA-Z\d\W_]{8,}$/;
+      // 영어와 숫자가 각각 최소 1개 이상 포함되고, 특수문자는 선택적, 총 8자 이상
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d\W]{8,}$/;
       return passwordRegex.test(password);
     },
     // 전화번호 패턴 검증 + 자동 하이픈 생성
