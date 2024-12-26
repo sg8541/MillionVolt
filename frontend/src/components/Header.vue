@@ -101,7 +101,7 @@ store.finishAlarm = store.finishAlarm || { message: null };
 
 onMounted(() => {
   isAlertBoxVisible.value = false;
-  if (isLoggedIn.value == true) {
+  if (accessToken.value == true) {
     store.connectWebSocket();
     storeAlarm.connectAlarmWebSocket()
   }
