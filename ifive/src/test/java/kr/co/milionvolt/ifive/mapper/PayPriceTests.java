@@ -20,18 +20,19 @@ public class PayPriceTests {
     public void test() {
         // DTO에 값 설정
 //        payPriceDTO.setPaymentId(2);  // payment_id 설정
-        payPriceDTO.setUserId(2);      // user_id 설정
-        payPriceDTO.setReservationId(2); // reservation_id 설정
+        payPriceDTO.setUserId(1);      // user_id 설정
+        payPriceDTO.setReservationId(72); // reservation_id 설정
+        payPriceDTO.setStationId(1);
         payPriceDTO.setAmount(20000);   // amount 설정
-        payPriceDTO.setPaymentMethod("CreditCard"); // payment_method 설정
-        payPriceDTO.setPaymentStatus("confirmed");    // payment_status 설정
+        payPriceDTO.setPaymentMethod("카카오페이"); // payment_method 설정
+        payPriceDTO.setPaymentStatus("pending");    // payment_status 설정
 
         // 날짜 설정
         payPriceDTO.setCreatedAt(LocalDateTime.now()); // created_at 설정
         payPriceDTO.setUpdatedAt(LocalDateTime.now()); // updated_at 설정
         payPriceDTO.setChargeStart(Timestamp.valueOf(LocalDateTime.now())); // charge_start 설정
         payPriceDTO.setChargeEnd(Timestamp.valueOf(LocalDateTime.now().plusHours(1))); // charge_end 설정
-
+        payPriceDTO.setImpUid("imp50578251");
         // DB에 데이터 삽입
         boolean result = payPriceMapper.insertPayPrice(payPriceDTO);
 

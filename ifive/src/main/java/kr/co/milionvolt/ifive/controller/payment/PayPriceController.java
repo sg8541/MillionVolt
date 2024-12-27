@@ -66,7 +66,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/payment")
-@Transactional
+//@Transactional
 public class PayPriceController {
 
     @Autowired
@@ -74,9 +74,7 @@ public class PayPriceController {
 
     @PostMapping("/save/{impUid}")
     public ResponseEntity<String> payment(@PathVariable String impUid, @RequestBody PayPriceDTO payPriceDTO) throws IamportResponseException, IOException {
-
         System.out.println(payPriceDTO);
-
         if(payPriceService.savePayPrice(impUid, payPriceDTO)){
             return ResponseEntity.status(HttpStatus.CREATED).body("결제에 성공했습니다.");
         } else{

@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
@@ -80,7 +80,7 @@ function formatDate(timestamp) {
 }
 
 
-const userId = ref(null);
+const userId = ref('');
 const stationId = ref(null);
 const reservationId = ref(null);
 const amount = ref(0);
@@ -89,7 +89,9 @@ const chargeEnd = ref(null);
 const chargingKwh = ref(null);
 const chargerId = ref(null);
 const stationInfo = ref(null);
-const penaltyAmount = ref(''); 
+const penaltyAmount = ref('');
+
+
 
 // const finaleAmount = computed(() => {
 //     return amount.value - penaltyAmount.value; // 총 결제 금액 계산
@@ -98,6 +100,7 @@ const penaltyAmount = ref('');
 onMounted(() => {
     console.log('route.query:', route.query);
     userId.value = route.query.userId;
+    console.log(userId.value);
     stationId.value = route.query.stationId;
     reservationId.value = route.query.reservationId;
     chargeStart.value = route.query.chargeStart;
@@ -109,11 +112,16 @@ onMounted(() => {
     penalty();
 });
 
+
 const totalAmount = computed(() => {
+    if(amount.value < 100){
+        amount.value = 100;
+    }
     return amount.value+penaltyAmount.value;
 });
 
 
+console.log(" 2: "+userId.value);
 
 const stationAdress = async () => {
     const stationInfoResponse = await axios.get(
@@ -121,9 +129,10 @@ const stationAdress = async () => {
     )
     stationInfo.value = stationInfoResponse.data;
 };
-
+console.log(totalAmount.value);
 //결제 API
 const payment = () => {
+    
     const imp = window.IMP;
     imp.init("imp50578251");
     imp.request_pay(
@@ -131,7 +140,8 @@ const payment = () => {
             pg: "html5_inicis",
             pay_method: "카카오페이",
             merchant_uid: "order_" + new Date().getTime(),
-            amount: amount.value + penaltyAmount.value,
+            amount: totalAmount.value,
+            name: "결제 전력량",
         },
         async (rsp) => {
             if (rsp.success) {
@@ -144,7 +154,7 @@ const payment = () => {
                             userId: userId.value, // 유저의 아이디
                             stationId: stationId.value, // 충전소 번호
                             chargerId: chargerId.value, // 충전기 번호 
-                            amount: amount.value, // 결제 금액
+                            amount: totalAmount.value, // 결제 금액
                             chargedEnergy: chargingKwh.value, // 충전 전력량
                             paymentMethod: rsp.pay_method, // 결제 방법
                             paymentStatus: rsp.status, // 결제 상태 (성공/실패)
@@ -163,6 +173,7 @@ const payment = () => {
         }
     );
 };
+
 
 const penalty = async () => {
     try {
