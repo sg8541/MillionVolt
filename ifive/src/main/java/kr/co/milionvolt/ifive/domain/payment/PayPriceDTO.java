@@ -17,7 +17,7 @@ public class PayPriceDTO {
     private int stationId;
     private int chargerId;
     private long amount;
-    private long chargedEnergy;
+    private double chargedEnergy;
     private String paymentMethod;
     private String paymentStatus;
     private LocalDateTime createdAt;

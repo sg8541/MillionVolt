@@ -70,7 +70,6 @@ function formatDate(timestamp) {
     return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
 }
 
-
 const userId = ref(null);
 const stationId = ref(null);
 const reservationId = ref(null);
@@ -81,10 +80,6 @@ const chargingKwh = ref(null);
 const chargerId = ref(null);
 const stationInfo = ref(null);
 const penaltyAmount = ref(''); 
-
-// const finaleAmount = computed(() => {
-//     return amount.value - penaltyAmount.value; // 총 결제 금액 계산
-// });
 
 onMounted(() => {
     console.log('route.query:', route.query);
@@ -99,7 +94,6 @@ onMounted(() => {
     stationAdress();
     penalty();
 });
-
 
 const stationAdress = async () => {
     const stationInfoResponse = await axios.get(

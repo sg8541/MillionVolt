@@ -210,7 +210,6 @@
             async (rsp) => {
                 if (rsp.success) {
                     reservation.value.impUid = rsp.imp_uid;
-
                     try {
                         const response = await axios.post(`http://localhost:8081/api/v1/reservation/${reservation.value.impUid}`, {
                             startTime: reservationStartDate.value.toISOString(),
