@@ -124,6 +124,11 @@
 
 import { ref, computed } from "vue";
 import Modal from "@/components/Modal.vue";
+import { useWebSocketStore } from '@/stores/webSocketChargingStore';
+import { useAlarmWebSocketStore } from '@/stores/webSocketAlarmStore';
+
+const store = useWebSocketStore();
+const storeAlarm = useAlarmWebSocketStore();
 
 // props 정의
 const props = defineProps({
@@ -241,6 +246,8 @@ const handleLogout = () => {
   isLoggedIn.value = false;
   userName.value = "";
   userId.value = "";
+  store.disconnectWebSocket();
+  storeAlarm.disconnectWebSocket();
   alert("로그아웃 되었습니다.");
 };
 
