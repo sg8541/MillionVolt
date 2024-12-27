@@ -28,10 +28,20 @@ public interface ChargingStationMapper {
 
 
     // 3. 모든 충전소 페이징 조회
+//    @Select("""
+//        SELECT station_id, name, address, total_charger, available_charger, charger_speed_id,
+//               price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
+//        FROM charging_station
+//        LIMIT #{offset}, #{size}
+//    """)
     @Select("""
-        SELECT station_id, name, address, total_charger, available_charger, charger_speed_id,
-               price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
-        FROM charging_station
+        SELECT cs.station_id, name, address, IFNULL(t.count,0) as totalCharger, available_charger, charger_speed_id,
+                       price_per_kwh, file_path, facility_type, device_type, charger_type, charger_status_id
+        FROM charging_station cs
+        left outer join (select count(*) as count, station_id
+        				 from charger 
+        				 group by station_id) t
+        on cs.station_id = t.station_id
         LIMIT #{offset}, #{size}
     """)
     List<ChargingStationVO> getAllChargingStations(@Param("offset") int offset, @Param("size") int size);
