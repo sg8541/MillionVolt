@@ -39,6 +39,7 @@ package kr.co.milionvolt.ifive.controller.reservation;
 import kr.co.milionvolt.ifive.domain.reservation.ReservationListDTO;
 import kr.co.milionvolt.ifive.service.reservation.ReservationListServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,20 +57,17 @@ public class ReservationListController {
 
     @GetMapping("/reservationList/{startTime}/{endTime}/{stationId}/{chargerId}")
     public List<ReservationListDTO> listReservations(
-            @PathVariable String startTime,
-            @PathVariable String  endTime,
-            @PathVariable int stationId,
-            @PathVariable int chargerId) {
+            @PathVariable("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @PathVariable("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+            @PathVariable("stationId") int stationId,
+            @PathVariable("chargerId") int chargerId){
 
         System.out.println("Start Time: " + startTime);
         System.out.println("End Time: " + endTime);
         System.out.println("Station ID: " + stationId);
         System.out.println("Charger ID: " + chargerId);
 
-        LocalDateTime startDateTime = LocalDateTime.parse(startTime);
-        LocalDateTime endDateTime = LocalDateTime.parse(endTime);
-
-        return reservationListServiceImpl.printReservationList(startDateTime, endDateTime, stationId, chargerId);
+        return reservationListServiceImpl.printReservationList(startTime, endTime, stationId, chargerId);
     }
 }
 

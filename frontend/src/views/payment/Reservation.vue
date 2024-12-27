@@ -42,7 +42,7 @@
                         <label for="reservation-start-date">시작 날짜</label>
                         <DatePicker id="reservation-start-date" 
                             v-model="reservation.startDate"
-                            @change="printReservationList" 
+                            @closed="printReservationList" 
                             locale="ko" 
                             :start-time="startTime" 
                             :format="formatDate"
@@ -57,15 +57,15 @@
                     <div class="time-container">
                         <label for="reservation-end-date">종료 날짜</label>
                         <DatePicker id="reservation-end-date" v-model="reservation.endDate"
-                            @change="printReservationList" locale="ko" :format="formatDate" :start-time="startMinTime"
+                            @closed="printReservationList" locale="ko" :format="formatDate" :start-time="startMinTime"
                             :min-date="minDate" :max-date="maxDate" :minutes-grid-increment="5" :minutes-increment="5"
                             teleport-center time-picker-inline :disabled="!reservation.startDate" />
 
                     </div>
-                    <h5 class="minuteAlarm">시작 날짜를 선택한 후에만 종료 날짜를 선택할 수 있습니다..</h5>
-                    <h5 class="minuteAlarm">예약은 최대 2일까지 가능합니다.</h5>
-                    <h5 class="minuteAlarm">예약은 5분 단위로 가능합니다.</h5>
-                    <h5 class="minuteAlarm">다른 예약이 있을 경우, 15분 후부터 예약이 가능합니다.</h5>
+                    <h5><span class="minuteAlarm">시작 날짜를 선택한 후 종료 날짜를 선택</span>할 수 있습니다.</h5>
+                    <h5>예약은 <span class="minuteAlarm">최대 2일까지 가능</span>합니다.</h5>
+                    <h5>예약은 <span class="minuteAlarm">5분 단위로 가능</span>합니다.</h5>
+                    <h5><span class="minuteAlarm">다른 예약이 있을 경우, 15분 후부터</span> 예약이 가능합니다.</h5>
                     </div>
                 <!-- 예약 목록 -->
                 <div class="reservation-list-title">예약 목록</div>
@@ -76,7 +76,6 @@
                     <div v-else v-for="(reservation, index) in reservationList" :key="index">
                         <p>예약 번호: {{ reservation.reservationId }}</p>
                         <p>이용 시간: {{ formatDate(reservation.startTime) }} ~ {{ formatDate(reservation.endTime) }}</p>
-                        <br />
                     </div>
                 </div>
                 <div class="reservation-button-container">
@@ -135,11 +134,12 @@ onMounted(() => {
 
 //날짜 시간 형식 변경
 const formatDate = (date) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
+    const parsedDate = new Date(date);  // ISO 8601 형식 문자열 또는 Date 객체를 Date 객체로 변환
+    const day = parsedDate.getDate();
+    const month = parsedDate.getMonth() + 1; // 0부터 시작하므로 1을 더해야 함
+    const year = parsedDate.getFullYear();
+    const hours = parsedDate.getHours();
+    const minutes = parsedDate.getMinutes();
 
     return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
 };
@@ -170,28 +170,59 @@ const reservationEndDate = computed(() => {
 });
 
 
-// 날짜 및 시간 유효성 검사
-const isValidDateAndTime = () => {
-    if (!reservationStartDate.value || !reservationEndDate.value) {
-        alert("모든 필드를 입력해주세요.");
-        return false;
+// 예약 리스트와 입력된 예약 시간이 겹치는지 확인하는 함수
+const isOverlap = () => {
+    // 예약 시작 및 종료 시간
+    const startDate = reservationStartDate.value;
+    const endDate = reservationEndDate.value;
+
+    // 예약 리스트 내의 각 예약과 비교
+    for (const reservationItem of reservationList.value) {
+        const itemStartTime = new Date(reservationItem.startTime);  // 예약 시작 시간
+        const itemEndTime = new Date(reservationItem.endTime);  // 예약 종료 시간
+
+        // 예약 시간이 겹치는지 확인
+        if (
+            (startDate < itemEndTime && endDate > itemStartTime) // 시작일과 종료일이 겹치는 경우
+        ) {
+            return true;  // 겹치면 true 반환
+        }
     }
-    const now = new Date();
-    if (reservationStartDate.value <= now) {
-        alert("예약은 현재 시간 이후로만 가능합니다.");
-        return false;
-    }
-    if (reservationStartDate.value >= reservationEndDate.value) {
-        alert("종료 시간은 시작 시간보다 늦어야 합니다.");
-        return false;
-    }
-    return true;
+    return false;  // 겹치지 않으면 false 반환
 };
 
+// 다른 예약이 있는 경우, 예약 가능한지 확인하는 함수
+const isAvailableTime = () => {
+    const startDate = reservationStartDate.value;  // 사용자가 입력한 예약 시작 시간
+
+    // 예약 리스트 내의 각 예약과 비교
+    for (const reservationItem of reservationList.value) {
+        const itemEndTime = new Date(reservationItem.endTime);  // 기존 예약의 종료 시간
+
+        // 종료 시간 + 15분 후부터 예약 가능
+        const availableTime = new Date(itemEndTime.getTime() + 15 * 60 * 1000);  // 15분 후
+
+        // 예약 시작 시간이 15분 이후여야 예약이 가능
+        if (startDate < availableTime) {
+            return false;  // 예약 불가능
+        }
+    }
+    return true;  // 예약 가능
+};
 
 // 예약 API 호출
 const reserve = async () => {
-    if (!isValidDateAndTime() || !isValidDuration()) return;
+    // 예약 시간 겹침 체크
+    if (isOverlap()) {
+        alert("다른 날짜를 예약해주세요.");
+        return;  // 겹치면 예약 진행하지 않음
+    }
+
+    // 예약 가능한 시간 확인
+    if (!isAvailableTime()) {
+        alert("다른 예약이 있을 경우, 해당 예약이 끝난 시간 15분 후부터 예약이 가능합니다.");
+        return;
+    }
 
     const { IMP } = window;
     IMP.init("imp50578251");
@@ -241,12 +272,14 @@ const reserve = async () => {
 const printReservationList = async () => {
     if (!reservation.value.startDate || !reservation.value.endDate) return;
     try {
-        const formattedStartDate = reservation.value.startDate;
-        const formattedEndDate = reservation.value.endDate;
+        const formattedStartDate = reservation.value.startDate.toISOString().split(".")[0];;
+        const formattedEndDate = reservation.value.endDate.toISOString().split(".")[0];;
+
         const response = await axios.get(
             `http://localhost:8081/reservationList/${formattedStartDate}/${formattedEndDate}/${stationId.value}/${chargerId.value}`
         );
         reservationList.value = response.data;
+
     } catch (error) {
         alert("해당 날짜의 예약 조회에 실패했습니다.");
     }
@@ -262,6 +295,10 @@ const printReserverName = async () => {
 };
 </script>
 <style>
+h5{
+    font-size: 14px;
+}
+
 .reservation-wrap {
     font-family: Arial, sans-serif;
     display: flex;
@@ -289,18 +326,6 @@ const printReserverName = async () => {
 .reservation-logo img {
     width: 150px;
 }
-
-/* .reserve-date-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: center;
-} */
 
 .reservation-go-info-title {
     font-size: 28px;
