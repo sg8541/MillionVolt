@@ -86,11 +86,13 @@ export const useWebSocketStore = defineStore('websocket', () => {
             if (data.message === "충전 완료") {
                 finishAlarm.value.message= data.message; // 또는 원하는 UI 로직을 처리
                 chargingData.value.batteryPercent = 100;
+                stopTimer();
                 console.log("충전 완료 상태 감지됨");
                 console.log(finishAlarm.value.message);
             }else if(data.message === "예약시간으로 인한 충전종료" ){
                 console.log("예약시간으로 인한 충전 종료.")
-                finishAlarm.value.message= data.message;
+                stopTimer();
+                finishAlarm.value.message = data.message;
             } else {
                 chargingData.value.batteryPercent = data.batteryPercent; // 배터리 퍼센트
                 chargingData.value.amount = data.amount; // 현재 충전 요금
