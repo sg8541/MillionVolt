@@ -1,26 +1,28 @@
 <template>
 <div class="sidebar" :class="{ visible: isSidebarVisible }">
+
+    <!-- 사용자 정보 -->
+    <div class="user-info">
+      <template v-if="isLoggedIn">
+        <p>안녕하세요, <strong>{{ userName }}</strong> 님!</p>
+      </template>
+      <template v-else>
+        <p>로그인 후 더 많은 기능을 이용할 수 있습니다.</p>
+        <div class="actions">
+          <RouterLink to="/login" class="user-action">로그인</RouterLink>
+          <RouterLink to="/agreement" class="user-action">회원가입</RouterLink>
+        </div>
+      </template>
+    </div>
+
     <!-- 닫기 버튼 -->
-    <button class="close-button" @click="$emit('toggleSidebar')">닫기</button>
+    <button class="close-button" @click="$emit('toggleSidebar')">X</button>
 
     <!-- 네비게이션 메뉴 -->
     <nav class="navigation">
       <template v-if="isLoggedIn">
-        <a href="#" class="nav-item">결제 및 예약</a>
-        <RouterLink :to="`/myinfo/dashboard/${id}`">
-          <button type="button" class="nav-item">마이페이지</button>
-        </RouterLink>
-        <RouterLink to="/main">
-          <a href="#" class="nav-item" @click.prevent="handleLogout">로그아웃</a>
-        </RouterLink>
-      </template>
-      <template v-else>
-        <RouterLink to="/login">
-          <a href="#" class="nav-item">로그인</a>
-        </RouterLink>
-        <RouterLink to="/agreement">
-          <a href="#" class="nav-item">회원가입</a>
-        </RouterLink>
+        <RouterLink :to="`/myinfo/dashboard/${userId}`" class="nav-item">마이페이지</RouterLink>
+        <button @click="handleLogout" class="nav-item logout">로그아웃</button>
       </template>
     </nav>
 
@@ -68,10 +70,10 @@
           {{ station.totalCharger || 0 }}
         </p>
         <p>충전 속도: 
-  {{ station.chargeSpeedIds && station.chargeSpeedIds.length > 0 
-    ? station.chargeSpeedIds.map(getSpeedText).join(", ") 
-    : "정보 없음" }}
-</p>
+      {{ station.chargeSpeedIds && station.chargeSpeedIds.length > 0 
+      ? station.chargeSpeedIds.map(getSpeedText).join(", ") 
+      : "정보 없음" }}
+    </p>
 
         <p>충전 요금: {{ station.pricePerKWh+'원' || "정보 없음" }}</p>
       </li>
@@ -131,6 +133,9 @@ const props = defineProps({
   },
 });
 
+const isLoggedIn = ref(false);
+const userName = ref("");
+const userId = ref("");
 const stations = ref([]); // 충전소 데이터
 const loading = ref(false);
 const searchQuery = ref(""); // 검색어
@@ -195,8 +200,8 @@ const fetchStations = async (page) => {
     chargers: station.chargers || [], // 충전기 데이터
     availableChargerCount: station.availableChargerCount || 0, // 사용 가능한 충전기 개수
     chargeSpeedIds: station.chargeSpeedIds || [], // 충전 속도 ID 리스트 추가
-  };
-});
+    };
+  });
 
     totalItems.value = data.totalCount;
     console.log("Stations Updated:", stations.value);
@@ -212,6 +217,31 @@ const fetchStations = async (page) => {
 const applyFilter = (filterId) => {
   selectedFilter.value = filterId;
   fetchStations(1); // 필터 적용 시 페이지를 1로 초기화
+};
+
+onMounted(() => {
+  const user = localStorage.getItem("user"); // 로컬스토리지에서 사용자 정보 가져오기
+  if (user) {
+    try {
+      const parsedUser = JSON.parse(user); // JSON 형식의 사용자 정보 파싱
+      console.log("파싱된 사용자 정보:", parsedUser);
+      isLoggedIn.value = true;
+      userName.value = parsedUser.userName || "사용자"; // 이름 설정
+      userId.value = parsedUser.id || ""; // 사용자 ID 설정
+    } catch (error) {
+      console.error("사용자 정보 파싱 오류:", error);
+    }
+  } else {
+    console.log("로그인된 사용자 정보가 없습니다.");
+  }
+});
+
+const handleLogout = () => {
+  localStorage.removeItem("user"); // 사용자 정보 삭제
+  isLoggedIn.value = false;
+  userName.value = "";
+  userId.value = "";
+  alert("로그아웃 되었습니다.");
 };
 
 // 페이징 버튼 범위 계산
@@ -258,7 +288,7 @@ fetchStations(1);
   position: fixed; /* 화면에 고정 */
   top: 0;
   right: 0;
-  width: 350px;
+  width: 400px;
   height: 100%; /* 화면 전체 높이 */
   background-color: #f9f9f9;
   z-index: 1000; /* 상위 요소 위에 나타나도록 */
@@ -345,6 +375,7 @@ fetchStations(1);
 .station-item:hover {
   background: #E3E3E3;
 }
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -371,14 +402,94 @@ fetchStations(1);
 .pagination button:hover:not(.active) {
   background-color: #e6e6e6;
 }
+
 .close-button {
   position: absolute;
-  top: 10px; /* 상단 여백 */
-  right: 10px; /* 오른쪽 여백 */
-  background: none; /* 배경 제거 */
-  border: none; /* 테두리 제거 */
-  font-size: 20px; /* 글자 크기 */
-  cursor: pointer; /* 클릭 가능 커서 */
+  top: 15px;
+  left: 15px;
+  font-size: 18px;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
 }
 
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 사용자 정보 스타일 */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 15px; /* 요소 간 간격 */
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.user-info p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+/* 카테고리 스타일 */
+.navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* 카테고리 간 간격 */
+  margin-top: 20px;
+  width: 100%;
+}
+
+.nav-item {
+  font-size: 16px;
+  color: #007bff;
+  text-decoration: none;
+  padding: 5px 0;
+  width: 100%;
+  text-align: center;
+}
+
+.nav-item:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* 카테고리 간 간격 */
+  margin-top: 20px;
+  width: 100%;
+}
+
+.user-action {
+  font-size: 16px;
+  color: #007bff;
+  text-decoration: none;
+  padding: 5px 0;
+  width: 100%;
+  text-align: center;
+  gap: 20px;
+}
+
+.user-action:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
 </style>

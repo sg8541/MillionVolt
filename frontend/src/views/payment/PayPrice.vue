@@ -33,11 +33,20 @@
                 </div>
                 <div class="pay-info-amount-title">선결제 금액</div>
                 <div class="pay-info-amount-print">
-                    <strong class="amount-label">{{ amount }}</strong>
+                    <div v-if="penaltyAmount == 0">
+                    <strong class="amount-label"> 5000 </strong>
+                    </div>
+                    <div v-else>
+                        <strong class="amount-label"> 0 </strong>
+                    </div>
+                </div>
+                <div class="pay-info-amount-title">벌금 결제</div>
+                <div class="pay-info-amount-print">
+                    <strong class="amount-label">{{ penaltyAmount }}</strong>
                 </div>
                 <div class="pay-info-amount-title">결제 금액</div>
                 <div class="pay-info-amount-print">
-                    <strong class="amount-label">{{ amount }}</strong>
+                    <strong class="amount-label">{{ totalAmount }}</strong>
                 </div>
                 <div class="pay-info-hourAndCharge-title">충전 시간 및 충전량</div>
                 <div class="pay-info-hourAndCharge-print">
@@ -53,7 +62,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
@@ -70,6 +79,7 @@ function formatDate(timestamp) {
     return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
 }
 
+
 const userId = ref(null);
 const stationId = ref(null);
 const reservationId = ref(null);
@@ -79,7 +89,11 @@ const chargeEnd = ref(null);
 const chargingKwh = ref(null);
 const chargerId = ref(null);
 const stationInfo = ref(null);
-const penaltyAmount = ref(''); 
+const penaltyAmount = ref('');
+
+// const finaleAmount = computed(() => {
+//     return amount.value - penaltyAmount.value; // 총 결제 금액 계산
+// });
 
 onMounted(() => {
     console.log('route.query:', route.query);
@@ -94,6 +108,17 @@ onMounted(() => {
     stationAdress();
     penalty();
 });
+
+
+const totalAmount = computed(() => {
+    if(amount.value < 100){
+        amount.value = 100;
+    }
+    return amount.value+penaltyAmount.value;
+});
+
+
+console.log(" 2: "+userId.value);
 
 const stationAdress = async () => {
     const stationInfoResponse = await axios.get(
@@ -111,7 +136,8 @@ const payment = () => {
             pg: "html5_inicis",
             pay_method: "카카오페이",
             merchant_uid: "order_" + new Date().getTime(),
-            amount: amount.value + penaltyAmount.value,
+            amount: totalAmount.value,
+            name: "결제 전력량",
         },
         async (rsp) => {
             if (rsp.success) {
@@ -124,7 +150,7 @@ const payment = () => {
                             userId: userId.value, // 유저의 아이디
                             stationId: stationId.value, // 충전소 번호
                             chargerId: chargerId.value, // 충전기 번호 
-                            amount: amount.value, // 결제 금액
+                            amount: totalAmount.value, // 결제 금액
                             chargedEnergy: chargingKwh.value, // 충전 전력량
                             paymentMethod: rsp.pay_method, // 결제 방법
                             paymentStatus: rsp.status, // 결제 상태 (성공/실패)

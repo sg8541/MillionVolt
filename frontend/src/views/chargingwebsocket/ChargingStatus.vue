@@ -19,7 +19,12 @@
                     <span class="charging-kwh">{{ store.chargingData.chargingKwh }} kWh</span>
                 </div>
             </div>
-            <p class="charging-status">고객님의 차량이 충전 중 입니다. ({{store.chargingData.carNumber}}) </p>
+            <div  v-if="store.finishAlarm.message=='충전완료'|| store.finishAlarm.message=='예약시간으로 인한 충전종료'">
+                <p class="charging-status">고객님의 차량이 충전 완료되었습니다. ({{store.chargingData.carNumber}}) </p>
+            </div>
+            <div  v-else>
+                <p class="charging-status">고객님의 차량이 충전 중 입니다. ({{store.chargingData.carNumber}}) </p>
+            </div>
         </div>
 
         <div class="charging-info">
@@ -49,7 +54,11 @@
 
             </div>
         </div>
-        <div class="charging-actions">
+        <div class="charging-actions" v-if="store.finishAlarm.message=='충전완료'|| store.finishAlarm.message=='예약시간으로 인한 충전종료'">
+            <!-- <button class="start-btn" @click="connectWebSocket">충전 시작</button> -->
+            <button class="stop-btn" @click="disconnectWebSocket">결제하러가기</button>
+        </div>
+        <div class="charging-actions" v-else>
             <!-- <button class="start-btn" @click="connectWebSocket">충전 시작</button> -->
             <button class="stop-btn" @click="disconnectWebSocket">충전 종료</button>
         </div>
