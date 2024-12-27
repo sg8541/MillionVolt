@@ -9,7 +9,8 @@ import '@layouts/styles/index.scss'
 import '@styles/styles.scss'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-
+import DatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 // 중앙집중식 Axios 인스턴스 임포트
 import api from './axios'
 
@@ -23,7 +24,7 @@ const app = createApp(App);
 
 // 전역 속성으로 Axios 설정 (선택 사항)
 app.config.globalProperties.$axios = api
-
+app.component('DatePicker', DatePicker);
 
 // Use plugins
 app.use(vuetify)

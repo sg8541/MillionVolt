@@ -58,7 +58,7 @@ public interface UserMapper {
     // 유저의 예약 내역 리스트
     @Select("select reservation_id, " +
             "date_format(start_time, '%y.%m.%d. %T ') as start_time, " +
-            "date_format(end_time, ' %T') as end_time, " +
+            "date_format(end_time, ' %y.%m.%d. %T') as end_time, " +
             "status, " +
             "date_format(r.created_at,'%y.%m.%d.') as  created_at," +
             "charger_id, " +
@@ -78,7 +78,7 @@ public interface UserMapper {
             "       date_format(p.updated_at, '%y.%m.%d.') as updated_at, " +
             "       date_format(p.created_at, '%y.%m.%d. %H:%i') as created_at, " +
             "       date_format(charge_start, '%y.%m.%d. %T ') as charge_start, " +
-            "       date_format(charge_end, ' %T') as charge_end " +
+            "       date_format(charge_end, ' %y.%m.%d. %T') as charge_end " +
             "from payment p " +
             "join charging_station c " +
             "using (station_id) " +
@@ -105,7 +105,7 @@ public interface UserMapper {
     // 대시보드 예약리스트 최대 5개 불러옴
     @Select("select reservation_id, " +
             "date_format(start_time, '%y.%m.%d. %T ') as start_time, " +
-            "date_format(end_time, ' %T') as end_time, " +
+            "date_format(end_time, ' %y.%m.%d. %T') as end_time, " +
             "status, " +
             "date_format(r.created_at,'%y.%m.%d.') as  created_at," +
             "charger_id, " +
