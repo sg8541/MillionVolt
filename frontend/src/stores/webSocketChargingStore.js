@@ -57,8 +57,9 @@ export const useWebSocketStore = defineStore('websocket', () => {
             if(isConnected.value) {
                 console.log("이미연결된 웹소켓.");
                 return;
+                
             }
-         
+        
         
         const token = localStorage.getItem('user');
         const parsedToken = JSON.parse(token);

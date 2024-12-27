@@ -54,7 +54,7 @@
 
         <div v-if="storeAlarm.alarm.message" class="alert-content">
           <p>{{ storeAlarm.alarm.message }}</p>
-          <div v-if="storeAlarm.alarm.message == '충전을 시작해주세요!'" class="speed-indicator">
+          <div v-if="storeAlarm.alarm.message == '충전을 시작해주세요!' && !store.chargingData.chargerType" class="speed-indicator">
             <label @click="showModal"><strong>충전하러가기</strong></label>
           </div>
           <div v-else-if="storeAlarm.alarm.message == '출차해주세요!'">
@@ -100,18 +100,20 @@ storeAlarm.alarm = storeAlarm.alarm || { message: null };
 store.finishAlarm = store.finishAlarm || { message: null };
 
 onMounted(() => {
-  isAlertBoxVisible.value = false;
-  if (accessToken.value == true) {
-    store.connectWebSocket();
-    storeAlarm.connectAlarmWebSocket()
-  }
-  console.log("온마운트");
   const hasCheckedLogout = ref(false); // 로그아웃 여부를 추적하는 플래그
 
 if (!hasCheckedLogout.value && accessToken.value === null && id !== "") {
   handleRefreshAccessToken()
   hasCheckedLogout.value = true; // 로그아웃 상태를 확인했음을 표시
+  
 }
+isAlertBoxVisible.value = false;
+  if (hasCheckedLogout) {
+    store.connectWebSocket();
+    storeAlarm.connectAlarmWebSocket()
+    console.log("웹소켓 : 온마운튼 확인");
+  }
+
 });
 
 //   watch(
