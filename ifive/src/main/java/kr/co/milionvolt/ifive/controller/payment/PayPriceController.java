@@ -74,16 +74,11 @@ public class PayPriceController {
 
     @PostMapping("/save/{impUid}")
     public ResponseEntity<String> payment(@PathVariable String impUid, @RequestBody PayPriceDTO payPriceDTO) throws IamportResponseException, IOException {
-        try{
-            System.out.println(payPriceDTO);
-            if(payPriceService.savePayPrice(impUid, payPriceDTO)){
-                return ResponseEntity.status(HttpStatus.CREATED).body("결제에 성공했습니다.");
-            } else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("결제에 실패했습니다.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        System.out.println(payPriceDTO);
+        if(payPriceService.savePayPrice(impUid, payPriceDTO)){
+            return ResponseEntity.status(HttpStatus.CREATED).body("결제에 성공했습니다.");
+        } else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("결제에 실패했습니다.");
         }
     }
 }
