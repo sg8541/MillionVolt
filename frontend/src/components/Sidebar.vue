@@ -16,7 +16,7 @@
     </div>
 
     <!-- 닫기 버튼 -->
-    <button class="close-button" @click="$emit('toggleSidebar')">닫기</button>
+    <button class="close-button" @click="$emit('toggleSidebar')">X</button>
 
     <!-- 네비게이션 메뉴 -->
     <nav class="navigation">
@@ -441,7 +441,8 @@ fetchStations(1);
   font-size: 18px;
   font-weight: bold;
   color: #333;
-  margin: 0;
+  margin-top: 30px;
+  margin-bottom: 0;
 }
 
 /* 카테고리 스타일 */

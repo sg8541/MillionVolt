@@ -148,4 +148,27 @@ public interface ChargingStationMapper {
 """)
     int countSearchResults(@Param("query") String query);
 
+    // 특정 충전소의 총 충전기 개수를 업데이트
+    @Update("""
+        UPDATE charging_station
+        SET total_charger = (
+            SELECT COUNT(*)
+            FROM charger
+            WHERE station_id = #{stationId}
+        )
+        WHERE station_id = #{stationId}
+    """)
+    void updateTotalCharger(@Param("stationId") Integer stationId);
+
+    // 모든 충전소의 총 충전기 개수를 업데이트
+    @Update("""
+        UPDATE charging_station
+        SET total_charger = (
+            SELECT COUNT(*)
+            FROM charger
+            WHERE charger.station_id = charging_station.station_id
+        )
+    """)
+    void updateAllTotalChargers();
+
 }
