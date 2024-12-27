@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface PenaltyMapper {
 
-    @Select(" SELECT c.charger_id ,c.charger_status_id" +
+    @Select(" SELECT c.charger_id ,c.charger_status_id, r.station_id " +
             " FROM charger c " +
             " JOIN reservation r " +
             " ON c.station_id = r.station_id " +
@@ -26,12 +26,13 @@ public interface PenaltyMapper {
     @Select(" SELECT r.start_time " +
             " FROM charger c" +
             " JOIN reservation r" +
-            " ON c.charger_id=r.charger_id " +
+            " ON c.station_id=r.station_id " +
             " WHERE c.charger_id = #{chargerId} " +
-            " AND r.start_time > #{entTime}" +
+            " AND r.start_time > #{entTime} " +
+            " AND r.station_id = #{stationId}" +
             " ORDER BY r.start_time" +
             " LIMIT 1")
-    public LocalDateTime findCloseStartTime(LocalDateTime entTime, int chargerId); // 충전기의 대한 가까운 예약 조회.
+    public LocalDateTime findCloseStartTime(LocalDateTime entTime, int chargerId, int stationId); // 충전기의 대한 가까운 예약 조회.
 
     @Insert(" INSERT INTO penalty(penalty_amount, reason, created_at,reservation_id) " +
             " VALUES (#{penaltyAmount}, #{reason}, #{createdAt}, #{reservationId}) ")

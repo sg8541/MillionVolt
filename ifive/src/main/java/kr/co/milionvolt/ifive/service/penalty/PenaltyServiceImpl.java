@@ -32,11 +32,11 @@ public class PenaltyServiceImpl implements PenaltyService{
 
 
     @Override
-    public LocalDateTime findCloseStratTime(LocalDateTime entTime,int chargerId) {
+    public LocalDateTime findCloseStratTime(LocalDateTime entTime,int chargerId, int stationId) {
         LocalDateTime localDateTime = null;
         try{
             System.out.println(chargerId);
-            localDateTime =  penaltyMapper.findCloseStartTime(entTime, chargerId);
+            localDateTime =  penaltyMapper.findCloseStartTime(entTime, chargerId, stationId);
             System.out.println(localDateTime);
             if(localDateTime == null){
                 System.out.println("예약 내역이 존재하지 않음. ");

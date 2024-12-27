@@ -18,11 +18,11 @@ public class PenaltyChargerTest {
 //        System.out.println(vo);
 //    }
 
-    @Test
-    public void test2(){
-        LocalDateTime now = LocalDateTime.now();
-       LocalDateTime localDateTime= penaltyMapper.findCloseStartTime(now,2);
-        System.out.println(localDateTime);
-    }
+//    @Test
+//    public void test2(){
+//        LocalDateTime now = LocalDateTime.now();
+//       LocalDateTime localDateTime= penaltyMapper.findCloseStartTime(now,2);
+//        System.out.println(localDateTime);
+//    }
 
 }

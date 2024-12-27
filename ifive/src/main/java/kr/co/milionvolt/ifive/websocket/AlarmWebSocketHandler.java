@@ -114,7 +114,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         // 해당 충전기 번호 찾기
                         if(penaltiechargerStatusCheckVO.getChargerStatusId()==2){
                             System.out.println("예약 종료시간."+reservationEndTime);
-                            LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId());
+                            LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId(), penaltiechargerStatusCheckVO.getStationId());
                             int resNum =  reservation.getReservationId();
                             System.out.println(closeReservationTime);
                             penaltiySendAlarm(session, closeReservationTime, resNum, reservationEndTime);
@@ -139,7 +139,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     }
                     System.out.println("벌금테이블 동작.");
                     LocalDateTime now = LocalDateTime.now();
-                    if(now.isBefore(closeReservationTime)) {
+                    if(now.isBefore(closeReservationTime.minusMinutes(15))) {
                         System.out.println("제일 가까운 예약 내역." + closeReservationTime);
                         String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "출차해주세요!");
                         //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
@@ -176,10 +176,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         String status = String.format("{\"penaltyAmount\": \"%d\", \"message\": \"%s\"}", penaltyAmount,"벌금 부여");
                         session.sendMessage(new TextMessage(status));
 
-//                        if(num % 5 == 1) {
-//                            String status = String.format("{\"reservationId\": \"%d\"}", resNum);
-//                            session.sendMessage(new TextMessage(status));
-//                        }
+//
                     }
                 }catch (Exception e){
                    e.printStackTrace();

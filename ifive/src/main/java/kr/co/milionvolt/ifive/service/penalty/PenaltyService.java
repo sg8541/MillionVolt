@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public interface PenaltyService {
     public PenaltiechargerStatusCheckVO findChargerId(int reservationId ,int stationId , int chargerId);
-    public LocalDateTime findCloseStratTime(LocalDateTime entTime, int chargerId);
+    public LocalDateTime findCloseStratTime(LocalDateTime entTime, int chargerId, int stationId);
     public void insertPenalty(PenaltieDTO dto);
     public void updatePenalty(int Amount, int reservationId);
     public PenaltyCheckVO penaltyCheckVo(int reservationId);

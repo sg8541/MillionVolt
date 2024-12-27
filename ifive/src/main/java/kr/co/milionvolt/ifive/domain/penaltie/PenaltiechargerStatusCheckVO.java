@@ -10,4 +10,5 @@ import lombok.*;
 public class PenaltiechargerStatusCheckVO {
     private Integer chargerId;
     private Integer chargerStatusId;
+    private Integer stationId;
 }
