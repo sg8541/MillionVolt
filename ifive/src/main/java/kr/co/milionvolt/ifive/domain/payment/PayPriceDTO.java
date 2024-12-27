@@ -16,8 +16,8 @@ public class PayPriceDTO {
     private int reservationId;
     private int stationId;
     private int chargerId;
-    private long amount;
-    private long chargedEnergy;
+    private double amount;
+    private double chargedEnergy;
     private String paymentMethod;
     private String paymentStatus;
     private LocalDateTime createdAt;
