@@ -99,90 +99,34 @@ storeAlarm.alarm = { message: "새로운 알람이 없습니다." };
 storeAlarm.alarm = storeAlarm.alarm || { message: null };
 store.finishAlarm = store.finishAlarm || { message: null };
 
-onMounted(() => {
-  const hasCheckedLogout = ref(false); // 로그아웃 여부를 추적하는 플래그
-
-if (!hasCheckedLogout.value && accessToken.value === null && id !== "") {
-  handleRefreshAccessToken()
-  hasCheckedLogout.value = true; // 로그아웃 상태를 확인했음을 표시
-  
-}
-isAlertBoxVisible.value = false;
-  if (hasCheckedLogout) {
-    store.connectWebSocket();
-    storeAlarm.connectAlarmWebSocket()
-    console.log("웹소켓 : 온마운튼 확인");
-  }
-
-});
-
-//   watch(
-//   () => store.chargingData.chargerType, // 감지할 값
-//   (newValue) => {
-//     console.log("변경된 chargerType 값:", newValue);
-//     if (newValue) {
-//       store.finishAlarm.message = "충전중";
-//     } else {
-//       store.finishAlarm.message = null;
-//     }
-//     console.log("store.finishAlarm.message:", store.finishAlarm.message);
-//     isAlertBoxVisible.value = true
-//   }
-// );
-
-watch(
-  () => storeAlarm.alarm.message,
-  (newValue) => {
-    console.log("새로운 알림 메시지:", newValue);
-    if (newValue && newValue !== "새로운 알람이 없습니다." && newValue !== null) {
-      isAlertBoxVisible.value = true; // 알림 창 표시
-    } else {
-      isAlertBoxVisible.value = false;
-    }
-  }
-);
-
-watch(
-  () => store.finishAlarm.message,
-  (newValue) => {
-    console.log("새로운 알림 메시지:", newValue);
-    if (newValue && newValue !== "새로운 알람이 없습니다.") {
-      isAlertBoxVisible.value = true; // 알림 창 표시
-    }
-  }
-);
-
-// 알림창 토글
-const toggleAlertBox = () => {
-  isAlertBoxVisible.value = !isAlertBoxVisible.value;
-};
-
-const currentBatteryPercent = ref(0);
-
-console.log(store.finishAlarm.message);
-
-watch(
-  () => store.chargingData.batteryPercent,
-  (newValue) => {
-    console.log("업데이트된 배터리 퍼센트:", newValue);
-    currentBatteryPercent.value = newValue || 0; // 값이 없을 경우 0으로 처리
-    // store.finishAlarm.message = "충전 중인 상태입니다.";
-    if (currentBatteryPercent.value == 100) {
-      store.finishAlarm.message = "충전 완료";
-      isAlertBoxVisible.value = true;
-    }
-  },
-  { immediate: true } // 처음 마운트 시에도 실행
-);
 
 const authStore = useAuthStore();
 const accessToken = computed(() => authStore.accessToken);
 const user = computed(() => authStore.user || {});
 const id = user.value.id || '';
 
+
 //console.log("=====" + user.value.id);
 // 로그인 상태 관리
 const isLoggedIn = computed(() => !!accessToken.value);
+
+onMounted(() => {
+  const hasCheckedLogout = ref(false); // 로그아웃 여부를 추적하는 플래그
+  isAlertBoxVisible.value = false;
+
+  if (user.value.id) {
+    store.connectWebSocket();
+    storeAlarm.connectAlarmWebSocket();
+    console.log("웹소켓 연결");
+  }
+
+  if (!hasCheckedLogout.value && accessToken.value === null && id !== "") {
+    handleRefreshAccessToken()
+    hasCheckedLogout.value = true; // 로그아웃 상태를 확인했음을 표시
+ 
+  }
+});
+
 
 // 페이지 새로고침
 const reloadPage = () => {
@@ -240,6 +184,8 @@ const handleLogout = async () => {
     showUserMenu.value = false
     console.log("로그아웃 실행");
     isLoggedIn.value = false;
+    store.disconnectWebSocket();
+    storeAlarm.disconnectWebSocket();
     router.push('/main') // 로그아웃 후 홈으로 이동
   } catch (error) {
     console.error('로그아웃 실패:', error)
@@ -252,6 +198,50 @@ const handleRefreshAccessToken = async () => {
     console.error('토큰재발급 실패:', error)
   }
 }
+
+
+watch(
+  () => storeAlarm.alarm.message,
+  (newValue) => {
+    console.log("새로운 알림 메시지:", newValue);
+    if (newValue && newValue !== "새로운 알람이 없습니다." && newValue !== null) {
+      isAlertBoxVisible.value = true; // 알림 창 표시
+    } else {
+      isAlertBoxVisible.value = false;
+    }
+  }
+);
+
+watch(
+  () => store.finishAlarm.message,
+  (newValue) => {
+    console.log("새로운 알림 메시지:", newValue);
+    if (newValue && newValue !== "새로운 알람이 없습니다.") {
+      isAlertBoxVisible.value = true; // 알림 창 표시
+    }
+  }
+);
+
+// 알림창 토글
+const toggleAlertBox = () => {
+  isAlertBoxVisible.value = !isAlertBoxVisible.value;
+};
+
+const currentBatteryPercent = ref(0);
+
+
+watch(
+  () => store.chargingData.batteryPercent,
+  (newValue) => {
+    currentBatteryPercent.value = newValue || 0; // 값이 없을 경우 0으로 처리
+    // store.finishAlarm.message = "충전 중인 상태입니다.";
+    if (currentBatteryPercent.value == 100) {
+      store.finishAlarm.message = "충전 완료";
+      isAlertBoxVisible.value = true;
+    }
+  },
+  { immediate: true } // 처음 마운트 시에도 실행
+);
 
 </script>
 

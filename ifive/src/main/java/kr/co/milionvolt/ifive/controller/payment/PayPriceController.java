@@ -66,7 +66,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/payment")
-//@Transactional
+@Transactional
 public class PayPriceController {
 
     @Autowired
