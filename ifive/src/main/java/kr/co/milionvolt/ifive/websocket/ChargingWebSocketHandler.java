@@ -2,6 +2,7 @@ package kr.co.milionvolt.ifive.websocket;
 
 import kr.co.milionvolt.ifive.domain.notification.ChargingStatusDTO;
 import kr.co.milionvolt.ifive.service.charging.ChargingStatusSerivce;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Slf4j
 public class ChargingWebSocketHandler extends TextWebSocketHandler {
     private final ConcurrentHashMap<String, Double> payMap = new ConcurrentHashMap<>(); // 요금을 계속해서 누적해서 저장하기 위한 Map
     private final ConcurrentHashMap<String, Double> currentBatteryMap = new ConcurrentHashMap<>();// 충전을 계속 누적해서 저장하기 위한 MAP
@@ -35,11 +37,10 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String query = session.getUri().getQuery();
         String userId = getParameterFromQuery(query, "userId"); // userId 추출
-        System.out.println(userId);
 
         if (userId != null) {
             sessions.put(userId, session);
-            System.out.println("웹소켓 연결됨. userId: " + userId);
+            log.info("웹소켓 연결됨. userId: " + userId);
         } else {
             session.close();
         }
@@ -48,7 +49,6 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
         String payload = message.getPayload();
-          System.out.println("메세지 수신 : "+payload);
 
         if ("start".equals(payload)) {
             startCharging(session);
@@ -61,7 +61,6 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception{
         String query = session.getUri().getQuery();
         String userId = getParameterFromQuery(query, "userId");
-        System.out.println("웹소켓 연결 종료" + userId);
          sessions.remove(userId);
         stopCharging(session);
 
@@ -109,7 +108,6 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                         }
                         if(now.isBefore(dto.getEndTime().plusMinutes(1)) && now.isAfter(dto.getEndTime().minusMinutes(1))){
                             chargingStatusSerivce.chargingUpdate(carId,currentBattery);
-                            System.out.println("예약 종료.");
                             String status = String.format("{\"message\": \"예약시간으로 인한 충전종료\"}");
                             session.sendMessage(new TextMessage(status));
                             payMap.clear();
@@ -185,7 +183,6 @@ public class ChargingWebSocketHandler extends TextWebSocketHandler {
                 // WebSocket 세션 종료
                 sessions.remove(userId);
                 session.close();
-                System.out.println("충전 중단 및 웹소켓 종료됨: " + userId);
             }
         } catch (Exception e) {
             e.printStackTrace();

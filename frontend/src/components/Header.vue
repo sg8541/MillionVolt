@@ -117,7 +117,6 @@ onMounted(() => {
   if (user.value.id) {
     store.connectWebSocket();
     storeAlarm.connectAlarmWebSocket();
-    console.log("웹소켓 연결");
   }
 
   if (!hasCheckedLogout.value && accessToken.value === null && id !== "") {
@@ -182,10 +181,7 @@ const handleLogout = async () => {
   try {
     await authStore.logout()
     showUserMenu.value = false
-    console.log("로그아웃 실행");
     isLoggedIn.value = false;
-    store.disconnectWebSocket();
-    storeAlarm.disconnectWebSocket();
     router.push('/main') // 로그아웃 후 홈으로 이동
   } catch (error) {
     console.error('로그아웃 실패:', error)
@@ -203,7 +199,6 @@ const handleRefreshAccessToken = async () => {
 watch(
   () => storeAlarm.alarm.message,
   (newValue) => {
-    console.log("새로운 알림 메시지:", newValue);
     if (newValue && newValue !== "새로운 알람이 없습니다." && newValue !== null) {
       isAlertBoxVisible.value = true; // 알림 창 표시
     } else {
@@ -215,7 +210,6 @@ watch(
 watch(
   () => store.finishAlarm.message,
   (newValue) => {
-    console.log("새로운 알림 메시지:", newValue);
     if (newValue && newValue !== "새로운 알람이 없습니다.") {
       isAlertBoxVisible.value = true; // 알림 창 표시
     }

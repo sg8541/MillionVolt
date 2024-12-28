@@ -4,6 +4,7 @@ import kr.co.milionvolt.ifive.domain.penaltie.PenaltieDTO;
 import kr.co.milionvolt.ifive.domain.penaltie.PenaltiechargerStatusCheckVO;
 import kr.co.milionvolt.ifive.domain.penaltie.PenaltyCheckVO;
 import kr.co.milionvolt.ifive.mapper.PenaltyMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 public class PenaltyServiceImpl implements PenaltyService{
     @Autowired
     private PenaltyMapper penaltyMapper;
@@ -35,11 +37,9 @@ public class PenaltyServiceImpl implements PenaltyService{
     public LocalDateTime findCloseStratTime(LocalDateTime entTime,int chargerId, int stationId) {
         LocalDateTime localDateTime = null;
         try{
-            System.out.println(chargerId);
             localDateTime =  penaltyMapper.findCloseStartTime(entTime, chargerId, stationId);
-            System.out.println(localDateTime);
-            if(localDateTime == null){
-                System.out.println("예약 내역이 존재하지 않음. ");
+            if(localDateTime != null){
+                log.info("존재하지 않음.");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -78,7 +78,6 @@ public class PenaltyServiceImpl implements PenaltyService{
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return penaltyCheckVO;
     }
 
@@ -93,7 +92,7 @@ public class PenaltyServiceImpl implements PenaltyService{
                 num = 0;
             }
         }catch (BindingException e){
-            System.out.println("결과가 없으면 0 리턴");
+            log.info("결과가 없으면 0 리턴");
         }
         return num;
     }

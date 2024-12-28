@@ -18,17 +18,18 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
     const connectAlarmWebSocket = () => {
 
         if(isConnected.value) {
-            console.log("이미연결된 웹소켓.");
             return;
         }
     
         socketAlarm.value = new WebSocket('ws://localhost:8081/alarm');
-        console.log('웹소켓 연결.');
 
         // 웹소켓 연결 성공 시
         socketAlarm.value.onopen = () => {
             const token = localStorage.getItem('user');
             const parsedToken = JSON.parse(token);
+            if(!parsedToken){
+                return;
+            }
             const userId = parsedToken.userId;
             socketAlarm.value.send(userId);
             isConnected.value = true;
