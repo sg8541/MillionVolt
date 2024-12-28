@@ -97,4 +97,13 @@ public class PenaltyServiceImpl implements PenaltyService{
         }
         return num;
     }
+
+    @Override
+    public void insertPenaltyRefund(Timestamp createdAt, int reservationId, String refundStatus) {
+        try{
+            penaltyMapper.insertPenaltyRefund(createdAt,reservationId,refundStatus);
+        }catch (Exception e){
+                e.printStackTrace();
+        }
+    }
 }

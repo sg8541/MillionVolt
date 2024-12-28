@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,4 +49,8 @@ public interface PenaltyMapper {
 
     @Select(" SELECT penalty_amount FROM penalty WHERE reservation_id=#{reservationId} " )
     public int selectPenatlyAmount(int reservationId);
+
+    @Insert(" INSERT INTO penalty(created_at, reservation_id, refund_status) " +
+            " VALUES (#{createdAt} , #{reservationId}, #{refundStatus})")
+    public void insertPenaltyRefund(Timestamp createdAt, int reservationId, String refundStatus);
 }

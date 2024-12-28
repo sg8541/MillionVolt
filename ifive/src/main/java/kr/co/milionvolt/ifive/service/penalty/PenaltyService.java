@@ -4,6 +4,7 @@ import kr.co.milionvolt.ifive.domain.penaltie.PenaltieDTO;
 import kr.co.milionvolt.ifive.domain.penaltie.PenaltiechargerStatusCheckVO;
 import kr.co.milionvolt.ifive.domain.penaltie.PenaltyCheckVO;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public interface PenaltyService {
@@ -13,4 +14,5 @@ public interface PenaltyService {
     public void updatePenalty(int Amount, int reservationId);
     public PenaltyCheckVO penaltyCheckVo(int reservationId);
     public int selectPenaltyAmount(int reservationId);
+    public void insertPenaltyRefund(Timestamp createdAt, int reservationId, String refundStatus);
 }
