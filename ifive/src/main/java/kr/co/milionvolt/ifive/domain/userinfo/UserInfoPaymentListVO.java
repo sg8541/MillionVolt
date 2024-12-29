@@ -15,18 +15,22 @@ public class UserInfoPaymentListVO {
   private String amount;
   private BigDecimal chargedEnergy;
   private Integer chargerId;
-  private PaymentMethod paymentMethod;
-  private PaymentStatus paymentStatus;
+  private String paymentMethod;
+  private String paymentStatus;
   private String updatedAt;
   private String createdAt;
   private String chargeStart;
   private String chargeEnd;
+  private BigDecimal penaltyAmount;
+  private String refundStatus;
+  private int reservationId;
 
-  public enum PaymentMethod {
-    PayPal, 카카오페이, 신용카드
-  }
 
-  public enum PaymentStatus {
-    pending, completed, failed
-  }
+//  public enum PaymentMethod {
+//    PayPal, 카카오페이, 신용카드
+//  }
+//
+//  public enum PaymentStatus {
+//    pending, completed, failed
+//  }
 }

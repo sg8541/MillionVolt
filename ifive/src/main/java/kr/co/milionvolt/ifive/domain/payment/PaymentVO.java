@@ -10,15 +10,17 @@ public class PaymentVO {
     private Integer userId;
     private Integer reservationId;
     private BigDecimal amount;
-    private PaymentDTO.PaymentMethod paymentMethod;
-    private PaymentDTO.PaymentStatus paymentStatus;
+//    private PaymentDTO.PaymentMethod paymentMethod;
+//    private PaymentDTO.PaymentStatus paymentStatus;
+    private String paymentMethod;
+    private String paymentStatus;
 
-    public PaymentVO(Integer paymentId, Integer userId, Integer reservationId, BigDecimal amount, PaymentDTO.PaymentMethod paymentMethod, PaymentDTO.PaymentStatus status) {
+    public PaymentVO(Integer paymentId, Integer userId, Integer reservationId, BigDecimal amount, String paymentMethod, String paymentStatus) {
         this.paymentId = paymentId;
         this.userId = userId;
         this.reservationId = reservationId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
-        this.paymentStatus = status;
+        this.paymentStatus = paymentStatus;
     }
 }
