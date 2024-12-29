@@ -15,6 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -114,7 +115,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                         // 해당 충전기 번호 찾기
                         if(penaltiechargerStatusCheckVO.getChargerStatusId()==2){
                             System.out.println("예약 종료시간."+reservationEndTime);
-                            LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId());
+                            LocalDateTime closeReservationTime= penaltyService.findCloseStratTime(reservationEndTime,penaltiechargerStatusCheckVO.getChargerId(), penaltiechargerStatusCheckVO.getStationId());
                             int resNum =  reservation.getReservationId();
                             System.out.println(closeReservationTime);
                             penaltiySendAlarm(session, closeReservationTime, resNum, reservationEndTime);
@@ -139,7 +140,7 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     }
                     System.out.println("벌금테이블 동작.");
                     LocalDateTime now = LocalDateTime.now();
-                    if(now.isBefore(closeReservationTime)) {
+                    if(now.isBefore(closeReservationTime.minusMinutes(15))) {
                         System.out.println("제일 가까운 예약 내역." + closeReservationTime);
                         String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "출차해주세요!");
                         //뒷차 예약시간을 확인해서 출차해달라고 5분마다 메세지 알람 발송.
@@ -148,17 +149,21 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                     } else if (now.isAfter(closeReservationTime.minusMinutes(15)) && now.isBefore(closeReservationTime)) { // 예약시간으로부터 15분전 알림.
                         System.out.println("보증금 환수.");
                         String status = String.format("{\"closeReservationTime\": \"%s\", \"message\": \"%s\"}", closeReservationTime, "뒷 예약시간 15분 전 입니다.");
+                        PenaltyCheckVO vo = penaltyService.penaltyCheckVo(resNum);
+                        if(vo == null) {
+                            penaltyService.insertPenaltyRefund(Timestamp.valueOf(now), resNum, "possible");
+                        }
                         session.sendMessage(new TextMessage(status));
                     } else {
                         PenaltyCheckVO vo = penaltyService.penaltyCheckVo(resNum);
-                        if(vo == null){
-                            penaltyAmount = 100;
-                            System.out.println("벌금 부여 시작");
-                            PenaltieDTO dto = new PenaltieDTO();
-                            dto.setPenaltyAmount(BigDecimal.valueOf(penaltyAmount));
-                            dto.setReservationId(resNum); // 보증금 환수.
-                            penaltyService.insertPenalty(dto);
-                        } else {
+//                        if(vo == null){
+//                            penaltyAmount = 100;
+//                            System.out.println("벌금 부여 시작");
+//                            PenaltieDTO dto = new PenaltieDTO();
+//                            dto.setPenaltyAmount(BigDecimal.valueOf(penaltyAmount));
+//                            dto.setReservationId(resNum); // 보증금 환수.
+//                            penaltyService.insertPenalty(dto);
+//                        } else {
                             if (repeatNum.get(String.valueOf(resNum)) == null) {
                                 repeatNum.put(String.valueOf(resNum), 1);
                                 penaltyAmount = 100 + vo.getPenaltyAmount();
@@ -171,15 +176,10 @@ public class AlarmWebSocketHandler extends TextWebSocketHandler {
                                 amount.put(String.valueOf(resNum), penaltyAmount);
                             }
                             penaltyService.updatePenalty(penaltyAmount, resNum);
-                        }
 
                         String status = String.format("{\"penaltyAmount\": \"%d\", \"message\": \"%s\"}", penaltyAmount,"벌금 부여");
                         session.sendMessage(new TextMessage(status));
 
-//                        if(num % 5 == 1) {
-//                            String status = String.format("{\"reservationId\": \"%d\"}", resNum);
-//                            session.sendMessage(new TextMessage(status));
-//                        }
                     }
                 }catch (Exception e){
                    e.printStackTrace();

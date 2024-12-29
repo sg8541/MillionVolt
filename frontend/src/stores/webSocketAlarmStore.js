@@ -54,10 +54,18 @@ export const useAlarmWebSocketStore = defineStore('alarmWebsocket', () => {
     const clearAlarmMessage = () => {
         alarm.value.message = '';
     };
+    const disconnectWebSocket = () => {
+        if (socketAlarm.value) {
+            socketAlarm.value.close();
+            isConnected.value = false;
+            }
+        };
+
 
     return {
         connectAlarmWebSocket,
         alarm,
         clearAlarmMessage,
+        disconnectWebSocket,
     };
 });
