@@ -89,11 +89,7 @@ const chargeEnd = ref(null);
 const chargingKwh = ref(null);
 const chargerId = ref(null);
 const stationInfo = ref(null);
-const penaltyAmount = ref('');
-
-// const finaleAmount = computed(() => {
-//     return amount.value - penaltyAmount.value; // 총 결제 금액 계산
-// });
+const penaltyAmount = ref(''); 
 
 onMounted(() => {
     console.log('route.query:', route.query);
