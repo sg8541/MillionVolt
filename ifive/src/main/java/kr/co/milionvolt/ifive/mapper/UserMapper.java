@@ -73,7 +73,7 @@ public interface UserMapper {
     List<UserInfoReservationListVO> findByUserReservationList(@Param("userId") Integer id);
 
     // 유저의 결제 내역 리스트
-    @Select("select payment_id, name, cg.charger_id, format(amount,2) as amount, " +
+    @Select("select reservation_id, payment_id, name, cg.charger_id, format(amount,2) as amount, " +
             "       payment_method, payment_status, charged_energy, " +
             "       date_format(p.updated_at, '%y.%m.%d.') as updated_at, " +
             "       date_format(p.created_at, '%y.%m.%d. %H:%i') as created_at, " +
