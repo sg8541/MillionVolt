@@ -16,6 +16,10 @@ const getStatusText = (status) => {
   };
   return statusMap[status] || '알 수 없음';
 };
+
+const showAlert = () => {
+  alert('보증금 환불 신청이 완료되었습니다');
+};
 </script>
 
 <template>
@@ -76,9 +80,12 @@ const getStatusText = (status) => {
           {{ item.amount }}원
         </td>
         <td class="text-center">
-          <button @click="emit('refund', item.reservationId)">
+          <button @click="showAlert">
             보증금 환불
           </button>
+          <!-- <button @click="emit('refund', item.reservationId)">
+            보증금 환불
+          </button> -->
         </td>
       </tr>
     </tbody>

@@ -23,17 +23,17 @@ const fetcPaymentInfo = async (id) => {
  }
 }
 
-const refundDeposit = async (reservationId) => {
-  try {
-    const refundDepositResponse = await axios.post(`http://localhost:8081/api/v1/refundDeposit`,{ reservationId });
-    console.log(reservationId);
-    console.log("환불 응답 확인: ", refundDepositResponse);
-    // 환불 상태 업데이트
-    alert(refundDepositResponse.data.message); 
-  } catch (error) {
-    console.error("Error processing refund:", error);
-  }
-};
+// const refundDeposit = async (reservationId) => {
+//   try {
+//     const refundDepositResponse = await axios.post(`http://localhost:8081/api/v1/refundDeposit`,{ reservationId });
+//     console.log(reservationId);
+//     console.log("환불 응답 확인: ", refundDepositResponse);
+//     // 환불 상태 업데이트
+//     alert(refundDepositResponse.data.message); 
+//   } catch (error) {
+//     console.error("Error processing refund:", error);
+//   }
+// };
 
 onMounted(()=>{
   fetcPaymentInfo(id);
