@@ -39,14 +39,13 @@ public class ChargeStateChangeWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        System.out.println(payload);//가져올 값 charger90   00ae    `   `w
         int stationId = Integer.parseInt(payload);
         sendChagerStateUpdateData(session, stationId);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println("웹소켓 연결종료: " + session.getId());
+        log.info("웹소켓 연결종료: " + session.getId());
     }
 
     private void sendChagerStateUpdateData(WebSocketSession session, int stationId) {
@@ -61,7 +60,6 @@ public class ChargeStateChangeWebSocketHandler extends TextWebSocketHandler {
              List<ChargerDTO> list =   chargerService.getChargersByStationId(stationId);
                 if(!list.isEmpty()){
                     String jsonString = objectMapper.writeValueAsString(list);
-                    System.out.println(jsonString);
                     session.sendMessage(new TextMessage(jsonString));
                 }
                 }catch (Exception e){

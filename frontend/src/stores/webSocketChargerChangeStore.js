@@ -4,12 +4,10 @@ import { defineStore } from 'pinia';
 export const chargerStateChangeWebSocketStore = defineStore('chargeWebsocket',() => {
     const socketCharger = ref(null);
     const chargeState = ref([]);
-    console.log("1 : "+chargeState.value);
-
     const connectCharger = (stationId) => {
         
         socketCharger.value = new WebSocket('ws://localhost:8081/chargerstatus');
-        console.log('충전 웹소켓 연결');
+    
 
         
         socketCharger.value.onopen = () => {

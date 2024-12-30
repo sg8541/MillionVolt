@@ -55,19 +55,22 @@ export const useWebSocketStore = defineStore('websocket', () => {
         // WebSocket 연결 함수
         const connectWebSocket = () => {
             if(isConnected.value) {
-                console.log("이미연결된 웹소켓.");
                 return;
                 
             }
         
-        
+    
         const token = localStorage.getItem('user');
         const parsedToken = JSON.parse(token);
+
+        if(!parsedToken){
+            return;
+        }
         const userId = parsedToken.userId;
         const route = useRoute();
         const reservationId = route.query.reservationId; 
         const stationId = route.query.stationId;
-
+        
         if(!reservationId|| !stationId){
             return;
         }
@@ -88,10 +91,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
                 finishAlarm.value.message= data.message; // 또는 원하는 UI 로직을 처리
                 chargingData.value.batteryPercent = 100;
                 stopTimer();
-                console.log("충전 완료 상태 감지됨");
-                console.log(finishAlarm.value.message);
             }else if(data.message === "예약시간으로 인한 충전종료" ){
-                console.log("예약시간으로 인한 충전 종료.")
                 stopTimer();
                 finishAlarm.value.message = data.message;
             } else {
@@ -114,7 +114,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
         
         
         socketInstance.value.onclose = () => {
-            console.log('웹소켓 연결 종료1');
             socketInstance.value.close();
             stopTimer();
             endTime.value = new Date();
@@ -130,7 +129,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
         if (socketInstance.value) {
             socketInstance.value.close();
             isConnected.value = false;
-            console.log('웹소켓 연결 종료2');
             socketInstance.value.send('stop');
             stopTimer();
             endTime.value = new Date();

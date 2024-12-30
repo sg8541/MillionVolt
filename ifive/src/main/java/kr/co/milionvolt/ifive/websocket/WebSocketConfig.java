@@ -39,7 +39,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
         registry.addHandler(new ChargeStateChangeWebSocketHandler(chargerService),"/chargerstatus")
                 .setAllowedOrigins("*");
-
     }
 
 }

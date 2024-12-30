@@ -27,8 +27,6 @@ public class ChargingStatusServiceImpl implements ChargingStatusSerivce{
 
     @Override
     public void chargingStatusInuse(int chargerId, int stationId) {
-        System.out.println("서비스 단 충전기번호 : "+chargerId);
-        System.out.println("서비스 단 충전소 번호 : "+stationId);
         chargingStatusMapper.chargingStatusInuse(chargerId,stationId);
     }
 }

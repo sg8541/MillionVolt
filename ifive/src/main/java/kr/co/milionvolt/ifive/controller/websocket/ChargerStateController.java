@@ -42,10 +42,8 @@ public class ChargerStateController {
     public void broadcastChargerState(int stationId) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(()-> {
-             // 또는 다른 방식으로 가져옴
             List<ChargerDTO> list = chargerService.getChargersByStationId(stationId); //일단 직접 입력.
-            System.out.println("STOMP :모든 리스트 : :"+list);
-            // 브로커를 통해 모든 구독자에게 데이터 전송
+
             if (!list.isEmpty()) {
                 messagingTemplate.convertAndSend("/topic/chargerstate", list);
             }
