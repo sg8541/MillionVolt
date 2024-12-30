@@ -82,6 +82,7 @@ public class PayPriceServiceImpl implements PayPriceService {
                 if (insertResult) {
                     // 상태 업데이트
                     chargingStatusMapper.chargingStatusAvailable(payPriceDTO.getChargerId(), payPriceDTO.getStationId());
+                    payPriceMapper.updateReservationStatus(payPriceDTO.getReservationId());
                     return true;
                 }
                 return false;

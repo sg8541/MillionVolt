@@ -15,18 +15,18 @@ public class PaymentDTO {
   private Integer userId;
   private Integer reservationId;
   private BigDecimal amount;
-  private PaymentMethod paymentMethod;
-  private PaymentStatus paymentStatus;
+  private String paymentMethod;
+  private String paymentStatus;
   private java.sql.Timestamp createdAt;
   private java.sql.Timestamp updatedAt;
   private java.sql.Timestamp chargeStart;
   private java.sql.Timestamp chargeEnd;
 
-  public enum PaymentMethod {
-    PayPal, 카카오페이, 신용카드
-  }
-
-  public enum PaymentStatus {
-    pending, completed, failed
-  }
+//  public enum PaymentMethod {
+//    PayPal, 카카오페이, 신용카드
+//  }
+//
+//  public enum PaymentStatus {
+//    pending, completed, failed
+//  }
 }

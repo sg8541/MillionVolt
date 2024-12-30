@@ -38,7 +38,7 @@
                     </div>
                     <div v-else>
                         <strong class="amount-label"> 0 </strong>
-                    </div>    
+                    </div>
                 </div>
                 <div class="pay-info-amount-title">벌금 결제</div>
                 <div class="pay-info-amount-print">
@@ -80,7 +80,7 @@ function formatDate(timestamp) {
 }
 
 
-const userId = ref('');
+const userId = ref(null);
 const stationId = ref(null);
 const reservationId = ref(null);
 const amount = ref(0);
@@ -89,18 +89,11 @@ const chargeEnd = ref(null);
 const chargingKwh = ref(null);
 const chargerId = ref(null);
 const stationInfo = ref(null);
-const penaltyAmount = ref('');
-
-
-
-// const finaleAmount = computed(() => {
-//     return amount.value - penaltyAmount.value; // 총 결제 금액 계산
-// });
+const penaltyAmount = ref(''); 
 
 onMounted(() => {
     console.log('route.query:', route.query);
     userId.value = route.query.userId;
-    console.log(userId.value);
     stationId.value = route.query.stationId;
     reservationId.value = route.query.reservationId;
     chargeStart.value = route.query.chargeStart;
@@ -129,10 +122,9 @@ const stationAdress = async () => {
     )
     stationInfo.value = stationInfoResponse.data;
 };
-console.log(totalAmount.value);
+
 //결제 API
 const payment = () => {
-    
     const imp = window.IMP;
     imp.init("imp50578251");
     imp.request_pay(
@@ -164,6 +156,7 @@ const payment = () => {
                             imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
                         }
                     );
+                    alert(response.data);
                     window.location.href = "/";
                     console.log("서버 응답:", response.data);
                 } catch (error) {
@@ -173,7 +166,6 @@ const payment = () => {
         }
     );
 };
-
 
 const penalty = async () => {
     try {

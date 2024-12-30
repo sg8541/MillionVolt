@@ -246,7 +246,6 @@ const reserve = async () => {
                         stationId: stationId.value,
                         chargerId: chargerId.value,
                         status: 'confirmed',
-
                     });
                     alert(response.data.message);
                     window.location.href = "/";
@@ -258,6 +257,7 @@ const reserve = async () => {
                     } else if (error.response?.status === 500) {
                         // 서버 내부 오류 처리
                         alert(error.response.data.message);
+
                     }
                 }
             } else {

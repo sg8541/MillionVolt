@@ -17,6 +17,8 @@ const getStatusText = (status) => {
   return statusMap[status] || '알 수 없음';
 };
 
+
+
 </script>
 
 <template>
