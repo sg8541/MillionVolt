@@ -156,6 +156,7 @@ const payment = () => {
                             imp_uid: rsp.imp_uid, // Iamport 결제 고유 ID
                         }
                     );
+                    alert(response.data);
                     window.location.href = "/";
                     console.log("서버 응답:", response.data);
                 } catch (error) {
